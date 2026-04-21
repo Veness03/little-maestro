@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Little Maestro - Music for Kids</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Bubblegum+Sans&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="src/style.css">
+</head>
+<body>
+    <div id="app-container">
+        <!-- Home Menu -->
+        <section id="home-menu" class="page active">
+            <header>
+                <h1 class="main-title">Little Maestro</h1>
+                <p class="subtitle">Let's make some music!</p>
+            </header>
+            <div class="menu-grid">
+                <button class="menu-btn piano" onclick="navigateTo('piano-practice')">
+                    <span class="icon">🎹</span>
+                    <span class="label">Piano Practice</span>
+                </button>
+                <button class="menu-btn theory" onclick="navigateTo('theory-page')">
+                    <span class="icon">📚</span>
+                    <span class="label">Theory & Sight Singing</span>
+                </button>
+                <button class="menu-btn pitch" onclick="navigateTo('pitch-game')">
+                    <span class="icon">👂</span>
+                    <span class="label">Pitch Game</span>
+                </button>
+                <button class="menu-btn rhythm" onclick="navigateTo('rhythm-practice')">
+                    <span class="icon">🥁</span>
+                    <span class="label">Rhythm Practice</span>
+                </button>
+                <button class="menu-btn rhythm-star" onclick="navigateTo('rhythm-star-catch')">
+                    <span class="icon">⭐</span>
+                    <span class="label">Rhythmic Star Catch</span>
+                </button>
+                <button class="menu-btn trophy" onclick="navigateTo('trophy-room')">
+                    <span class="icon">🏆</span>
+                    <span class="label">Trophy Room</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Rhythmic Star Catch Game -->
+        <section id="rhythm-star-catch" class="page">
+            <nav class="top-nav">
+                <button class="back-btn" onclick="navigateTo('home-menu'); stopStarGame();">⬅ Back</button>
+                <h2>Rhythmic Star Catch</h2>
+            </nav>
+            <div class="star-game-container">
+                <div class="star-game-header">
+                    <div class="game-stat">Score: <span id="star-score">0</span></div>
+                    <div class="game-stat">Combo: <span id="star-combo">0</span></div>
+                    <div class="progress-container">
+                        <div id="star-progress-bar" class="progress-bar"></div>
+                    </div>
+                </div>
+                
+                <div class="star-lane-container">
+                    <div class="hit-zone" id="hit-zone">
+                        <div class="hit-target"></div>
+                    </div>
+                    <div id="star-lane" class="star-lane">
+                        <!-- Stars will be injected here -->
+                    </div>
+                </div>
+
+                <div class="game-controls">
+                    <button id="start-star-game-btn" class="action-btn large">Start Game!</button>
+                    
+                    <div id="star-btn-controls" class="star-btn-controls">
+                        <button class="game-control-btn tap" data-key=" ">⭐<br>TAP</button>
+                        <button class="game-control-btn clap" data-key="c">👏<br>CLAP</button>
+                        <button class="game-control-btn hold" data-key="h">🔥<br>HOLD</button>
+                        <button class="game-control-btn shake" data-key="s">✨<br>SHAKE</button>
+                    </div>
+
+                    <div class="instructions">
+                        Buttons or Keys: Space, C, H, S
+                    </div>
+                </div>
+
+                <div id="star-hit-feedback" class="hit-feedback"></div>
+            </div>
+        </section>
+
+        <!-- Piano Practice Page -->
+        <section id="piano-practice" class="page">
+            <nav class="top-nav">
+                <button class="back-btn" onclick="navigateTo('home-menu')">⬅ Back</button>
+                <h2>Piano Practice</h2>
+            </nav>
+            <div class="piano-container">
+                <div class="solfege-labels">
+                    <span>do</span><span>re</span><span>mi</span><span>fa</span><span>sol</span><span>la</span><span>ti</span><span>do</span>
+                </div>
+                <div class="piano-keyboard" id="piano-keyboard">
+                    <!-- Keys will be generated by JS -->
+                </div>
+            </div>
+            <div class="piano-practice-controls">
+                <div class="song-selector">
+                    <label for="song-select">Choose a song:</label>
+                    <select id="song-select" class="small-select">
+                        <option value="none">Free Play</option>
+                        <option value="twinkle">Twinkle Twinkle</option>
+                        <option value="mary">Mary Had a Little Lamb</option>
+                        <option value="jingle">Jingle Bells</option>
+                    </select>
+                </div>
+                <div class="practice-buttons">
+                    <button id="play-song-btn" class="small-btn">Listen 🔊</button>
+                    <button id="start-practice-btn" class="small-btn">Practice 🎹</button>
+                </div>
+            </div>
+            <div class="controls">
+                <p id="piano-instructions">Click the keys to play!</p>
+            </div>
+        </section>
+
+        <!-- Theory Page -->
+        <section id="theory-page" class="page">
+            <nav class="top-nav">
+                <button class="back-btn" onclick="navigateTo('home-menu')">⬅ Back</button>
+                <h2>Music Adventure</h2>
+            </nav>
+            
+            <div class="mascot-bubble">
+                <div class="mascot">🐱</div>
+                <div class="bubble">Hi! I'm Clef the Cat. Ready to discover the magic of music?</div>
+            </div>
+
+            <div class="theory-grid">
+                <div class="theory-card lessons" onclick="startMiniGame('story')">
+                    <div class="card-icon">📖</div>
+                    <h3>Story Time</h3>
+                    <p>Meet the Note Family!</p>
+                    <div class="progress-stars" id="stars-story">☆☆☆</div>
+                    <button class="play-btn-small">Let's Go!</button>
+                </div>
+                <div class="theory-card scales" onclick="startMiniGame('ladder')">
+                    <div class="card-icon">🪜</div>
+                    <h3>Note Ladders</h3>
+                    <p>Climb up and down!</p>
+                    <div class="progress-stars" id="stars-ladder">☆☆☆</div>
+                    <button class="play-btn-small">Play!</button>
+                </div>
+                <div class="theory-card symbols" onclick="startMiniGame('signs')">
+                    <div class="card-icon">✨</div>
+                    <h3>Secret Signs</h3>
+                    <p>Musical magic codes!</p>
+                    <div class="progress-stars" id="stars-signs">☆☆☆</div>
+                    <button class="play-btn-small">Explore!</button>
+                </div>
+                <div class="theory-card challenges" onclick="startMiniGame('quest')">
+                    <div class="card-icon">🏆</div>
+                    <h3>Star Quest</h3>
+                    <p>Can you find the notes?</p>
+                    <div class="progress-stars" id="stars-quest">☆☆☆</div>
+                    <button class="play-btn-small">Start!</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sight Singing Page -->
+        <section id="sight-singing" class="page">
+            <nav class="top-nav">
+                <button class="back-btn" onclick="navigateTo('theory-page')">⬅ Back</button>
+                <h2>Sight Singing</h2>
+            </nav>
+            <div class="sight-singing-content">
+                <div class="metronome-container">
+                    <div id="metronome-visual" class="metronome-dot"></div>
+                    <button id="metronome-toggle" class="action-btn">Start Metronome</button>
+                </div>
+                <div class="practice-sections">
+                    <div class="practice-box">
+                        <h3>Melody Practice</h3>
+                        <p>Follow the notes!</p>
+                    </div>
+                    <div class="practice-box">
+                        <h3>Interval Training</h3>
+                        <p>High or Low?</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pitch Game -->
+        <section id="pitch-game" class="page">
+            <nav class="top-nav">
+                <button class="back-btn" onclick="navigateTo('home-menu')">⬅ Back</button>
+                <h2>Pitch Game</h2>
+            </nav>
+            <div class="game-container">
+                <div id="pitch-feedback" class="feedback-msg">Press Play to Start!</div>
+                <button id="play-pitch-btn" class="action-btn large">Play Note 🔊</button>
+                <div class="pitch-options" id="pitch-options">
+                    <!-- Buttons generated by JS -->
+                </div>
+                <div class="score-display">Score: <span id="pitch-score">0</span></div>
+            </div>
+        </section>
+
+        <!-- Rhythm Practice -->
+        <section id="rhythm-practice" class="page">
+            <nav class="top-nav">
+                <button class="back-btn" onclick="navigateTo('home-menu')">⬅ Back</button>
+                <h2>Rhythm Practice</h2>
+            </nav>
+            <div class="game-container">
+                <div id="rhythm-feedback" class="feedback-msg">Listen and Repeat!</div>
+                <button id="play-rhythm-btn" class="action-btn large">Listen 👂</button>
+                <div class="rhythm-pad-container">
+                    <button id="rhythm-pad" class="drum-pad">TAP ME! 🥁</button>
+                </div>
+                <div class="score-display">Score: <span id="rhythm-score">0</span></div>
+            </div>
+        </section>
+
+        <!-- Trophy Room -->
+        <section id="trophy-room" class="page">
+            <nav class="top-nav">
+                <button class="back-btn" onclick="navigateTo('home-menu')">⬅ Back</button>
+                <h2>Trophy Room</h2>
+            </nav>
+            <div class="trophy-display">
+                <div class="trophy-card gold">
+                    <span class="trophy-icon">🥇</span>
+                    <h3>1st Place</h3>
+                    <p id="score-1">0 points</p>
+                </div>
+                <div class="trophy-card silver">
+                    <span class="trophy-icon">🥈</span>
+                    <h3>2nd Place</h3>
+                    <p id="score-2">0 points</p>
+                </div>
+                <div class="trophy-card bronze">
+                    <span class="trophy-icon">🥉</span>
+                    <h3>3rd Place</h3>
+                    <p id="score-3">0 points</p>
+                </div>
+            </div>
+            <button class="action-btn" onclick="resetScores()">Reset Trophies</button>
+        </section>
+
+        <!-- Mini-Game Overlay -->
+        <div id="mini-game-overlay" class="overlay">
+            <div class="overlay-content">
+                <button class="close-overlay" onclick="closeMiniGame()">✖</button>
+                <div id="game-stage">
+                    <!-- Game content injected here -->
+                </div>
+                <div id="game-feedback" class="game-feedback"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="src/script.js"></script>
+</body>
+</html>
