@@ -858,3 +858,5 @@ window.onload = () => {
     
     document.getElementById('metronome-toggle').onclick = toggleMetronome;
 };
+
+window.navigateTo = navigateTo;
