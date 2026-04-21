@@ -858,7 +858,7 @@ window.onload = () => {
     
     document.getElementById('metronome-toggle').onclick = toggleMetronome;
 };
-
+window.navigateTo = navigateTo;
 window.startMiniGame = startMiniGame;
 window.resetScores = resetScores;
 window.closeMiniGame = closeMiniGame;
