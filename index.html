@@ -11,36 +11,129 @@
 </head>
 <body>
     <div id="app-container">
-        <!-- Home Menu -->
-        <section id="home-menu" class="page active">
-            <header>
-                <h1 class="main-title">Little Maestro</h1>
-                <p class="subtitle">Let's make some music!</p>
-            </header>
+        <!-- Floating Elements Container (NEW) -->
+        <div id="ambient-background" class="ambient-bg">
+            <div class="glow-blob blob-1"></div>
+            <div class="glow-blob blob-2"></div>
+            <div class="glow-blob blob-3"></div>
+            <div class="glow-blob blob-4"></div>
+            <div class="hills">
+                <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+                    <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5,73.84-4.36,147.54,16.88,218.2,35.26,69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25"></path>
+                    <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5"></path>
+                    <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z"></path>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Language Switcher -->
+        <div class="language-switcher">
+            <button onclick="setLanguage('en')" class="lang-btn" id="lang-en">EN</button>
+            <button onclick="setLanguage('zh')" class="lang-btn" id="lang-zh">CN</button>
+        </div>
+
+        <!-- Landing Page (Main Entry) -->
+        <section id="landing-page" class="page active">
+            <div class="clouds-container">
+                <div class="cloud">☁️</div>
+                <div class="cloud">☁️</div>
+                <div class="cloud">☁️</div>
+            </div>
+            
+            <div class="glass-card">
+                <header>
+                    <h1 class="main-title gradient-text" data-i18n="app-title" data-en="Little Maestro" data-cn="小小大宗师">Little Maestro</h1>
+                    <p class="subtitle" data-i18n="landing-subtitle" data-en="Pick your musical path!" data-cn="开启你的音乐之旅！">Pick your musical path!</p>
+                </header>
+                
+                <div class="landing-grid">
+                    <button class="landing-btn theory-hub-path" onclick="navigateTo('theory-hub')">
+                        <span class="icon">📚</span>
+                        <span class="label" data-i18n="music-theory" data-en="Music Theory" data-cn="音乐理论">Music Theory</span>
+                    </button>
+                    <button class="landing-btn vision-path" onclick="navigateTo('vision-hub')">
+                        <span class="icon">🎶</span>
+                        <span class="label" data-i18n="vision-singing" data-en="Vision Singing" data-cn="视唱练习">Vision Singing</span>
+                    </button>
+                </div>
+                
+                <div class="extra-controls">
+                    <button class="arcade-cta-btn" onclick="navigateTo('home-menu')" data-i18n="go-arcade" data-en="Go to Arcade 🎮" data-cn="去游乐场 🎮">Go to Arcade 🎮</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Music Theory Hub -->
+        <section id="theory-hub" class="page">
+            <nav class="top-nav">
+                <button class="back-btn" onclick="navigateTo('landing-page')">⬅ <span data-i18n="back" data-en="Back" data-cn="返回">Back</span></button>
+                <h2 data-i18n="music-theory" data-en="Music Theory" data-cn="音乐理论">Music Theory</h2>
+            </nav>
+            <div class="level-map">
+                <button class="level-btn" onclick="openLesson('theory', 1)" data-i18n="theory-lv1" data-en="Level 1: Introduction to Staff" data-cn="第一关: 认识五线谱">Level 1: 认识五线谱</button>
+                <button class="level-btn" onclick="openLesson('theory', 2)" data-i18n="theory-lv2" data-en="Level 2: Meet the Notes" data-cn="第二关: 认识音符">Level 2: 认识音符</button>
+                <button class="level-btn" onclick="openLesson('theory', 3)" data-i18n="theory-lv3" data-en="Level 3: Names and Values" data-cn="第三关: 音符的名称与时值">Level 3: 音符的名称与时值</button>
+                <button class="level-btn" onclick="openLesson('theory', 4)" data-i18n="theory-lv4" data-en="Level 4: Musical Symbols" data-cn="第四关: 音乐中的符号">Level 4: 音乐中的符号</button>
+                <button class="level-btn" onclick="openLesson('theory', 5)" data-i18n="theory-lv5" data-en="Level 5: Bars and Bar Lines" data-cn="第五关: 小节与小节线">Level 5: 小节与小节线</button>
+            </div>
+        </section>
+
+        <!-- Vision Singing Hub -->
+        <section id="vision-hub" class="page">
+            <nav class="top-nav">
+                <button class="back-btn" onclick="navigateTo('landing-page')">⬅ <span data-i18n="back" data-en="Back" data-cn="返回">Back</span></button>
+                <h2 data-i18n="vision-singing" data-en="Vision Singing" data-cn="视唱练习">Vision Singing</h2>
+            </nav>
+            <div class="level-map">
+                <button class="level-btn" onclick="openLesson('vision', 1)" data-i18n="vision-lv1" data-en="Level 1: Sound of Music (Do Re Mi)" data-cn="第一关: 音乐之声 (Do Re Mi)">Level 1: 音乐之声 (Do Re Mi)</button>
+                <button class="level-btn" onclick="openLesson('vision', 2)" data-i18n="vision-lv2" data-en="Level 2: Simple Melody" data-cn="第二关: 简单旋律">Level 2: Simple Melody</button>
+                <button class="level-btn" onclick="openLesson('vision', 3)" data-i18n="vision-lv3" data-en="Level 3: Beat" data-cn="第三关: 拍子">Level 3: Beat</button>
+                <button class="level-btn" onclick="openLesson('vision', 4)" data-i18n="vision-lv4" data-en="Level 4: Sing the Rhythm" data-cn="第四关: 唱节奏">Level 4: 唱节奏</button>
+                <button class="level-btn" onclick="openLesson('vision', 5)" data-i18n="vision-lv5" data-en="Level 5: Rhythm Practice" data-cn="第五关: 节奏综合练习">Level 5: 节奏练习</button>
+            </div>
+        </section>
+
+        <!-- Lesson Page (Reusable) -->
+        <section id="lesson-page" class="page">
+            <nav class="top-nav">
+                <button id="lesson-back-btn" class="back-btn">⬅ <span data-i18n="back" data-en="Back" data-cn="返回">Back</span></button>
+                <h2 id="lesson-title">Lesson Title</h2>
+            </nav>
+            <div id="lesson-content" class="lesson-container">
+                <!-- Content injected by JS -->
+            </div>
+        </section>
+
+        <!-- Home Menu (Existing Arcade) -->
+        <section id="home-menu" class="page">
+            <nav class="top-nav">
+                <button class="back-btn" onclick="navigateTo('landing-page')">⬅ <span data-i18n="back" data-en="Back" data-cn="返回">Back</span></button>
+                <h2 data-i18n="arcade-title" data-en="Music Arcade" data-cn="音乐游乐场">Music Arcade</h2>
+            </nav>
             <div class="menu-grid">
                 <button class="menu-btn piano" onclick="navigateTo('piano-practice')">
                     <span class="icon">🎹</span>
-                    <span class="label">Piano Practice</span>
+                    <span class="label" data-i18n="piano-practice" data-en="Piano Practice" data-cn="钢琴练习">Piano Practice</span>
                 </button>
                 <button class="menu-btn theory" onclick="navigateTo('theory-page')">
                     <span class="icon">📚</span>
-                    <span class="label">Theory & Sight Singing</span>
+                    <span class="label" data-i18n="music-adventure" data-en="Theory & Sight Singing" data-cn="乐理与视唱">Theory & Sight Singing</span>
                 </button>
                 <button class="menu-btn pitch" onclick="navigateTo('pitch-game')">
                     <span class="icon">👂</span>
-                    <span class="label">Pitch Game</span>
+                    <span class="label" data-i18n="pitch-game" data-en="Pitch Game" data-cn="音高游戏">Pitch Game</span>
                 </button>
                 <button class="menu-btn rhythm" onclick="navigateTo('rhythm-practice')">
                     <span class="icon">🥁</span>
-                    <span class="label">Rhythm Practice</span>
+                    <span class="label" data-i18n="rhythm-practice" data-en="Rhythm Practice" data-cn="节奏练习">Rhythm Practice</span>
                 </button>
                 <button class="menu-btn rhythm-star" onclick="navigateTo('rhythm-star-catch')">
                     <span class="icon">⭐</span>
-                    <span class="label">Rhythmic Star Catch</span>
+                    <span class="label" data-i18n="rhythm-star" data-en="Rhythmic Star Catch" data-cn="节奏接星星">Rhythmic Star Catch</span>
                 </button>
                 <button class="menu-btn trophy" onclick="navigateTo('trophy-room')">
                     <span class="icon">🏆</span>
-                    <span class="label">Trophy Room</span>
+                    <span class="label" data-i18n="trophy-room" data-en="Trophy Room" data-cn="荣誉室">Trophy Room</span>
                 </button>
             </div>
         </section>
@@ -48,13 +141,13 @@
         <!-- Rhythmic Star Catch Game -->
         <section id="rhythm-star-catch" class="page">
             <nav class="top-nav">
-                <button class="back-btn" onclick="navigateTo('home-menu'); stopStarGame();">⬅ Back</button>
-                <h2>Rhythmic Star Catch</h2>
+                <button class="back-btn" onclick="navigateTo('home-menu'); stopStarGame();">⬅ <span data-i18n="back">Back</span></button>
+                <h2 data-i18n="rhythm-star">Rhythmic Star Catch</h2>
             </nav>
             <div class="star-game-container">
                 <div class="star-game-header">
-                    <div class="game-stat">Score: <span id="star-score">0</span></div>
-                    <div class="game-stat">Combo: <span id="star-combo">0</span></div>
+                    <div class="game-stat"><span data-i18n="score">Score</span>: <span id="star-score">0</span></div>
+                    <div class="game-stat"><span data-i18n="combo">Combo</span>: <span id="star-combo">0</span></div>
                     <div class="progress-container">
                         <div id="star-progress-bar" class="progress-bar"></div>
                     </div>
@@ -70,16 +163,16 @@
                 </div>
 
                 <div class="game-controls">
-                    <button id="start-star-game-btn" class="action-btn large">Start Game!</button>
+                    <button id="start-star-game-btn" class="action-btn large" data-i18n="start-game">Start Game!</button>
                     
                     <div id="star-btn-controls" class="star-btn-controls">
-                        <button class="game-control-btn tap" data-key=" ">⭐<br>TAP</button>
-                        <button class="game-control-btn clap" data-key="c">👏<br>CLAP</button>
-                        <button class="game-control-btn hold" data-key="h">🔥<br>HOLD</button>
-                        <button class="game-control-btn shake" data-key="s">✨<br>SHAKE</button>
+                        <button class="game-control-btn tap" data-key=" "><span data-i18n="tap-btn">⭐<br>TAP</span></button>
+                        <button class="game-control-btn clap" data-key="c"><span data-i18n="clap-btn">👏<br>CLAP</span></button>
+                        <button class="game-control-btn hold" data-key="h"><span data-i18n="hold-btn">🔥<br>HOLD</span></button>
+                        <button class="game-control-btn shake" data-key="s"><span data-i18n="shake-btn">✨<br>SHAKE</span></button>
                     </div>
 
-                    <div class="instructions">
+                    <div class="instructions" data-i18n="star-instructions">
                         Buttons or Keys: Space, C, H, S
                     </div>
                 </div>
@@ -91,8 +184,8 @@
         <!-- Piano Practice Page -->
         <section id="piano-practice" class="page">
             <nav class="top-nav">
-                <button class="back-btn" onclick="navigateTo('home-menu')">⬅ Back</button>
-                <h2>Piano Practice</h2>
+                <button class="back-btn" onclick="navigateTo('home-menu')">⬅ <span data-i18n="back">Back</span></button>
+                <h2 data-i18n="piano-practice">Piano Practice</h2>
             </nav>
             <div class="piano-container">
                 <div class="solfege-labels">
@@ -104,64 +197,64 @@
             </div>
             <div class="piano-practice-controls">
                 <div class="song-selector">
-                    <label for="song-select">Choose a song:</label>
+                    <label for="song-select" data-i18n="choose-song">Choose a song:</label>
                     <select id="song-select" class="small-select">
-                        <option value="none">Free Play</option>
-                        <option value="twinkle">Twinkle Twinkle</option>
-                        <option value="mary">Mary Had a Little Lamb</option>
-                        <option value="jingle">Jingle Bells</option>
+                        <option value="none" data-i18n="song-none">Free Play</option>
+                        <option value="twinkle" data-i18n="song-twinkle">Twinkle Twinkle</option>
+                        <option value="mary" data-i18n="song-mary">Mary Had a Little Lamb</option>
+                        <option value="jingle" data-i18n="song-jingle">Jingle Bells</option>
                     </select>
                 </div>
                 <div class="practice-buttons">
-                    <button id="play-song-btn" class="small-btn">Listen 🔊</button>
-                    <button id="start-practice-btn" class="small-btn">Practice 🎹</button>
+                    <button id="play-song-btn" class="small-btn"><span data-i18n="listen-btn">Listen 🔊</span></button>
+                    <button id="start-practice-btn" class="small-btn"><span data-i18n="practice-btn">Practice 🎹</span></button>
                 </div>
             </div>
             <div class="controls">
-                <p id="piano-instructions">Click the keys to play!</p>
+                <p id="piano-instructions" data-i18n="piano-play-instr">Click the keys to play!</p>
             </div>
         </section>
 
         <!-- Theory Page -->
         <section id="theory-page" class="page">
             <nav class="top-nav">
-                <button class="back-btn" onclick="navigateTo('home-menu')">⬅ Back</button>
-                <h2>Music Adventure</h2>
+                <button class="back-btn" onclick="navigateTo('home-menu')">⬅ <span data-i18n="back">Back</span></button>
+                <h2 data-i18n="music-adventure">Music Adventure</h2>
             </nav>
             
             <div class="mascot-bubble">
                 <div class="mascot">🐱</div>
-                <div class="bubble">Hi! I'm Clef the Cat. Ready to discover the magic of music?</div>
+                <div class="bubble" id="theory-mascot-bubble">Hi! I'm Clef the Cat. Ready to discover the magic of music?</div>
             </div>
 
             <div class="theory-grid">
                 <div class="theory-card lessons" onclick="startMiniGame('story')">
                     <div class="card-icon">📖</div>
-                    <h3>Story Time</h3>
-                    <p>Meet the Note Family!</p>
+                    <h3 data-i18n="story-time">Story Time</h3>
+                    <p data-i18n="story-desc">Meet the Note Family!</p>
                     <div class="progress-stars" id="stars-story">☆☆☆</div>
-                    <button class="play-btn-small">Let's Go!</button>
+                    <button class="play-btn-small" data-i18n="lets-go">Let's Go!</button>
                 </div>
                 <div class="theory-card scales" onclick="startMiniGame('ladder')">
                     <div class="card-icon">🪜</div>
-                    <h3>Note Ladders</h3>
-                    <p>Climb up and down!</p>
+                    <h3 data-i18n="note-ladders">Note Ladders</h3>
+                    <p data-i18n="note-ladders-desc">Climb up and down!</p>
                     <div class="progress-stars" id="stars-ladder">☆☆☆</div>
-                    <button class="play-btn-small">Play!</button>
+                    <button class="play-btn-small" data-i18n="play">Play!</button>
                 </div>
                 <div class="theory-card symbols" onclick="startMiniGame('signs')">
                     <div class="card-icon">✨</div>
-                    <h3>Secret Signs</h3>
-                    <p>Musical magic codes!</p>
+                    <h3 data-i18n="secret-signs">Secret Signs</h3>
+                    <p data-i18n="secret-signs-desc">Musical magic codes!</p>
                     <div class="progress-stars" id="stars-signs">☆☆☆</div>
-                    <button class="play-btn-small">Explore!</button>
+                    <button class="play-btn-small" data-i18n="explore">Explore!</button>
                 </div>
                 <div class="theory-card challenges" onclick="startMiniGame('quest')">
                     <div class="card-icon">🏆</div>
-                    <h3>Star Quest</h3>
-                    <p>Can you find the notes?</p>
+                    <h3 data-i18n="star-quest">Star Quest</h3>
+                    <p data-i18n="star-quest-desc">Can you find the notes?</p>
                     <div class="progress-stars" id="stars-quest">☆☆☆</div>
-                    <button class="play-btn-small">Start!</button>
+                    <button class="play-btn-small" data-i18n="start">Start!</button>
                 </div>
             </div>
         </section>
@@ -169,22 +262,22 @@
         <!-- Sight Singing Page -->
         <section id="sight-singing" class="page">
             <nav class="top-nav">
-                <button class="back-btn" onclick="navigateTo('theory-page')">⬅ Back</button>
-                <h2>Sight Singing</h2>
+                <button class="back-btn" onclick="navigateTo('theory-page')">⬅ <span data-i18n="back">Back</span></button>
+                <h2 data-i18n="sight-singing">Sight Singing</h2>
             </nav>
             <div class="sight-singing-content">
                 <div class="metronome-container">
                     <div id="metronome-visual" class="metronome-dot"></div>
-                    <button id="metronome-toggle" class="action-btn">Start Metronome</button>
+                    <button id="metronome-toggle" class="action-btn" data-i18n="start-metronome">Start Metronome</button>
                 </div>
                 <div class="practice-sections">
                     <div class="practice-box">
-                        <h3>Melody Practice</h3>
-                        <p>Follow the notes!</p>
+                        <h3 data-i18n="melody-practice">Melody Practice</h3>
+                        <p data-i18n="melody-practice-desc">Follow the notes!</p>
                     </div>
                     <div class="practice-box">
-                        <h3>Interval Training</h3>
-                        <p>High or Low?</p>
+                        <h3 data-i18n="interval-training">Interval Training</h3>
+                        <p data-i18n="interval-training-desc">High or Low?</p>
                     </div>
                 </div>
             </div>
@@ -193,59 +286,59 @@
         <!-- Pitch Game -->
         <section id="pitch-game" class="page">
             <nav class="top-nav">
-                <button class="back-btn" onclick="navigateTo('home-menu')">⬅ Back</button>
-                <h2>Pitch Game</h2>
+                <button class="back-btn" onclick="navigateTo('home-menu')">⬅ <span data-i18n="back">Back</span></button>
+                <h2 data-i18n="pitch-game">Pitch Game</h2>
             </nav>
             <div class="game-container">
-                <div id="pitch-feedback" class="feedback-msg">Press Play to Start!</div>
-                <button id="play-pitch-btn" class="action-btn large">Play Note 🔊</button>
+                <div id="pitch-feedback" class="feedback-msg" data-i18n="pitch-start-msg">Press Play to Start!</div>
+                <button id="play-pitch-btn" class="action-btn large"><span data-i18n="play-note-btn">Play Note 🔊</span></button>
                 <div class="pitch-options" id="pitch-options">
                     <!-- Buttons generated by JS -->
                 </div>
-                <div class="score-display">Score: <span id="pitch-score">0</span></div>
+                <div class="score-display"><span data-i18n="score">Score</span>: <span id="pitch-score">0</span></div>
             </div>
         </section>
 
         <!-- Rhythm Practice -->
         <section id="rhythm-practice" class="page">
             <nav class="top-nav">
-                <button class="back-btn" onclick="navigateTo('home-menu')">⬅ Back</button>
-                <h2>Rhythm Practice</h2>
+                <button class="back-btn" onclick="navigateTo('home-menu')">⬅ <span data-i18n="back">Back</span></button>
+                <h2 data-i18n="rhythm-practice">Rhythm Practice</h2>
             </nav>
             <div class="game-container">
-                <div id="rhythm-feedback" class="feedback-msg">Listen and Repeat!</div>
-                <button id="play-rhythm-btn" class="action-btn large">Listen 👂</button>
+                <div id="rhythm-feedback" class="feedback-msg" data-i18n="rhythm-start-msg">Listen and Repeat!</div>
+                <button id="play-rhythm-btn" class="action-btn large"><span data-i18n="listen-👂-btn">Listen 👂</span></button>
                 <div class="rhythm-pad-container">
-                    <button id="rhythm-pad" class="drum-pad">TAP ME! 🥁</button>
+                    <button id="rhythm-pad" class="drum-pad" data-i18n="tap-me-btn">TAP ME! 🥁</button>
                 </div>
-                <div class="score-display">Score: <span id="rhythm-score">0</span></div>
+                <div class="score-display"><span data-i18n="score">Score</span>: <span id="rhythm-score">0</span></div>
             </div>
         </section>
 
         <!-- Trophy Room -->
         <section id="trophy-room" class="page">
             <nav class="top-nav">
-                <button class="back-btn" onclick="navigateTo('home-menu')">⬅ Back</button>
-                <h2>Trophy Room</h2>
+                <button class="back-btn" onclick="navigateTo('home-menu')">⬅ <span data-i18n="back">Back</span></button>
+                <h2 data-i18n="trophy-room">Trophy Room</h2>
             </nav>
             <div class="trophy-display">
                 <div class="trophy-card gold">
                     <span class="trophy-icon">🥇</span>
-                    <h3>1st Place</h3>
+                    <h3 data-i18n="score-1st">1st Place</h3>
                     <p id="score-1">0 points</p>
                 </div>
                 <div class="trophy-card silver">
                     <span class="trophy-icon">🥈</span>
-                    <h3>2nd Place</h3>
+                    <h3 data-i18n="score-2nd">2nd Place</h3>
                     <p id="score-2">0 points</p>
                 </div>
                 <div class="trophy-card bronze">
                     <span class="trophy-icon">🥉</span>
-                    <h3>3rd Place</h3>
+                    <h3 data-i18n="score-3rd">3rd Place</h3>
                     <p id="score-3">0 points</p>
                 </div>
             </div>
-            <button class="action-btn" onclick="resetScores()">Reset Trophies</button>
+            <button class="action-btn" onclick="resetScores()" data-i18n="reset-trophies">Reset Trophies</button>
         </section>
 
         <!-- Mini-Game Overlay -->
@@ -260,6 +353,6 @@
         </div>
     </div>
 
-    <script type="module" src="/src/script.js"></script>
+        <script type="module" src="/src/script.js"></script>
 </body>
 </html>
