@@ -3476,3 +3476,10 @@ window.startMiniGame = startMiniGame;
 window.resetScores = resetScores;
 window.closeMiniGame = closeMiniGame;
 window.stopStarGame = stopStarGame;
+
+window.playCardSound = () => {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    // A premium chime for cards
+    playNote(523.25, 0.1); 
+    setTimeout(() => playNote(659.25, 0.2), 80); 
+};
