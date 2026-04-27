@@ -69,12 +69,57 @@
                 <button class="back-btn" onclick="navigateTo('landing-page')">⬅ <span data-i18n="back" data-en="Back" data-cn="返回">Back</span></button>
                 <h2 data-i18n="music-theory" data-en="Music Theory" data-cn="音乐理论">Music Theory</h2>
             </nav>
-            <div class="level-map">
-                <button class="level-btn" onclick="openLesson('theory', 1)" data-i18n="theory-lv1" data-en="Level 1: Introduction to Staff" data-cn="第一关: 认识五线谱">Level 1: 认识五线谱</button>
-                <button class="level-btn" onclick="openLesson('theory', 2)" data-i18n="theory-lv2" data-en="Level 2: Meet the Notes" data-cn="第二关: 认识音符">Level 2: 认识音符</button>
-                <button class="level-btn" onclick="openLesson('theory', 3)" data-i18n="theory-lv3" data-en="Level 3: Names and Values" data-cn="第三关: 音符的名称与时值">Level 3: 音符的名称与时值</button>
-                <button class="level-btn" onclick="openLesson('theory', 4)" data-i18n="theory-lv4" data-en="Level 4: Musical Symbols" data-cn="第四关: 音乐中的符号">Level 4: 音乐中的符号</button>
-                <button class="level-btn" onclick="openLesson('theory', 5)" data-i18n="theory-lv5" data-en="Level 5: Bars and Bar Lines" data-cn="第五关: 小节与小节线">Level 5: 小节与小节线</button>
+            <div class="treasure-map-container">
+                <svg class="map-svg" viewBox="0 0 1000 600" preserveAspectRatio="none">
+                    <!-- Top Left Ocean -->
+                    <path d="M 0 0 L 400 0 C 350 200, 150 150, 0 300 Z" fill="#69def5"/>
+                    <path d="M 0 0 L 400 0 C 350 200, 150 150, 0 300 Z" fill="none" stroke="#e0fbfc" stroke-width="6" stroke-dasharray="15, 10"/>
+
+                    <!-- Bottom Right Ocean -->
+                    <path d="M 600 600 C 800 500, 900 400, 1000 250 L 1000 600 Z" fill="#69def5"/>
+                    <path d="M 600 600 C 800 500, 900 400, 1000 250" fill="none" stroke="#e0fbfc" stroke-width="6" stroke-dasharray="15, 10"/>
+                    
+                    <!-- Sand Path Base -->
+                    <path d="M -20 280 C 150 280, 200 450, 320 450 C 470 450, 480 200, 600 200 C 700 200, 750 400, 850 400 C 920 400, 950 280, 1020 280" 
+                          fill="none" stroke="#f4d17c" stroke-width="60" stroke-linecap="round" stroke-linejoin="round"/>
+                    
+                    <!-- Sand Path Dashes -->
+                    <path d="M -20 280 C 150 280, 200 450, 320 450 C 470 450, 480 200, 600 200 C 700 200, 750 400, 850 400 C 920 400, 950 280, 1020 280" 
+                          fill="none" stroke="#e68d4c" stroke-width="8" stroke-dasharray="25, 20" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+
+                <div class="map-decoration" style="left: 6%; top: 6%; font-size: 70px;">🏴‍☠️</div>
+                <div class="map-decoration" style="left: 88%; top: 5%; font-size: 80px;">🌴</div>
+                <div class="map-decoration" style="left: 45%; top: 10%; font-size: 30px;">☁️</div>
+                <div class="map-decoration" style="left: 15%; top: 80%; font-size: 40px;">🌿</div>
+                <div class="map-decoration" style="left: 60%; top: 60%; font-size: 30px;">🌸</div>
+                <div class="map-decoration" style="left: 85%; top: 80%; font-size: 45px;">🦀</div>
+
+                <!-- Level Nodes -->
+                <div class="map-node-wrapper" style="left: 10%; top: 46%;">
+                    <button class="map-node-btn bounce-1" onclick="openLesson('theory', 1)" style="background: #FF5252;">1</button>
+                    <div class="map-node-label" data-i18n="theory-lv1" data-en="Level 1" data-cn="第一关">第一关</div>
+                </div>
+                
+                <div class="map-node-wrapper" style="left: 32%; top: 75%;">
+                    <button class="map-node-btn bounce-2" onclick="openLesson('theory', 2)" style="background: #FF9800;">2</button>
+                    <div class="map-node-label" data-i18n="theory-lv2" data-en="Level 2" data-cn="第二关">第二关</div>
+                </div>
+                
+                <div class="map-node-wrapper" style="left: 60%; top: 33%;">
+                    <button class="map-node-btn bounce-3" onclick="openLesson('theory', 3)" style="background: #4CAF50;">3</button>
+                    <div class="map-node-label" data-i18n="theory-lv3" data-en="Level 3" data-cn="第三关">第三关</div>
+                </div>
+                
+                <div class="map-node-wrapper" style="left: 85%; top: 66%;">
+                    <button class="map-node-btn bounce-4" onclick="openLesson('theory', 4)" style="background: #2196F3;">4</button>
+                    <div class="map-node-label" data-i18n="theory-lv4" data-en="Level 4" data-cn="第四关">第四关</div>
+                </div>
+                
+                <div class="map-node-wrapper" style="left: 95%; top: 46%;">
+                    <button class="map-node-btn bounce-5" onclick="openLesson('theory', 5)" style="background: #9C27B0;">5</button>
+                    <div class="map-node-label" data-i18n="theory-lv5" data-en="Level 5" data-cn="第五关">第五关</div>
+                </div>
             </div>
         </section>
 
