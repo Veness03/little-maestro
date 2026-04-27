@@ -417,6 +417,9 @@ let isMetronomePlaying = false;
 
 // --- NAVIGATION ---
 function navigateTo(pageId) {
+    // Sync body attribute for CSS responsive targeting
+    document.body.dataset.activePage = pageId;
+    
     // Close any open mini-games
     closeMiniGame();
 
