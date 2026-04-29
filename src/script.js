@@ -52,11 +52,31 @@ function updateLanguage() {
     }
 }
 
+// --- TIMEOUT REGISTRY for Safe Navigation ---
+const __origSetTimeout = window.setTimeout;
+const __origClearTimeout = window.clearTimeout;
+window._appTimeouts = new Set();
+window.setTimeout = function(fn, ms) {
+    const id = __origSetTimeout(() => {
+        window._appTimeouts.delete(id);
+        fn();
+    }, ms);
+    window._appTimeouts.add(id);
+    return id;
+};
+window.clearTimeout = function(id) {
+    window._appTimeouts.delete(id);
+    __origClearTimeout(id);
+};
+
 // --- SPEECH SERVICE ---
 const SpeechService = {
     synth: window.speechSynthesis,
+    _currentCallback: null,
     speak(text, lang = currentLanguage, callback = null) {
-        if (this.synth.speaking) this.synth.cancel();
+        if (this.synth.speaking) {
+            this.synth.cancel();
+        }
         if (!text) return;
         
         const utterance = new SpeechSynthesisUtterance(text);
@@ -64,13 +84,18 @@ const SpeechService = {
         utterance.rate = 0.9;
         utterance.pitch = 1.1; // Slightly higher, friendly
         
-        if (callback) {
-            utterance.onend = callback;
-        }
+        this._currentCallback = callback;
+        
+        utterance.onend = () => {
+            if (this._currentCallback) {
+                this._currentCallback();
+            }
+        };
         
         this.synth.speak(utterance);
     },
     stop() {
+        this._currentCallback = null;
         this.synth.cancel();
     }
 };
@@ -437,6 +462,13 @@ function navigateTo(pageId) {
     // ALWAYS ensure language is up to date on navigation
     updateLanguage();
 
+    // Clean up all running timeouts to prevent tutorial audio bleeding
+    if (window._appTimeouts) {
+        window._appTimeouts.forEach(id => __origClearTimeout(id));
+        window._appTimeouts.clear();
+    }
+    SpeechService.stop();
+
     // Clean up Vision Singing intervals
     if (window._visionInterval) clearInterval(window._visionInterval);
     if (window._visionTimeouts) window._visionTimeouts.forEach(clearTimeout);
@@ -583,12 +615,19 @@ function setupPiano() {
     });
 
     // Song Controls
-    document.getElementById('play-song-btn').onclick = playCurrentSong;
-    document.getElementById('start-practice-btn').onclick = startPractice;
-    document.getElementById('song-select').onchange = (e) => {
-        stopPractice();
-        currentSong = songs[e.target.value] || null;
-    };
+    const playSongBtn = document.getElementById('play-song-btn');
+    if (playSongBtn) playSongBtn.onclick = playCurrentSong;
+    
+    const startPracBtn = document.getElementById('start-practice-btn');
+    if (startPracBtn) startPracBtn.onclick = startPractice;
+    
+    const songSelect = document.getElementById('song-select');
+    if (songSelect) {
+        songSelect.onchange = (e) => {
+            stopPractice();
+            currentSong = songs[e.target.value] || null;
+        };
+    }
 }
 
 function playCurrentSong() {
@@ -1296,7 +1335,8 @@ window.onload = () => {
     initStarGame();
     displayTrophies();
     
-    document.getElementById('metronome-toggle').onclick = toggleMetronome;
+    const toggleBtn = document.getElementById('metronome-toggle');
+    if (toggleBtn) toggleBtn.onclick = toggleMetronome;
 };
 
 // --- NEW CODE: Level & Lesson Management ---
@@ -1394,26 +1434,37 @@ function renderInteractiveLesson(type, level) {
                     <div id="level1-container" style="position:relative; width:100%;">
                         
                         <!-- TUTORIAL SECTION -->
-                        <div id="l1-tutorial" class="l1-section active">
-                            <div class="l-left">
-                                <div id="l1-staff-area" class="staff-reveal-container" style="display:none; width: 100%;">
-                                    <div class="staff-lines">
-                                        <div class="s-line" id="sl-5"><span class="s-label">Line 5</span></div>
-                                        <div class="s-space" id="sp-4"><span class="s-label">Space 4</span></div>
-                                        <div class="s-line" id="sl-4"><span class="s-label">Line 4</span></div>
-                                        <div class="s-space" id="sp-3"><span class="s-label">Space 3</span></div>
-                                        <div class="s-line" id="sl-3"><span class="s-label">Line 3</span></div>
-                                        <div class="s-space" id="sp-2"><span class="s-label">Space 2</span></div>
-                                        <div class="s-line" id="sl-2"><span class="s-label">Line 2</span></div>
-                                        <div class="s-space" id="sp-1"><span class="s-label">Space 1</span></div>
-                                        <div class="s-line" id="sl-1"><span class="s-label">Line 1</span></div>
-                                    </div>
+                        <div id="l1-tutorial" class="l1-section active" style="flex-direction: column;">
+                            <div class="guide-row">
+                                <div class="guide-cat">🐱</div>
+                                <div class="guide-speech">
+                                    <p id="l1-tutorialText">${currentLanguage==='zh'?'五线谱是由五条线和四个间组成的。':'The staff is made of five lines and four spaces.'}</p>
                                 </div>
-                                <div id="l1-hand-area" class="hand-reveal-container" style="display:none; font-size:180px;">🖐🏼</div>
                             </div>
-                            <div class="l-right">
-                                <h3 style="color:var(--accent-purple); font-size: 2rem;">${tStaff}</h3>
-                                <p style="font-size: 1.2rem; margin-bottom: 20px;">${currentLanguage==='zh'?'五根手指，就像五条线！试试看！':'Five fingers, like five lines! Exploring the staff.'}</p>
+                            
+                            <div id="l1-staff-area" class="staff-display">
+                                <div class="s-line" id="sl-5"></div>
+                                <div class="s-space" id="sp-4"></div>
+                                <div class="s-line" id="sl-4"></div>
+                                <div class="s-space" id="sp-3"></div>
+                                <div class="s-line" id="sl-3"></div>
+                                <div class="s-space" id="sp-2"></div>
+                                <div class="s-line" id="sl-2"></div>
+                                <div class="s-space" id="sp-1"></div>
+                                <div class="s-line" id="sl-1"></div>
+                            </div>
+                            
+                            <div id="l1-hand-area" style="display:none; position:relative; font-size: clamp(120px, 20vw, 200px); text-align: center; margin: 20px auto; width: max-content;">
+                                🖐🏼
+                                <div class="hand-label" style="top: 60%; left: 0%;">1</div>
+                                <div class="hand-label" style="top: 35%; left: 20%;">2</div>
+                                <div class="hand-label" style="top: 25%; left: 40%;">3</div>
+                                <div class="hand-label" style="top: 30%; left: 65%;">4</div>
+                                <div class="hand-label" style="top: 50%; left: 88%;">5</div>
+                            </div>
+                            
+                            <div class="l-action-area" style="text-align: right; margin-top: 20px; width: min(90%, 720px); margin-left: auto; margin-right: auto;">
+                                <p style="font-size: 1.2rem; margin-bottom: 20px;">${currentLanguage==='zh'?'点击开始，听听每条线和每个间的名字！':'Click start to hear the names of the lines and spaces!'}</p>
                                 <button id="l1-btn-start-tut" class="action-btn">▶️ ${currentLanguage==='zh'?'开始讲解':'Start Tutorial'}</button>
                                 <button id="l1-btn-practice" class="action-btn" style="display:none; background:var(--accent-orange);">🎯 ${currentLanguage==='zh'?'去练习':'Practice'}</button>
                             </div>
@@ -1449,17 +1500,21 @@ function renderInteractiveLesson(type, level) {
                                 <div class="hand-drop-board" style="position:relative; font-size:220px;">
                                     🖐🏼
                                     <div class="drop-zone d-f-5" data-accept="line5" style="border-width:6px; background:rgba(255,255,255,0.9);"></div>
+                                    <div class="drop-zone d-f-4" data-accept="line4" style="border-width:6px; background:rgba(255,255,255,0.9);"></div>
+                                    <div class="drop-zone d-f-3" data-accept="line3" style="border-width:6px; background:rgba(255,255,255,0.9);"></div>
+                                    <div class="drop-zone d-f-2" data-accept="line2" style="border-width:6px; background:rgba(255,255,255,0.9);"></div>
                                     <div class="drop-zone d-f-1" data-accept="line1" style="border-width:6px; background:rgba(255,255,255,0.9);"></div>
-                                    <div class="drop-zone d-s-1" data-accept="space1" style="border-width:6px; background:rgba(255,255,255,0.9);"></div>
                                 </div>
                             </div>
                             <div class="l-right">
                                 <h3 style="color:var(--accent-green); font-size:2rem;">🧩 Staff Scramble</h3>
                                 <p style="font-size: 1.1rem; margin-bottom: 20px;">${currentLanguage==='zh'?'把左边的卡片拖到正确的手指上！':'Drag the cards to the correct spot!'}</p>
                                 <div id="l1-drag-pool" style="display:flex; flex-direction:column; gap:15px; width:100%;">
-                                    <div class="drag-item" draggable="true" data-type="line1">1st Line</div>
-                                    <div class="drag-item" draggable="true" data-type="line5">5th Line</div>
-                                    <div class="drag-item" draggable="true" data-type="space1">1st Space</div>
+                                    <div class="drag-item" draggable="true" data-type="line1">${currentLanguage==='zh'?'第一线':'1st Line'}</div>
+                                    <div class="drag-item" draggable="true" data-type="line2">${currentLanguage==='zh'?'第二线':'2nd Line'}</div>
+                                    <div class="drag-item" draggable="true" data-type="line3">${currentLanguage==='zh'?'第三线':'3rd Line'}</div>
+                                    <div class="drag-item" draggable="true" data-type="line4">${currentLanguage==='zh'?'第四线':'4th Line'}</div>
+                                    <div class="drag-item" draggable="true" data-type="line5">${currentLanguage==='zh'?'第五线':'5th Line'}</div>
                                 </div>
                                 <div id="l1-mg-feedback" style="height:40px; font-weight:bold; font-size:1.5rem; margin-top: 20px;"></div>
                             </div>
@@ -1976,79 +2031,80 @@ function attachLessonListeners(type, level) {
         const handArea = document.getElementById('l1-hand-area');
 
         // Tutorial Flow
-        btnStartTut.onclick = () => {
-            btnStartTut.style.display = 'none';
-            staffArea.style.display = 'block';
-            
-            // Turn on lines 1..5
-            let i = 1;
-            const speakNext = () => {
-                if (i <= 5) {
-                    const el = document.getElementById('sl-' + i);
-                    if (el) el.style.backgroundColor = 'var(--accent-red)';
-                    const numWordsEn = ['One', 'Two', 'Three', 'Four', 'Five'];
-                    const numWordsZh = ['一', '二', '三', '四', '五'];
-                    const word = currentLanguage === 'zh' ? numWordsZh[i-1] : numWordsEn[i-1];
-                    
-                    SpeechService.speak(word, currentLanguage, () => {
-                        i++;
-                        setTimeout(speakNext, 300);
-                    });
-                } else {
-                    // Transition to Spaces
-                    setTimeout(() => {
-                        let j = 1;
-                        const speakNextSpace = () => {
-                            if (j <= 4) {
-                                const el = document.getElementById('sp-' + j);
-                                if (el) el.style.backgroundColor = 'rgba(102, 187, 106, 0.5)';
-                                const sWordsEn = ['One', 'Two', 'Three', 'Four'];
-                                const sWordsZh = ['一', '二', '三', '四'];
-                                const word = currentLanguage === 'zh' ? sWordsZh[j-1] : sWordsEn[j-1];
-                                
-                                SpeechService.speak(word, currentLanguage, () => {
-                                    j++;
-                                    setTimeout(speakNextSpace, 300);
-                                });
-                            } else {
-                                // Transition to hand
-                                setTimeout(() => {
-                                    staffArea.style.opacity = '0';
-                                    setTimeout(() => {
-                                        staffArea.style.display = 'none';
-                                        handArea.style.display = 'block';
-                                        
-                                        const hText = currentLanguage === 'zh' ? '五根手指代表五线谱！' : 'Five fingers make the staff!';
-                                        SpeechService.speak(hText, currentLanguage, () => {
-                                            btnPractice.style.display = 'inline-block';
-                                        });
-                                    }, 500);
-                                }, 1000);
-                            }
-                        };
-                        const sIntro = currentLanguage === 'zh' ? '手指之间就是间' : 'Spaces are between the lines';
-                        SpeechService.speak(sIntro, currentLanguage, () => {
-                            setTimeout(speakNextSpace, 300);
+        if (btnStartTut) {
+            btnStartTut.onclick = () => {
+                btnStartTut.style.display = 'none';
+                if(staffArea) staffArea.style.display = 'flex';
+                
+                // Turn on lines 1..5
+                let i = 1;
+                const speakNext = () => {
+                    if (i <= 5) {
+                        const el = document.getElementById('sl-' + i);
+                        if (el) el.style.backgroundColor = 'var(--accent-red)';
+                        const numWordsEn = ['One', 'Two', 'Three', 'Four', 'Five'];
+                        const numWordsZh = ['第一线', '第二线', '第三线', '第四线', '第五线'];
+                        const word = currentLanguage === 'zh' ? numWordsZh[i-1] : 'Line ' + numWordsEn[i-1];
+                        
+                        if (document.getElementById('l1-tutorialText')) document.getElementById('l1-tutorialText').innerText = word;
+                        SpeechService.speak(word, currentLanguage, () => {
+                            i++;
+                            setTimeout(speakNext, 300);
                         });
-                    }, 500);
-                }
+                    } else {
+                        // Transition to Spaces
+                        setTimeout(() => {
+                            let j = 1;
+                            const speakNextSpace = () => {
+                                if (j <= 4) {
+                                    const el = document.getElementById('sp-' + j);
+                                    if (el) el.style.backgroundColor = 'rgba(102, 187, 106, 0.5)';
+                                    const sWordsEn = ['One', 'Two', 'Three', 'Four'];
+                                    const sWordsZh = ['第一间', '第二间', '第三间', '第四间'];
+                                    const word = currentLanguage === 'zh' ? sWordsZh[j-1] : 'Space ' + sWordsEn[j-1];
+                                    
+                                    if (document.getElementById('l1-tutorialText')) document.getElementById('l1-tutorialText').innerText = word;
+                                    SpeechService.speak(word, currentLanguage, () => {
+                                        j++;
+                                        setTimeout(speakNextSpace, 300);
+                                    });
+                                } else {
+                                    // Transition to hand
+                                    setTimeout(() => {
+                                        if(handArea) handArea.style.display = 'block';
+                                        
+                                        const hText = currentLanguage === 'zh' ? '五根手指就像五条线！大拇指是第一线！' : 'Five fingers make the staff. The thumb is Line 1!';
+                                        if(document.getElementById('l1-tutorialText')) document.getElementById('l1-tutorialText').innerText = hText;
+                                        SpeechService.speak(hText, currentLanguage, () => {
+                                            if (btnPractice) btnPractice.style.display = 'inline-block';
+                                        });
+                                    }, 1000);
+                                }
+                            };
+                            const sIntro = currentLanguage === 'zh' ? '手指之间就是间' : 'Spaces are between the lines';
+                            SpeechService.speak(sIntro, currentLanguage, () => {
+                                setTimeout(speakNextSpace, 300);
+                            });
+                        }, 500);
+                    }
+                };
+                speakNext();
             };
-            speakNext();
-        };
+        }
 
         // Practice Flow
         let currentPracTarget = 'line3';
         let pracStars = 0;
         const labels = {
-            line1: currentLanguage==='zh'?'第 1 线':'1st Line',
-            line2: currentLanguage==='zh'?'第 2 线':'2nd Line',
-            line3: currentLanguage==='zh'?'第 3 线':'3rd Line',
-            line4: currentLanguage==='zh'?'第 4 线':'4th Line',
-            line5: currentLanguage==='zh'?'第 5 线':'5th Line',
-            space1: currentLanguage==='zh'?'第 1 间':'1st Space',
-            space2: currentLanguage==='zh'?'第 2 间':'2nd Space',
-            space3: currentLanguage==='zh'?'第 3 间':'3rd Space',
-            space4: currentLanguage==='zh'?'第 4 间':'4th Space'
+            line1: currentLanguage==='zh'?'第一线':'1st Line',
+            line2: currentLanguage==='zh'?'第二线':'2nd Line',
+            line3: currentLanguage==='zh'?'第三线':'3rd Line',
+            line4: currentLanguage==='zh'?'第四线':'4th Line',
+            line5: currentLanguage==='zh'?'第五线':'5th Line',
+            space1: currentLanguage==='zh'?'第一间':'1st Space',
+            space2: currentLanguage==='zh'?'第二间':'2nd Space',
+            space3: currentLanguage==='zh'?'第三间':'3rd Space',
+            space4: currentLanguage==='zh'?'第四间':'4th Space'
         };
 
         const updatePrac = () => {
@@ -2058,13 +2114,15 @@ function attachLessonListeners(type, level) {
             document.getElementById('l1-prac-prompt').innerText = promptStr + labels[currentPracTarget];
         };
 
-        btnPractice.onclick = () => {
-            tutArea.style.display = 'none';
-            pracArea.style.display = 'block';
-            updatePrac();
-            // Start practicing instruction
-            SpeechService.speak(document.getElementById('l1-prac-prompt').innerText);
-        };
+        if (btnPractice) {
+            btnPractice.onclick = () => {
+                if(tutArea) tutArea.style.display = 'none';
+                if(pracArea) pracArea.style.display = 'block';
+                updatePrac();
+                // Start practicing instruction
+                SpeechService.speak(document.getElementById('l1-prac-prompt').innerText);
+            };
+        }
 
         document.querySelectorAll('.prac-target').forEach(el => {
             el.onclick = () => {
@@ -2092,11 +2150,13 @@ function attachLessonListeners(type, level) {
         });
 
         // Minigame Flow (Staff Scramble)
-        btnMinigame.onclick = () => {
-            pracArea.style.display = 'none';
-            mgArea.style.display = 'block';
-            initMinigame();
-        };
+        if (btnMinigame) {
+            btnMinigame.onclick = () => {
+                if(pracArea) pracArea.style.display = 'none';
+                if(mgArea) mgArea.style.display = 'block';
+                initMinigame();
+            };
+        }
 
         function initMinigame() {
             // Drag and Drop Logic
@@ -2130,7 +2190,7 @@ function attachLessonListeners(type, level) {
                         document.querySelector(`.drag-item[data-type="${type}"]`).style.visibility = 'hidden';
                         
                         matchedFound++;
-                        if (matchedFound >= 3) {
+                        if (matchedFound >= 5) {
                             ProgressService.updateStars('theory', 1, 3);
                             fb.innerText = currentLanguage==='zh'?'任务完成！获得3颗星！':'Quest Complete! 3 Stars!';
                         }
