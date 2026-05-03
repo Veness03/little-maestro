@@ -164,7 +164,7 @@ function initVisualEffects() {
         note.style.transform = `rotate(${Math.random() * 360}deg)`;
         bg.appendChild(note);
         
-        setTimeout(() => note.remove(), 25000);
+        __origSetTimeout(() => note.remove(), 25000);
     }, 1500);
 
     // Global Click Listener for Sounds & Sparkles
@@ -190,7 +190,7 @@ function createSparkle(x, y) {
         sparkle.style.setProperty('--dx', (Math.random() - 0.5) * 100 + 'px');
         sparkle.style.setProperty('--dy', (Math.random() - 0.5) * 100 + 'px');
         document.body.appendChild(sparkle);
-        setTimeout(() => sparkle.remove(), 800);
+        __origSetTimeout(() => sparkle.remove(), 800);
     }
 }
 
@@ -1423,6 +1423,7 @@ function openLesson(type, level, withConfetti = true, skipNav = false) {
     
     // Attach event listeners for the specific lesson
     attachLessonListeners(type, level);
+
 }
 
 function renderInteractiveLesson(type, level) {
@@ -1466,6 +1467,7 @@ function renderInteractiveLesson(type, level) {
                             <div class="l-action-area" style="text-align: right; margin-top: 20px; width: min(90%, 720px); margin-left: auto; margin-right: auto;">
                                 <p style="font-size: 1.2rem; margin-bottom: 20px;">${currentLanguage==='zh'?'点击开始，听听每条线和每个间的名字！':'Click start to hear the names of the lines and spaces!'}</p>
                                 <button id="l1-btn-start-tut" class="action-btn">▶️ ${currentLanguage==='zh'?'开始讲解':'Start Tutorial'}</button>
+                                <button id="l1-btn-skip" class="action-btn skip-btn-dynamic" style="display:none; background:var(--accent-orange); margin-right: 10px;">⏭ ${currentLanguage==='zh'?'跳过讲解':'Skip'}</button>
                                 <button id="l1-btn-practice" class="action-btn" style="display:none; background:var(--accent-orange);">🎯 ${currentLanguage==='zh'?'去练习':'Practice'}</button>
                             </div>
                         </div>
@@ -1539,6 +1541,7 @@ function renderInteractiveLesson(type, level) {
                                 <h3 style="color:var(--accent-purple); font-size:2rem;">${ttNote}</h3>
                                 <p style="font-size:1.2rem; margin-bottom:20px;">${currentLanguage==='zh'?'音符有不同的形状和长短！':'Notes have different shapes and lengths!'}</p>
                                 <button id="l2-btn-start-tut" class="action-btn">▶️ ${currentLanguage==='zh'?'开始讲解':'Start Tutorial'}</button>
+                                <button id="l2-btn-skip" class="action-btn skip-btn-dynamic" style="display:none; background:var(--accent-orange); margin-right: 10px;">⏭ ${currentLanguage==='zh'?'跳过讲解':'Skip'}</button>
                                 <button id="l2-btn-practice" class="action-btn" style="display:none; background:var(--accent-orange);">🎯 ${currentLanguage==='zh'?'去尝试':'Try it!'}</button>
                             </div>
                         </div>
@@ -1619,6 +1622,7 @@ function renderInteractiveLesson(type, level) {
                                 <h3 style="color:var(--accent-purple); font-size:2rem;">${ttDur}</h3>
                                 <p style="font-size:1.2rem; margin-bottom:20px;">${currentLanguage==='zh'?'长长的？还是短短的？':'Long or short?'}</p>
                                 <button id="l3-btn-start-tut" class="action-btn">▶️ ${currentLanguage==='zh'?'开始讲解':'Start Tutorial'}</button>
+                                <button id="l3-btn-skip" class="action-btn skip-btn-dynamic" style="display:none; background:var(--accent-orange); margin-right: 10px;">⏭ ${currentLanguage==='zh'?'跳过讲解':'Skip'}</button>
                                 <button id="l3-btn-practice" class="action-btn" style="display:none; background:var(--accent-orange);">🎯 ${currentLanguage==='zh'?'去尝试':'Try it!'}</button>
                             </div>
                         </div>
@@ -1681,6 +1685,7 @@ function renderInteractiveLesson(type, level) {
                                 <h3 style="color:var(--accent-purple); font-size:2rem;">${ttSym}</h3>
                                 <p style="font-size:1.2rem; margin-bottom:20px;">${currentLanguage==='zh'?'这是音乐的魔法符号！':'These are musical magic symbols!'}</p>
                                 <button id="l4-btn-start-tut" class="action-btn">▶️ ${currentLanguage==='zh'?'开始讲解':'Start Tutorial'}</button>
+                                <button id="l4-btn-skip" class="action-btn skip-btn-dynamic" style="display:none; background:var(--accent-orange); margin-right: 10px;">⏭ ${currentLanguage==='zh'?'跳过讲解':'Skip'}</button>
                                 <button id="l4-btn-practice" class="action-btn" style="display:none; background:var(--accent-orange);">🎯 ${currentLanguage==='zh'?'去尝试':'Try it!'}</button>
                             </div>
                         </div>
@@ -1768,6 +1773,7 @@ function renderInteractiveLesson(type, level) {
                                 <h3 style="color:var(--accent-purple); font-size:2rem;">${ttMeas}</h3>
                                 <p style="font-size:1.2rem; margin-bottom:20px;">${currentLanguage==='zh'?'音乐也有房间！就像火车车厢！':'Music has rooms! Like train cars!'}</p>
                                 <button id="l5-btn-start-tut" class="action-btn">▶️ ${currentLanguage==='zh'?'开始讲解':'Start Tutorial'}</button>
+                                <button id="l5-btn-skip" class="action-btn skip-btn-dynamic" style="display:none; background:var(--accent-orange); margin-right: 10px;">⏭ ${currentLanguage==='zh'?'跳过讲解':'Skip'}</button>
                                 <button id="l5-btn-practice" class="action-btn" style="display:none; background:var(--accent-orange);">🎯 ${currentLanguage==='zh'?'去尝试':'Try it!'}</button>
                             </div>
                         </div>
@@ -1831,6 +1837,7 @@ function renderInteractiveLesson(type, level) {
                                 <h3 style="color:var(--accent-purple); font-size:2rem;">${currentLanguage==='zh'?'发出声音':'Make a Sound'}</h3>
                                 <p style="font-size:1.2rem; margin-bottom:20px;">${currentLanguage==='zh'?'你能唱出相同的声音吗？':'Can you match the pitch?'}</p>
                                 <button id="v1-btn-start-tut" class="action-btn">▶️ ${currentLanguage==='zh'?'开始讲解':'Start Tutorial'}</button>
+                                <button id="v1-btn-skip" class="action-btn skip-btn-dynamic" style="display:none; background:var(--accent-orange); margin-right: 10px;">⏭ ${currentLanguage==='zh'?'跳过讲解':'Skip'}</button>
                                 <button id="v1-btn-practice" class="action-btn" style="display:none; background:var(--accent-orange);">🎯 ${currentLanguage==='zh'?'去尝试':'Try it!'}</button>
                             </div>
                         </div>
@@ -1870,6 +1877,7 @@ function renderInteractiveLesson(type, level) {
                                 <h3 style="color:var(--accent-purple); font-size:2rem;">${currentLanguage==='zh'?'音乐记忆':'Melody Memory'}</h3>
                                 <p style="font-size:1.2rem; margin-bottom:20px;">${currentLanguage==='zh'?'像音乐鹦鹉一样模仿！':'Repeat like a musical parrot!'}</p>
                                 <button id="v2-btn-start-tut" class="action-btn">▶️ ${currentLanguage==='zh'?'开始讲解':'Start Tutorial'}</button>
+                                <button id="v2-btn-skip" class="action-btn skip-btn-dynamic" style="display:none; background:var(--accent-orange); margin-right: 10px;">⏭ ${currentLanguage==='zh'?'跳过讲解':'Skip'}</button>
                                 <button id="v2-btn-practice" class="action-btn" style="display:none; background:var(--accent-orange);">🎯 ${currentLanguage==='zh'?'去尝试':'Try it!'}</button>
                             </div>
                         </div>
@@ -1909,6 +1917,7 @@ function renderInteractiveLesson(type, level) {
                                 <h3 style="color:var(--accent-red); font-size:2rem;">❤️ ${currentLanguage === 'zh' ? '稳定的心跳' : 'Steady Heartbeat'}</h3>
                                 <p style="font-size:1.2rem; margin-bottom:20px;">${currentLanguage === 'zh' ? '音乐和心跳一样，有稳定的节奏哦！' : 'Music has a steady beat, just like your heart!'}</p>
                                 <button id="v3-btn-start-tut" class="action-btn">▶️ ${currentLanguage==='zh'?'开始讲解':'Start Tutorial'}</button>
+                                <button id="v3-btn-skip" class="action-btn skip-btn-dynamic" style="display:none; background:var(--accent-orange); margin-right: 10px;">⏭ ${currentLanguage==='zh'?'跳过讲解':'Skip'}</button>
                                 <button id="v3-btn-practice" class="action-btn" style="display:none; background:var(--accent-orange);">🎯 ${currentLanguage==='zh'?'去尝试':'Try it!'}</button>
                             </div>
                         </div>
@@ -1944,6 +1953,7 @@ function renderInteractiveLesson(type, level) {
                                 <h3 style="color:var(--accent-blue); font-size:2rem;">🎶 ${currentLanguage === 'zh' ? '多变的节奏' : 'Varied Rhythm'}</h3>
                                 <p style="font-size:1.2rem; margin-bottom:20px;">${currentLanguage === 'zh' ? '有时候快，有时候慢！' : 'Sometimes fast, sometimes slow!'}</p>
                                 <button id="v4-btn-start-tut" class="action-btn">▶️ ${currentLanguage==='zh'?'开始讲解':'Start Tutorial'}</button>
+                                <button id="v4-btn-skip" class="action-btn skip-btn-dynamic" style="display:none; background:var(--accent-orange); margin-right: 10px;">⏭ ${currentLanguage==='zh'?'跳过讲解':'Skip'}</button>
                                 <button id="v4-btn-practice" class="action-btn" style="display:none; background:var(--accent-orange);">🎯 ${currentLanguage==='zh'?'去尝试':'Try it!'}</button>
                             </div>
                         </div>
@@ -1986,6 +1996,7 @@ function renderInteractiveLesson(type, level) {
                                 <h3 style="color:var(--accent-purple); font-size:2rem;">⭐ ${currentLanguage === 'zh' ? '星光节拍' : 'Star catching beat'}</h3>
                                 <p style="font-size:1.2rem; margin-bottom:20px;">${currentLanguage === 'zh' ? '在星星落在底线时按下鼓！' : 'Tap the drum when the star hits the line!'}</p>
                                 <button id="v5-btn-start-tut" class="action-btn">▶️ ${currentLanguage==='zh'?'开始讲解':'Start Tutorial'}</button>
+                                <button id="v5-btn-skip" class="action-btn skip-btn-dynamic" style="display:none; background:var(--accent-orange); margin-right: 10px;">⏭ ${currentLanguage==='zh'?'跳过讲解':'Skip'}</button>
                                 <button id="v5-btn-practice" class="action-btn" style="display:none; background:var(--accent-orange);">🎯 ${currentLanguage==='zh'?'去尝试':'Try it!'}</button>
                             </div>
                         </div>
@@ -3543,6 +3554,38 @@ function attachLessonListeners(type, level) {
                 });
             };
         }
+    }
+
+    const prefix = (type === 'theory' ? 'l' : 'v') + level;
+    const btnStartTutDyn = document.getElementById(prefix + '-btn-start-tut');
+    const btnSkipDyn = document.getElementById(prefix + '-btn-skip');
+    const btnPracticeDyn = document.getElementById(prefix + '-btn-practice');
+    
+    if (btnStartTutDyn && btnSkipDyn && btnPracticeDyn) {
+        btnStartTutDyn.addEventListener('click', () => {
+            btnSkipDyn.style.display = 'inline-block';
+        });
+        
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.attributeName === 'style') {
+                    if (btnPracticeDyn.style.display !== 'none') {
+                        btnSkipDyn.style.display = 'none';
+                    }
+                }
+            });
+        });
+        observer.observe(btnPracticeDyn, { attributes: true });
+
+        btnSkipDyn.onclick = () => {
+            btnSkipDyn.style.display = 'none';
+            if (window._appTimeouts) {
+                window._appTimeouts.forEach(id => __origClearTimeout(id));
+                window._appTimeouts.clear();
+            }
+            SpeechService.stop();
+            btnPracticeDyn.style.display = 'inline-block';
+        };
     }
 }
 
