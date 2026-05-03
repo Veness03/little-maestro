@@ -40,24 +40,8 @@ body {
     flex-direction: column;
 }
 
-/* Force Landscape Suggestion/Layout */
-@media (orientation: portrait) {
-    #app-container::before {
-        content: "Please rotate your device for the best experience 🎵";
-        position: fixed;
-        top: 0; left: 0; width: 100%; height: 100%;
-        background: var(--accent-blue);
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-        font-size: 2rem;
-        font-weight: 800;
-        text-align: center;
-        padding: 40px;
-    }
-}
+
+
 
 .lesson-container {
     flex: 1;
@@ -766,8 +750,8 @@ header {
 /* PREMIUM ARCADE PAGE UI */
 .arcade-page {
     position: relative;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     min-height: 600px;
     overflow: hidden;
     margin: 0;
@@ -1583,7 +1567,7 @@ body {
 }
 
 .ambient-bg {
-    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     pointer-events: none; z-index: -1; overflow: hidden;
 }
 
@@ -3150,8 +3134,8 @@ body {
 .landing-premium-page {
     background: transparent !important;
     position: relative;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     min-height: 600px;
     overflow: hidden;
     margin: 0;
@@ -3590,47 +3574,7 @@ h2 {
     overflow-y: auto;
 }
 
-/* --------------------------------- */
-/* Landscape Suggestion Banner       */
-/* --------------------------------- */
-.landscape-suggestion {
-    display: none !important;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background: linear-gradient(135deg, #FFB74D, #FF9800);
-    color: #fff;
-    text-align: center;
-    padding: env(safe-area-inset-top, 15px) 15px 15px;
-    font-weight: 800;
-    font-family: var(--font-main);
-    z-index: 10000;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    font-size: 1.2rem;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-}
 
-/* Only show suggestion entirely on lesson pages when portrait */
-@media (orientation: portrait) and (max-height: 1024px) {
-    body[data-active-page="lesson-page"] .landscape-suggestion,
-    body[data-active-page="pitch-game"] .landscape-suggestion,
-    body[data-active-page="piano-practice"] .landscape-suggestion,
-    body[data-active-page="rhythm-practice"] .landscape-suggestion,
-    body[data-active-page="rhythm-star-catch"] .landscape-suggestion {
-        display: flex !important;
-    }
-
-    body[data-active-page="lesson-page"] #app-container,
-    body[data-active-page="pitch-game"] #app-container,
-    body[data-active-page="piano-practice"] #app-container,
-    body[data-active-page="rhythm-practice"] #app-container,
-    body[data-active-page="rhythm-star-catch"] #app-container {
-        margin-top: 60px !important; /* adjust for banner */
-    }
-}
 
 /* --------------------------------- */
 /* GRID RESPONSIVENESS               */
@@ -3795,5 +3739,43 @@ h2 {
 @media (max-width: 600px) {
     .symbol-card {
         flex: 1 1 calc(50% - 10px) !important;
+    }
+}
+
+/* Force Landscape Layout for Mobile Portrait */
+@media screen and (orientation: portrait) {
+    html {
+        overflow: hidden !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        position: fixed !important;
+        max-width: 100vw !important;
+        max-height: 100vh !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    body {
+        overflow: hidden !important;
+        position: absolute !important;
+        transform: rotate(90deg) !important;
+        transform-origin: top left !important;
+        width: 100vh !important;
+        height: 100vw !important;
+        max-width: 100vh !important;
+        max-height: 100vw !important;
+        top: 0 !important;
+        left: 100vw !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    #app-container {
+        width: 100vh !important;
+        height: 100vw !important;
+        max-width: none !important;
+        max-height: none !important;
+        margin: 0 !important;
+        position: relative;
     }
 }
