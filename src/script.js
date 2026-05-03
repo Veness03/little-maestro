@@ -596,6 +596,35 @@ function playNote(freq, duration = 0.5) {
     oscillator.stop(audioCtx.currentTime + duration);
 }
 
+function playClap(timeOffset = 0) {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const time = audioCtx.currentTime + timeOffset;
+    
+    const bufferSize = audioCtx.sampleRate * 0.1; // 100ms duration
+    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+    }
+    
+    const noiseSource = audioCtx.createBufferSource();
+    noiseSource.buffer = buffer;
+    
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.value = 1000;
+    
+    const gainNode = audioCtx.createGain();
+    gainNode.gain.setValueAtTime(1, time);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, time + 0.1);
+    
+    noiseSource.connect(filter);
+    filter.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    noiseSource.start(time);
+}
+
 // --- PIANO GENERATION & PRACTICE ---
 const songs = {
     twinkle: ['C', 'C', 'G', 'G', 'A', 'A', 'G', 'F', 'F', 'E', 'E', 'D', 'D', 'C'],
@@ -1375,8 +1404,8 @@ const lessonData = {
             zh: { title: "第一关: 认识五线谱", content: "五线谱是由五条横线组成的。点击线条来找找它们的名字吧！" }
         },
         2: { 
-            en: { title: "Level 2: Meet the Notes", content: "Notes are like dancing spirits. Click them to hear their voices!" },
-            zh: { title: "第二关: 认识音符", content: "音符就像是跳舞的小精灵。点击它们来听听它们的声音吧！" }
+            en: { title: "Level 2: Note Anatomy", content: "Notes have two main parts: a head and a stem!" },
+            zh: { title: "第二关: 音符的结构", content: "音符有两个主要部分：符头和符杆！" }
         },
         3: { 
             en: { title: "Level 3: Names and Values", content: "How long is a note? Click each note to see its rhythm in action!" },
@@ -1547,21 +1576,26 @@ function renderInteractiveLesson(type, level) {
                     </div>
                 `;
             case 2:
-                const ttNote = currentLanguage === 'zh' ? '认识好朋友：音符' : 'Meet the Notes';
+                const ttNote = currentLanguage === 'zh' ? '音符的结构' : 'Note Anatomy';
                 return `
                     <div id="level2-container" style="position:relative; width:100%; min-height:400px;">
                         
                         <!-- TUTORIAL SECTION -->
                         <div id="l2-tutorial" class="l2-section active">
                             <div class="l-left">
-                                <div id="l2-tut-stage" style="display:none; text-align:center; padding: 20px;">
-                                    <div id="l2-tut-note-img" style="font-size:120px; transition: transform 0.3s; margin-bottom: 20px;"></div>
-                                    <div id="l2-tut-text" style="font-weight:bold; font-size:2rem; color:var(--accent-blue); height: 60px;"></div>
+                                <div id="l2-tut-stage" style="display:none; text-align:center; padding: 20px; width:100%;">
+                                    <div style="background:var(--white); border-radius:30px; padding:30px; max-width:250px; margin:0 auto; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 3px solid var(--color-bg-alt);">
+                                        <svg width="150" height="220" viewBox="0 0 100 150" style="overflow:visible;">
+                                            <rect id="tut-note-stem" x="65" y="20" width="8" height="90" fill="var(--color-bg-alt)" rx="4" style="transition:all 0.4s cubic-bezier(0.4, 0, 0.2, 1);" />
+                                            <ellipse id="tut-note-head" cx="45" cy="105" rx="28" ry="18" fill="var(--color-bg-alt)" transform="rotate(-25 45 105)" style="transition:all 0.4s cubic-bezier(0.4, 0, 0.2, 1);" />
+                                        </svg>
+                                    </div>
+                                    <div id="l2-tut-text" style="font-weight:900; font-size:2.5rem; color:var(--text-main); min-height:80px; margin-top:30px; display:flex; align-items:center; justify-content:center;"></div>
                                 </div>
                             </div>
                             <div class="l-right">
                                 <h3 style="color:var(--accent-purple); font-size:2rem;">${ttNote}</h3>
-                                <p style="font-size:1.2rem; margin-bottom:20px;">${currentLanguage==='zh'?'音符有不同的形状和长短！':'Notes have different shapes and lengths!'}</p>
+                                <p style="font-size:1.2rem; margin-bottom:20px;" id="l2-tutorialText">${currentLanguage==='zh'?'音符宝宝有两个主要部分！':'Notes have two main parts!'}</p>
                                 <button id="l2-btn-start-tut" class="action-btn">▶️ ${currentLanguage==='zh'?'开始讲解':'Start Tutorial'}</button>
                                 <button id="l2-btn-skip" class="action-btn skip-btn-dynamic" style="display:none; background:var(--accent-orange); margin-right: 10px;">⏭ ${currentLanguage==='zh'?'跳过讲解':'Skip'}</button>
                                 <button id="l2-btn-practice" class="action-btn" style="display:none; background:var(--accent-orange);">🎯 ${currentLanguage==='zh'?'去尝试':'Try it!'}</button>
@@ -1570,51 +1604,44 @@ function renderInteractiveLesson(type, level) {
 
                         <!-- PRACTICE SECTION -->
                         <div id="l2-practice" class="l2-section" style="display:none;">
-                            <div class="l-left" style="flex-direction:column; gap:20px;">
-                                <div class="notes-showcase" style="display:flex; justify-content:center; gap:20px; flex-wrap:wrap; width:100%;">
-                                    <div class="note-card" data-note="whole" data-freq="261" data-time="4">
-                                        <div class="note-symbol n-whole" style="font-size: 60px;">${getNoteSVG('whole')}</div>
-                                        <span class="note-name">${currentLanguage === 'zh' ? '全音符' : 'Whole Note'}</span>
-                                        <span class="note-desc">${currentLanguage === 'zh' ? '长长的 (4拍)' : 'Very Long (4 Beats)'}</span>
-                                        <div class="note-progress-bg"><div class="note-progress-fill"></div></div>
-                                    </div>
-                                    <div class="note-card" data-note="half" data-freq="329" data-time="2">
-                                        <div class="note-symbol n-half" style="font-size: 60px;">${getNoteSVG('half')}</div>
-                                        <span class="note-name">${currentLanguage === 'zh' ? '二分音符' : 'Half Note'}</span>
-                                        <span class="note-desc">${currentLanguage === 'zh' ? '中等长 (2拍)' : 'Medium Long (2 Beats)'}</span>
-                                        <div class="note-progress-bg"><div class="note-progress-fill"></div></div>
-                                    </div>
-                                    <div class="note-card" data-note="quarter" data-freq="392" data-time="1">
-                                        <div class="note-symbol n-quarter" style="font-size: 60px;">${getNoteSVG('quarter')}</div>
-                                        <span class="note-name">${currentLanguage === 'zh' ? '四分音符' : 'Quarter Note'}</span>
-                                        <span class="note-desc">${currentLanguage === 'zh' ? '短短的 (1拍)' : 'Short (1 Beat)'}</span>
-                                        <div class="note-progress-bg"><div class="note-progress-fill"></div></div>
-                                    </div>
-                                    <div class="note-card" data-note="eighth" data-freq="523" data-time="0.5">
-                                        <div class="note-symbol n-eighth" style="font-size: 60px;">${getNoteSVG('eighth')}</div>
-                                        <span class="note-name">${currentLanguage === 'zh' ? '八分音符' : 'Eighth Note'}</span>
-                                        <span class="note-desc">${currentLanguage === 'zh' ? '跑得快 (半拍)' : 'Very Fast (1/2)'}</span>
-                                        <div class="note-progress-bg"><div class="note-progress-fill"></div></div>
-                                    </div>
+                            <div class="l-left" style="align-items:center; justify-content:center;">
+                                <div style="position:relative; width:200px; height:250px; background:#fff; border-radius:20px; box-shadow:0 8px 20px rgba(0,0,0,0.1); display:flex; align-items:center; justify-content:center;">
+                                    <svg width="150" height="200" viewBox="0 0 100 150" style="overflow:visible;">
+                                        <rect id="prac-note-stem" class="prac-target-note" data-ans="stem" x="65" y="20" width="8" height="90" fill="var(--text-main)" rx="4" style="cursor:pointer; transition:all 0.2s;" />
+                                        <ellipse id="prac-note-head" class="prac-target-note" data-ans="head" cx="45" cy="105" rx="28" ry="18" fill="var(--text-main)" transform="rotate(-25 45 105)" style="cursor:pointer; transition:all 0.2s;" />
+                                    </svg>
                                 </div>
                             </div>
                             <div class="l-right">
-                                <h3 style="color:var(--accent-green); font-size:2rem;">${currentLanguage==='zh'?'点击音符发声':'Tap Notes to Play'}</h3>
-                                <div id="note-info-text" style="font-weight: 800; font-size:1.2rem; color: var(--accent-purple); margin: 20px 0;"></div>
-                                <button id="l2-btn-minigame" class="action-btn" style="background:var(--accent-purple);">🎮 ${currentLanguage==='zh'?'玩小游戏':'Mini Game'}</button>
+                                <h3 id="l2-prac-prompt" style="color:var(--accent-blue); font-size: 2rem;">Which is the Head?</h3>
+                                <p style="font-size: 1.1rem; margin-bottom: 20px;">${currentLanguage==='zh'?'点击正确的部位！':'Tap the correct part!'}</p>
+                                <div id="l2-prac-feedback" style="height:40px; font-weight:bold; font-size:1.5rem; color:var(--accent-red);"></div>
+                                <button id="l2-btn-minigame" class="action-btn" style="display:none; background:var(--accent-purple);">🎮 ${currentLanguage==='zh'?'玩小游戏':'Mini Game'}</button>
                             </div>
                         </div>
 
                         <!-- MINIGAME SECTION -->
                         <div id="l2-minigame" class="l2-section" style="display:none;">
                             <div class="l-left">
-                                <div id="note-quiz-options" class="note-options" style="display:flex; justify-content:center; gap:30px;"></div>
+                                <div style="display:flex; flex-direction:column; align-items:center; width:100%; gap: 20px;">
+                                    <div style="display:flex; gap: 30px; margin-top:20px; align-items:flex-end; justify-content:center; width:100%; height:120px;">
+                                        <div class="drag-item" draggable="true" data-type="stem" style="width: 20px; height: 120px; background: var(--accent-blue); border-radius: 10px; cursor:grab;"></div>
+                                        <div class="drag-item" draggable="true" data-type="head" style="width: 85px; height: 60px; background: var(--accent-red); border-radius: 50%; transform: rotate(-25deg); cursor:grab;"></div>
+                                    </div>
+                                    
+                                    <div style="margin-top: 30px; position: relative; width: 180px; height: 230px; border: 4px dashed #ccc; border-radius: 20px; background:#fafafa; margin-left:auto; margin-right:auto;">
+                                        <div class="drop-zone l2-dz-stem" data-accept="stem" style="position:absolute; top: 15px; left: 106px; width:26px; height:130px; border:3px dashed var(--accent-blue); border-radius:13px;"></div>
+                                        <div class="drop-zone l2-dz-head" data-accept="head" style="position:absolute; top: 125px; left: 25px; width:100px; height:70px; border:3px dashed var(--accent-red); border-radius:50%; transform: rotate(-25deg);"></div>
+                                        
+                                        <div id="mg-built-stem" style="display:none; position:absolute; top:20px; left: 112px; width: 14px; height: 120px; background: var(--accent-blue); border-radius: 7px; z-index:1;"></div>
+                                        <div id="mg-built-head" style="display:none; position:absolute; top: 130px; left: 30px; width: 90px; height: 60px; background: var(--accent-red); border-radius: 50%; transform: rotate(-25deg); z-index:2;"></div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="l-right">
-                                <h3 id="note-game-title" style="font-size:2rem;">🎯 ${currentLanguage === 'zh' ? '找音符' : 'Find the Note!'}</h3>
-                                <p id="note-quiz-prompt" style="font-weight:800; font-size:1.2rem; margin-bottom:10px;"></p>
-                                <div id="note-quiz-btn-play" class="action-btn" style="display:none; margin-bottom:15px;">🔊 ${currentLanguage === 'zh' ? '播放声音' : 'Play Sound'}</div>
-                                <div id="note-quiz-feedback" style="height:40px; font-weight:800; font-size: 1.5rem;"></div>
+                                <h3 id="note-game-title" style="font-size:2rem; color:var(--accent-green);">🎯 ${currentLanguage === 'zh' ? '拼装音符' : 'Build a Note!'}</h3>
+                                <p style="font-weight:800; font-size:1.2rem; margin-bottom:10px;">${currentLanguage==='zh'?'拖动符头和符杆，拼成一个完整的音符！':'Drag the Head and Stem into the box to build a note!'}</p>
+                                <div id="l2-mg-feedback" style="height:40px; font-weight:800; font-size: 1.5rem; color:var(--accent-green);"></div>
                             </div>
                         </div>
 
@@ -2237,204 +2264,159 @@ function attachLessonListeners(type, level) {
         }
     }
     if (type === 'theory' && level == 2) {
-        
         const btnStartTut = document.getElementById('l2-btn-start-tut');
         const btnPracticeBtn = document.getElementById('l2-btn-practice');
         const btnMinigame = document.getElementById('l2-btn-minigame');
         const tutArea = document.getElementById('l2-tutorial');
         const pracArea = document.getElementById('l2-practice');
         const mgArea = document.getElementById('l2-minigame');
+        
         const tutStage = document.getElementById('l2-tut-stage');
-        const tutImg = document.getElementById('l2-tut-note-img');
+        const tutStem = document.getElementById('tut-note-stem');
+        const tutHead = document.getElementById('tut-note-head');
         const tutText = document.getElementById('l2-tut-text');
 
-        const noteDefs = [
-            { id: 'whole', freq: 261, time: 4, nameEn: 'Whole Note', nameZh: '全音符', descEn: "It is very long", descZh: "它声音长长的" },
-            { id: 'half', freq: 329, time: 2, nameEn: 'Half Note', nameZh: '二分音符', descEn: "It is a bit long", descZh: "它声音有点长" },
-            { id: 'quarter', freq: 392, time: 1, nameEn: 'Quarter Note', nameZh: '四分音符', descEn: "It is short", descZh: "它短促" },
-            { id: 'eighth', freq: 523, time: 0.5, nameEn: 'Eighth Note', nameZh: '八分音符', descEn: "It is very fast", descZh: "它跑得很快" }
-        ];
-
         // Tutorial Flow
-        btnStartTut.onclick = () => {
-            btnStartTut.style.display = 'none';
-            tutStage.style.display = 'block';
+        if (btnStartTut) {
+            btnStartTut.onclick = () => {
+                btnStartTut.style.display = 'none';
+                tutStage.style.display = 'block';
 
-            let step = 0;
-            const runStep = () => {
-                if (step < noteDefs.length) {
-                    const nd = noteDefs[step];
-                    tutImg.innerHTML = getNoteSVG(nd.id);
-                    tutImg.style.transform = 'scale(1.2)';
+                const speechText1 = currentLanguage === 'zh' ? '这是符头，圆圆的像个小脑袋' : 'This is the note head, round and plump!';
+                const speechText2 = currentLanguage === 'zh' ? '这是符杆，直直的像根小拐杖' : 'This is the note stem, straight and tall!';
+                
+                // Animate Head
+                tutHead.style.fill = 'var(--accent-red)';
+                tutHead.style.transform = 'rotate(-20deg) scale(1.2) translate(-5px, -5px)';
+                tutText.innerHTML = `<span style="color:var(--accent-red); background:var(--bg-main); padding: 5px 20px; border-radius: 20px; border: 3px solid var(--accent-red);">${currentLanguage === 'zh' ? '符头 (Note Head)' : 'Note Head'}</span>`;
+                
+                SoundService.playSuccess();
+                SpeechService.speak(speechText1, currentLanguage, () => {
+                    tutHead.style.fill = 'var(--text-main)';
+                    tutHead.style.transform = 'rotate(-20deg) scale(1)';
+                    tutText.innerHTML = '';
                     
-                    const name = currentLanguage === 'zh' ? nd.nameZh : nd.nameEn;
-                    const desc = currentLanguage === 'zh' ? nd.descZh : nd.descEn;
-                    tutText.innerText = name;
-                    
-                    SoundService.playSuccess(); // little pop
-                    playNote(nd.freq, Math.min(nd.time, 1.5));
-
-                    setTimeout(() => { tutImg.style.transform = 'scale(1)'; }, 200);
-
-                    // Speak name then desc
-                    SpeechService.speak(name + "... " + desc, currentLanguage, () => {
-                        step++;
-                        setTimeout(runStep, 1000);
-                    });
-                } else {
-                    btnPracticeBtn.style.display = 'inline-block';
-                    SpeechService.speak(currentLanguage==='zh'?'现在你自己来试一试！':'Now you try it!');
-                }
+                    // Animate Stem
+                    setTimeout(() => {
+                        tutStem.style.fill = 'var(--accent-blue)';
+                        tutStem.style.transform = 'translate(-4px, -10px) scale(1.1)';
+                        tutText.innerHTML = `<span style="color:var(--accent-blue); background:var(--bg-main); padding: 5px 20px; border-radius: 20px; border: 3px solid var(--accent-blue);">${currentLanguage === 'zh' ? '符杆 (Note Stem)' : 'Note Stem'}</span>`;
+                        
+                        SoundService.playSuccess();
+                        SpeechService.speak(speechText2, currentLanguage, () => {
+                            tutStem.style.fill = 'var(--text-main)';
+                            tutStem.style.transform = 'scale(1)';
+                            
+                            setTimeout(() => {
+                                btnPracticeBtn.style.display = 'inline-block';
+                                tutText.innerText = currentLanguage === 'zh' ? '一起来组装好朋友吧！' : 'Let us practice together!';
+                                SpeechService.speak(tutText.innerText);
+                            }, 500);
+                        });
+                    }, 800);
+                });
             };
-            runStep();
-        };
+        }
 
         // Practice Flow
-        btnPracticeBtn.onclick = () => {
-            tutArea.style.display = 'none';
-            pracArea.style.display = 'block';
+        if (btnPracticeBtn) {
+            btnPracticeBtn.onclick = () => {
+                tutArea.style.display = 'none';
+                pracArea.style.display = 'block';
+                startPractice();
+            };
+        }
+
+        let pracTarget = 'head';
+        const startPractice = () => {
+            pracTarget = Math.random() > 0.5 ? 'head' : 'stem';
+            const promptEl = document.getElementById('l2-prac-prompt');
+            promptEl.innerText = (currentLanguage === 'zh') 
+                ? (pracTarget==='head' ? '哪个是符头？' : '哪个是符杆？') 
+                : (pracTarget==='head' ? 'Which is the Head?' : 'Which is the Stem?');
+            SpeechService.speak(promptEl.innerText);
         };
 
-        let quizState = { mode: 0, target: 'quarter', types: ['whole', 'half', 'quarter', 'eighth'] };
-        const noteNames = {
-            whole: currentLanguage === 'zh' ? '全音符' : 'Whole Note',
-            half: currentLanguage === 'zh' ? '二分音符' : 'Half Note',
-            quarter: currentLanguage === 'zh' ? '四分音符' : 'Quarter Note',
-            eighth: currentLanguage === 'zh' ? '八分音符' : 'Eighth Note'
-        };
-
-        const updateNoteQuiz = () => {
-            quizState.mode = Math.floor(Math.random() * 3); // 0: Find, 1: Longer, 2: Match Sound
-            const promptEl = document.getElementById('note-quiz-prompt');
-            const titleEl = document.getElementById('note-game-title');
-            const playBtn = document.getElementById('note-quiz-btn-play');
-            const optionsEl = document.getElementById('note-quiz-options');
-            
-            // Randomly select target
-            quizState.target = quizState.types[Math.floor(Math.random() * 4)];
-            let target2 = quizState.types[Math.floor(Math.random() * 4)];
-            while(target2 === quizState.target) { target2 = quizState.types[Math.floor(Math.random() * 4)]; }
-
-            playBtn.style.display = 'none';
-            optionsEl.innerHTML = '';
-            playBtn.onclick = null;
-
-            if (quizState.mode === 0) {
-                // Game 1: Find the Note
-                titleEl.innerText = currentLanguage === 'zh' ? '找音符' : 'Find the Note!';
-                promptEl.innerText = (currentLanguage === 'zh' ? '请点击：' : 'Click the: ') + noteNames[quizState.target];
-                
-                quizState.types.forEach(t => {
-                    const btn = document.createElement('div');
-                    btn.className = 'opt-btn';
-                    btn.dataset.type = t;
-                    btn.innerHTML = getNoteSVG(t);
-                    optionsEl.appendChild(btn);
-                });
-            } else if (quizState.mode === 1) {
-                // Game 2: Which is longer?
-                titleEl.innerText = currentLanguage === 'zh' ? '比长短' : 'Which is longer?';
-                promptEl.innerText = currentLanguage === 'zh' ? '哪个音符的声音更长？' : 'Which note lasts longer?';
-                
-                const beatsMap = { whole: 4, half: 2, quarter: 1, eighth: 0.5 };
-                quizState.target = beatsMap[quizState.target] > beatsMap[target2] ? quizState.target : target2; // Set correct target
-
-                [quizState.target, target2].sort(() => Math.random() - 0.5).forEach(t => {
-                    const btn = document.createElement('div');
-                    btn.className = 'opt-btn';
-                    btn.dataset.type = t;
-                    btn.innerHTML = getNoteSVG(t);
-                    optionsEl.appendChild(btn);
-                });
-            } else if (quizState.mode === 2) {
-                // Game 3: Match Sound
-                titleEl.innerText = currentLanguage === 'zh' ? '听音辨认' : 'Match the Sound';
-                promptEl.innerText = currentLanguage === 'zh' ? '听声音，长短是哪个音符的？' : 'Listen! Which note makes this duration?';
-                playBtn.style.display = 'block';
-
-                const def = noteDefs.find(n => n.id === quizState.target);
-                playBtn.onclick = () => { playNote(def.freq, Math.min(def.time, 2.5)); };
-
-                [quizState.target, target2].sort(() => Math.random() - 0.5).forEach(t => {
-                    const btn = document.createElement('div');
-                    btn.className = 'opt-btn';
-                    btn.dataset.type = t;
-                    btn.innerHTML = getNoteSVG(t);
-                    optionsEl.appendChild(btn);
-                });
-            }
-
-            // Speak Prompt
-            SpeechService.speak(promptEl.innerText.replace('请点击：', ''));
-
-            // Reattach listeners to new buttons
-            document.querySelectorAll('#note-quiz-options .opt-btn').forEach(btn => {
-                btn.onclick = () => {
-                    const type = btn.dataset.type;
-                    const feedback = document.getElementById('note-quiz-feedback');
-                    
-                    if (type === quizState.target) {
-                        SoundService.playSuccess();
-                        feedback.innerText = "🌟 " + (currentLanguage === 'zh' ? '太棒了！正确！' : 'Excellent! Correct!');
-                        feedback.style.color = "var(--accent-green)";
-                        btn.style.background = 'var(--accent-green)';
-                        ProgressService.updateStars('theory', 2, 3);
-                        createConfetti();
-                        setTimeout(() => {
-                            btn.style.background = 'var(--white)';
-                            updateNoteQuiz();
-                            feedback.innerText = "";
-                        }, 2000);
-                    } else {
-                        SoundService.playWrong();
-                        feedback.innerText = "❌ " + (currentLanguage === 'zh' ? '不对哦，再试一次' : 'Not quite, try again');
-                        feedback.style.color = "var(--accent-red)";
-                        btn.style.background = '#FFCDD2';
-                        setTimeout(() => btn.style.background = 'var(--white)'), 400;
-                    }
-                };
-            });
-        };
-
-        // Note Card Showcase Interaction
-        document.querySelectorAll('.note-card').forEach(card => {
-            card.onclick = () => {
-                const note = card.dataset.note;
-                const freq = parseFloat(card.dataset.freq);
-                const timeStr = card.dataset.time || '1'; // fallback to 1s if missing
-                const time = parseFloat(timeStr);
-                const infoText = document.getElementById('note-info-text');
-                
-                document.querySelectorAll('.note-card').forEach(c => c.style.transform = 'scale(1)');
-                card.style.transform = 'scale(1.05)';
-                
-                infoText.innerText = (currentLanguage === 'zh' ? '这是 ' : 'This is a ') + noteNames[note];
-                SpeechService.speak(infoText.innerText);
-                
-                // 1. Play sound matching duration
-                playNote(freq, time);
-
-                // 2. Duration Visualizer Progress Bar
-                const fill = card.querySelector('.note-progress-fill');
-                if (fill) {
-                    fill.style.transition = 'none';
-                    fill.style.width = '0%';
+        document.querySelectorAll('.prac-target-note').forEach(el => {
+            el.onclick = () => {
+                const ans = el.dataset.ans;
+                const fb = document.getElementById('l2-prac-feedback');
+                if (ans === pracTarget) {
+                    SoundService.playSuccess();
+                    el.style.fill = ans === 'head' ? 'var(--accent-red)' : 'var(--accent-blue)';
+                    fb.innerText = "🌟 " + (currentLanguage === 'zh' ? '太棒了！正确！' : 'Excellent! Correct!');
+                    fb.style.color = "var(--accent-green)";
+                    createConfetti();
                     setTimeout(() => {
-                        fill.style.transition = `width ${Math.min(time, 2.5)}s linear`; // Cap animation max time slightly to stay snappy
-                        fill.style.width = '100%';
-                        setTimeout(() => { 
-                            fill.style.transition = 'none';
-                            fill.style.width = '0%'; 
-                        }, Math.min(time, 2.5) * 1000 + 100);
-                    }, 50);
+                        el.style.fill = 'var(--text-main)';
+                        fb.innerText = '';
+                        btnMinigame.style.display = 'inline-block';
+                        startPractice();
+                    }, 2000);
+                } else {
+                    SoundService.playWrong();
+                    fb.innerText = "❌ " + (currentLanguage === 'zh' ? '不对哦，再试一次' : 'Not quite, try again');
+                    fb.style.color = "var(--accent-red)";
                 }
             };
         });
 
-        btnMinigame.onclick = () => {
-            pracArea.style.display = 'none';
-            mgArea.style.display = 'block';
-            updateNoteQuiz();
+        // Minigame Flow
+        if (btnMinigame) {
+            btnMinigame.onclick = () => {
+                pracArea.style.display = 'none';
+                mgArea.style.display = 'block';
+                initMiniGame();
+            };
+        }
+
+        const initMiniGame = () => {
+            SpeechService.speak(currentLanguage==='zh'?'拖动符头和符杆，拼成一个完整的音符吧！':'Drag the Head and Stem into the box to build a note!');
+            const drags = mgArea.querySelectorAll('.drag-item');
+            const drops = mgArea.querySelectorAll('.drop-zone');
+            
+            drags.forEach(d => {
+                d.ondragstart = (e) => {
+                    e.dataTransfer.setData('type', d.dataset.type);
+                    d.style.opacity = '0.5';
+                };
+                d.ondragend = (e) => {
+                    d.style.opacity = '1';
+                };
+            });
+            
+            let matched = 0;
+            drops.forEach(d => {
+                d.ondragover = (e) => e.preventDefault();
+                d.ondrop = (e) => {
+                    e.preventDefault();
+                    const type = e.dataTransfer.getData('type');
+                    const fb = document.getElementById('l2-mg-feedback');
+                    if (d.dataset.accept === type) {
+                        SoundService.playSuccess();
+                        d.style.display = 'none';
+                        document.getElementById('mg-built-' + type).style.display = 'block';
+                        
+                        // Hide the draggable original
+                        drags.forEach(drag => { if(drag.dataset.type === type) drag.style.visibility = 'hidden'; });
+                        
+                        fb.innerText = "✨ " + (currentLanguage === 'zh' ? '放好啦！' : 'Nice placed!');
+                        fb.style.color="var(--accent-green)";
+                        
+                        matched++;
+                        if (matched >= 2) {
+                            ProgressService.updateStars('theory', 2, 3);
+                            fb.innerText = currentLanguage==='zh'?'太棒了！组装完成！获得3颗星！':'Awesome! Note built! 3 Stars!';
+                            createConfetti();
+                            playNote(392, 1); // Play a pleasant sound for the completed note
+                        }
+                    } else {
+                        SoundService.playWrong();
+                        fb.innerText = currentLanguage==='zh'?'位置不对哦':'Oops, wrong spot!';
+                        fb.style.color="var(--accent-red)";
+                    }
+                };
+            });
         };
     }
     if (type === 'theory' && level == 3) {
@@ -2451,9 +2433,10 @@ function attachLessonListeners(type, level) {
         const tutText = document.getElementById('l3-tut-text');
 
         const tutSteps = [
-            { id: 'whole', beats: 4, name: currentLanguage === 'zh' ? '全音符，很长' : 'Whole Note, very long' },
-            { id: 'eighth', beats: 0.5, name: currentLanguage === 'zh' ? '八分音符，非常短' : 'Eighth Note, very short' },
-            { id: 'quarter', beats: 1, name: currentLanguage === 'zh' ? '四分音符，1拍' : 'Quarter Note, 1 beat' }
+            { id: 'whole', beats: 4, name: currentLanguage === 'zh' ? '全音符 — 保持 (Hold it)' : 'Whole note — hold it' },
+            { id: 'half', beats: 2, name: currentLanguage === 'zh' ? '二分音符 — 保持 (Hold)' : 'Half — hold' },
+            { id: 'quarter', beats: 1, name: currentLanguage === 'zh' ? '四分音符 — 点击 (Tap)' : 'Quarter — tap' },
+            { id: 'eighth', beats: 0.5, name: currentLanguage === 'zh' ? '八分音符 — 快按 (Quick tap)' : 'Eighth — quick tap' }
         ];
 
         btnStartTut.onclick = () => {
@@ -2471,8 +2454,14 @@ function attachLessonListeners(type, level) {
                     tutBarFill.style.width = '0%';
                     let widthPercent = (ts.beats / 4) * 100;
                     
-                    SoundService.playSuccess();
-                    playNote(261, ts.beats); // C4
+                    // Play Claps rather than synth note sweeping
+                    let numClaps = ts.beats >= 1 ? ts.beats : 1;
+                    for(let i=0; i < numClaps; i++) {
+                        // For quarter/eighth, it's just 1 clap at time 0
+                        // For half, claps at 0, 1
+                        // For whole, claps at 0, 1, 2, 3
+                        playClap(i); 
+                    }
 
                     setTimeout(() => {
                         tutBarFill.style.transition = `width ${ts.beats}s linear`;
@@ -2497,41 +2486,67 @@ function attachLessonListeners(type, level) {
         };
 
         const noteFreqs = { whole: 261, half: 329, quarter: 392, eighth: 523 };
+        let practiceTaps = {};
         
-        const animateFill = (noteId, beats) => {
-            const fill = document.getElementById(`fill-${noteId}`);
-            if (!fill) return;
-            
-            fill.style.transition = 'none';
-            fill.style.width = '0%';
-            
-            const card = document.querySelector(`.duration-card[data-note="${noteId}"]`);
-            if (card) {
-                const dots = card.querySelectorAll('.beat-dot');
-                dots.forEach(d => d.classList.remove('active'));
-
-                setTimeout(() => {
-                    fill.style.transition = `width ${beats}s linear`;
-                    fill.style.width = '100%';
-                    dots.forEach((dot, i) => {
-                        setTimeout(() => dot.classList.add('active'), (i * (beats / Math.max(1, dots.length))) * 1000);
-                    });
-                }, 50);
-            }
-        };
-
         document.querySelectorAll('.duration-card').forEach(card => {
+            const note = card.dataset.note;
+            const totalBeats = parseFloat(card.dataset.beats);
+            const tapsRequired = totalBeats >= 1 ? totalBeats : 1; 
+            practiceTaps[note] = 0;
+
             card.onclick = () => {
-                const note = card.dataset.note;
-                const beats = parseFloat(card.dataset.beats);
+                document.querySelectorAll('.duration-card').forEach(c => {
+                    if (c !== card) {
+                        c.classList.remove('playing');
+                        const otherNote = c.dataset.note;
+                        practiceTaps[otherNote] = 0;
+                        const otherFill = document.getElementById(`fill-${otherNote}`);
+                        if(otherFill) {
+                           otherFill.style.transition = 'none';
+                           otherFill.style.width = '0%';
+                        }
+                        c.querySelectorAll('.beat-dot').forEach(d => d.classList.remove('active'));
+                    }
+                });
                 
-                document.querySelectorAll('.duration-card').forEach(c => c.classList.remove('playing'));
                 card.classList.add('playing');
                 
-                playNote(noteFreqs[note], beats);
-                animateFill(note, beats);
-                
-                setTimeout(() => card.classList.remove('playing'), beats * 1000);
+                if (practiceTaps[note] < tapsRequired) {
+                    practiceTaps[note]++;
+                    playClap(0); // sound on every manual tap
+                    
+                    const fill = document.getElementById(`fill-${note}`);
+                    const dots = card.querySelectorAll('.beat-dot');
+                    
+                    if (fill) {
+                       fill.style.transition = 'width 0.1s ease-out';
+                       fill.style.width = ((practiceTaps[note] / tapsRequired) * 100) + '%';
+                    }
+                    
+                    if (practiceTaps[note] <= dots.length) {
+                       dots[practiceTaps[note] - 1].classList.add('active');
+                    }
+                    
+                    if (practiceTaps[note] === tapsRequired) {
+                        setTimeout(() => {
+                            playNote(noteFreqs[note], totalBeats);
+                            
+                            // Visual success
+                            card.style.transform = 'scale(1.05)';
+                            setTimeout(() => card.style.transform = 'scale(1)', 200);
+
+                            setTimeout(() => {
+                                card.classList.remove('playing');
+                                practiceTaps[note] = 0;
+                                if(fill) {
+                                    fill.style.transition = 'none'; 
+                                    fill.style.width = '0%';
+                                }
+                                dots.forEach(d => d.classList.remove('active'));
+                            }, totalBeats * 1000 + 500);
+                        }, 200);
+                    }
+                }
             };
         });
 
