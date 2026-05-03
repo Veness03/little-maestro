@@ -2867,8 +2867,14 @@ function attachLessonListeners(type, level) {
             const tutText = document.getElementById('v1-tut-text');
 
             const tutSteps = [
-                { id: 'C', emoji: '🧑‍🎤', name: currentLanguage === 'zh' ? '你能唱出一样的声音吗？' : 'Can you sing the same pitch?' },
-                { id: 'C', emoji: '🗣️ 🎵', name: currentLanguage === 'zh' ? '听声音，模仿它！' : 'Listen, then repeat!' }
+                { emoji: '🎼', freq: null, name: currentLanguage === 'zh' ? '每个音符都有名字和固定的声音。' : 'Every note has a name and a specific pitch.' },
+                { emoji: 'Do', freq: frequencies['C'], name: currentLanguage === 'zh' ? '这是 Do (C)。' : 'This is Do (C).' },
+                { emoji: 'Re', freq: frequencies['D'], name: currentLanguage === 'zh' ? '这是 Re (D)。' : 'This is Re (D).' },
+                { emoji: 'Mi', freq: frequencies['E'], name: currentLanguage === 'zh' ? '这是 Mi (E)。' : 'This is Mi (E).' },
+                { emoji: 'Fa', freq: frequencies['F'], name: currentLanguage === 'zh' ? '这是 Fa (F)。' : 'This is Fa (F).' },
+                { emoji: 'So', freq: frequencies['G'], name: currentLanguage === 'zh' ? '这是 So (G)。' : 'This is So (G).' },
+                { emoji: '🧑‍🎤', freq: null, name: currentLanguage === 'zh' ? '你能唱出一样的声音吗？' : 'Can you sing the same pitch?' },
+                { emoji: '🗣️🎵', freq: null, name: currentLanguage === 'zh' ? '听声音，模仿它！' : 'Listen, then repeat!' }
             ];
 
             btnStartTut.onclick = () => {
@@ -2882,9 +2888,13 @@ function attachLessonListeners(type, level) {
                         tutImg.innerHTML = ts.emoji;
                         tutText.innerText = ts.name;
                         
-                        SoundService.playSuccess();
+                        if (ts.freq) {
+                            playNote(ts.freq, 0.4);
+                        } else {
+                            SoundService.playSuccess();
+                        }
                         tutImg.style.transform = 'scale(1.1)';
-                        setTimeout(() => { tutImg.style.transform = 'none'; }, 400);
+                        setTimeout(() => { if(tutImg) tutImg.style.transform = 'none'; }, 400);
 
                         SpeechService.speak(ts.name, currentLanguage, () => {
                             step++;
@@ -3044,8 +3054,11 @@ function attachLessonListeners(type, level) {
             const tutText = document.getElementById('v2-tut-text');
 
             const tutSteps = [
+                { notes: [], text: currentLanguage === 'zh' ? '当音符组合在一起时，就变成了旋律。' : 'When notes are put together, they create a melody.' },
                 { notes: ['C'], text: currentLanguage === 'zh' ? '仔细听小鸟唱歌...' : 'Listen to the bird sing...' },
-                { notes: ['C', 'D', 'E'], text: currentLanguage === 'zh' ? '记住它们的声音！' : 'Remember the tune!' }
+                { notes: ['C', 'D', 'E'], text: currentLanguage === 'zh' ? '这三个音符组成的旋律是往上走的。' : 'This melody goes up.' },
+                { notes: ['E', 'D', 'C'], text: currentLanguage === 'zh' ? '这三个音符组成的旋律是往下走的。' : 'This melody goes down.' },
+                { notes: [], text: currentLanguage === 'zh' ? '你能记住它们的顺序吗？' : 'Can you remember their order?' }
             ];
 
             btnStartTut.onclick = () => {
@@ -3056,20 +3069,23 @@ function attachLessonListeners(type, level) {
                 const runStep = () => {
                     if (step < tutSteps.length) {
                         const ts = tutSteps[step];
-                        tutImg.innerHTML = ts.notes.map(n => `<div style="color:var(--accent-green);">🎵</div>`).join('');
+                        tutImg.innerHTML = ts.notes && ts.notes.length > 0 ? ts.notes.map(n => `<div style="color:var(--accent-green);">🎵</div>`).join('') : '🎼';
                         tutText.innerText = ts.text;
                         
                         let idx = 0;
                         const playN = () => {
-                            if(idx < ts.notes.length) {
+                            if(ts.notes && idx < ts.notes.length) {
                                 playNote(frequencies[ts.notes[idx]], 0.4);
-                                tutImg.children[idx].style.transform = 'translateY(-20px)';
-                                setTimeout(() => {
-                                    if(tutImg.children[idx]) tutImg.children[idx].style.transform = 'none';
-                                }, 300);
+                                if (tutImg.children[idx]) {
+                                    tutImg.children[idx].style.transform = 'translateY(-20px)';
+                                    setTimeout(() => {
+                                        if(tutImg.children[idx]) tutImg.children[idx].style.transform = 'none';
+                                    }, 300);
+                                }
                                 idx++;
                                 setTimeout(playN, 600);
                             } else {
+                                if (!ts.notes || ts.notes.length === 0) SoundService.playSuccess();
                                 SpeechService.speak(ts.text, currentLanguage, () => {
                                     step++;
                                     setTimeout(runStep, 1000);
@@ -3170,8 +3186,9 @@ function attachLessonListeners(type, level) {
             const tutText = document.getElementById('v3-tut-text');
 
             const tutSteps = [
-                { emoji: '❤️', text: currentLanguage === 'zh' ? '这就是音乐的心跳！' : 'This is the heartbeat of music!' },
-                { emoji: '🎵 ❤️🎵', text: currentLanguage === 'zh' ? '它很稳定，不快也不慢！' : 'Steady beat, not fast, not slow!' }
+                { emoji: '❤️', text: currentLanguage === 'zh' ? '音乐和我们一样，有稳定的心跳！' : 'Music has a steady heartbeat, just like us!' },
+                { emoji: '🎵 ❤️🎵', action: 'simulate', text: currentLanguage === 'zh' ? '这就是拍子，它很稳定，不快也不慢！' : 'This is the beat. It is steady, not fast, not slow!' },
+                { emoji: '🥁', text: currentLanguage === 'zh' ? '我们要跟着拍子一起均匀地敲击！' : 'We need to tap along with the beat evenly!' }
             ];
 
             btnStartTut.onclick = () => {
@@ -3185,22 +3202,24 @@ function attachLessonListeners(type, level) {
                         tutImg.innerHTML = ts.emoji;
                         tutText.innerText = ts.text;
                         
-                        SpeechService.speak(ts.text, currentLanguage);
-                        // Heartbeat animation simulation
-                        playNote(150, 0.1);
-                        tutImg.style.transform = 'scale(1.2)';
-                        setTimeout(() => { if(tutImg) tutImg.style.transform = 'none'; }, 200);
-
-                        setTimeout(() => {
+                        if (ts.action === 'simulate') {
                             playNote(150, 0.1);
                             tutImg.style.transform = 'scale(1.2)';
                             setTimeout(() => { if(tutImg) tutImg.style.transform = 'none'; }, 200);
-                        }, 500);
 
-                        setTimeout(() => {
+                            setTimeout(() => {
+                                playNote(150, 0.1);
+                                tutImg.style.transform = 'scale(1.2)';
+                                setTimeout(() => { if(tutImg) tutImg.style.transform = 'none'; }, 200);
+                            }, 500);
+                        } else {
+                            SoundService.playSuccess();
+                        }
+                        
+                        SpeechService.speak(ts.text, currentLanguage, () => {
                             step++;
-                            runStep();
-                        }, 2000);
+                            setTimeout(runStep, 800);
+                        });
 
                     } else {
                         btnPracticeBtn.style.display = 'inline-block';
@@ -3275,8 +3294,9 @@ function attachLessonListeners(type, level) {
             const tutText = document.getElementById('v4-tut-text');
 
             const tutSteps = [
-                { emoji: '➖ ➖', text: currentLanguage === 'zh' ? '长的线条表示慢慢敲' : 'Long line means slow tap' },
-                { emoji: '⬝ ⬝', text: currentLanguage === 'zh' ? '小圆点表示快快敲' : 'Small dots mean quick tap' }
+                { emoji: '🎶', action: 'none', text: currentLanguage === 'zh' ? '音符有时候长，有时候短。长短组合就变成了多变的节奏！' : 'Notes can be long or short. Mixing them makes a varied rhythm!' },
+                { emoji: '➖ ➖', action: 'long', text: currentLanguage === 'zh' ? '长的线条表示声音长，你要慢慢地敲。' : 'Long lines mean a long sound, you tap slowly.' },
+                { emoji: '⬝ ⬝', action: 'short', text: currentLanguage === 'zh' ? '小圆点表示声音短，你要快快地敲。' : 'Small dots mean a short sound, you tap quickly.' }
             ];
 
             btnStartTut.onclick = () => {
@@ -3290,6 +3310,16 @@ function attachLessonListeners(type, level) {
                         tutImg.innerHTML = ts.emoji;
                         tutText.innerText = ts.text;
                         
+                        if (ts.action === 'long') {
+                            playNote(350, 0.6);
+                            setTimeout(() => playNote(350, 0.6), 1000);
+                        } else if (ts.action === 'short') {
+                            playNote(350, 0.2);
+                            setTimeout(() => playNote(350, 0.2), 400);
+                        } else {
+                            SoundService.playSuccess();
+                        }
+
                         SpeechService.speak(ts.text, currentLanguage, () => {
                             step++;
                             setTimeout(runStep, 800);
@@ -3419,8 +3449,9 @@ function attachLessonListeners(type, level) {
             const tutText = document.getElementById('v5-tut-text');
 
             const tutSteps = [
-                { emoji: '⭐', text: currentLanguage === 'zh' ? '星星掉落啦！' : 'A star is falling!' },
-                { emoji: '🎹 ⭐', text: currentLanguage === 'zh' ? '在准确的时间按下琴键！' : 'Tap the key at the right time!' }
+                { emoji: '📦', text: currentLanguage === 'zh' ? '在音乐里，长长短短的节奏被装进了一个个小节里。' : 'In music, rhythms are put together into measures.' },
+                { emoji: '⭐', text: currentLanguage === 'zh' ? '我们要练习综合的节奏。把星星想象成节奏，它会落向底线。' : 'Let us practice combined rhythms. Stars are like rhythms falling to the line.' },
+                { emoji: '🥁', text: currentLanguage === 'zh' ? '当星星刚好落到底部时，精准地按下小鼓吧！' : 'Tap the drum exactly when the star reaches the bottom line!' }
             ];
 
             btnStartTut.onclick = () => {
@@ -3433,6 +3464,8 @@ function attachLessonListeners(type, level) {
                         const ts = tutSteps[step];
                         tutImg.innerHTML = ts.emoji;
                         tutText.innerText = ts.text;
+                        
+                        SoundService.playSuccess();
                         
                         SpeechService.speak(ts.text, currentLanguage, () => {
                             tutImg.style.transform = 'translateY(30px)';
@@ -3521,7 +3554,7 @@ function createConfetti() {
     for (let i = 0; i < 30; i++) {
         const confetti = document.createElement('div');
         confetti.className = 'confetti';
-        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.left = Math.random() * 100 + '%';
         confetti.style.backgroundColor = ['#FFD700', '#FF5252', '#4FC3F7', '#66BB6A', '#BA68C8'][Math.floor(Math.random() * 5)];
         confetti.style.animationDelay = (Math.random() * 2) + 's';
         document.body.appendChild(confetti);
