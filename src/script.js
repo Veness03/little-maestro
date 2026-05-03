@@ -70,6 +70,15 @@ window.clearTimeout = function(id) {
 };
 
 // --- SPEECH SERVICE ---
+// Preload voices to ensure they are available immediately
+if (window.speechSynthesis) {
+    window.speechSynthesis.onvoiceschanged = () => {
+        window.speechSynthesis.getVoices();
+    };
+    // Trigger initial fetch
+    window.speechSynthesis.getVoices();
+}
+
 const SpeechService = {
     synth: window.speechSynthesis,
     _currentCallback: null,
@@ -82,7 +91,26 @@ const SpeechService = {
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = lang === 'zh' ? 'zh-CN' : 'en-US';
         utterance.rate = 0.9;
-        utterance.pitch = 1.1; // Slightly higher, friendly
+        utterance.pitch = 1.3; // Higher, friendlier
+        
+        // Try to find a better voice
+        const voices = this.synth.getVoices();
+        const targetLang = lang === 'zh' ? 'zh-' : 'en-';
+        let voicePrefs = lang === 'zh' ? ['Xiaoxiao', 'TingTing', 'Google 普通话', 'Huihui', 'Mei-Jia'] : ['Google US English', 'Samantha', 'Victoria', 'Karen', 'Moira'];
+        let selectedVoice = null;
+        for (const pref of voicePrefs) {
+            selectedVoice = voices.find(v => v.name.includes(pref) && v.lang.includes(targetLang));
+            if (selectedVoice) break;
+        }
+        if (!selectedVoice) {
+            selectedVoice = voices.find(v => v.lang.includes(targetLang) && (v.name.includes('Female') || v.name.includes('Girl')));
+        }
+        if (!selectedVoice) {
+            selectedVoice = voices.find(v => v.lang.includes(targetLang));
+        }
+        if (selectedVoice) {
+            utterance.voice = selectedVoice;
+        }
         
         this._currentCallback = callback;
         
