@@ -1457,11 +1457,11 @@ function renderInteractiveLesson(type, level) {
                             
                             <div id="l1-hand-area" style="display:none; position:relative; font-size: clamp(120px, 20vw, 200px); text-align: center; margin: 20px auto; width: max-content;">
                                 🖐🏼
-                                <div class="hand-label" style="top: 60%; left: 0%;">1</div>
-                                <div class="hand-label" style="top: 35%; left: 20%;">2</div>
+                                <div class="hand-label" style="top: 60%; left: 0%;">5</div>
+                                <div class="hand-label" style="top: 35%; left: 20%;">4</div>
                                 <div class="hand-label" style="top: 25%; left: 40%;">3</div>
-                                <div class="hand-label" style="top: 30%; left: 65%;">4</div>
-                                <div class="hand-label" style="top: 50%; left: 88%;">5</div>
+                                <div class="hand-label" style="top: 30%; left: 65%;">2</div>
+                                <div class="hand-label" style="top: 50%; left: 88%;">1</div>
                             </div>
                             
                             <div class="l-action-area" style="text-align: right; margin-top: 20px; width: min(90%, 720px); margin-left: auto; margin-right: auto;">
