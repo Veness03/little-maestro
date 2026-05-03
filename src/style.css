@@ -207,19 +207,21 @@ body {
     background: rgba(76, 175, 80, 0.4);
 }
 
-/* Positioning targets over the hand emoji (heuristic) */
-/* Hand orientation: 🖐🏼 - Thumb is on Left, Pinky is on Right */
-/* Thumb = Line 1 (Bot) -> p-f-1 */
-.p-f-1 { top: 60%; left: 10%; width: 50px; height: 50px; } /* Thumb */
-.p-f-2 { top: 35%; left: 25%; width: 50px; height: 50px; } /* Index */
-.p-f-3 { top: 25%; left: 45%; width: 50px; height: 50px; }  /* Middle */
-.p-f-4 { top: 30%; left: 70%; width: 50px; height: 50px; }  /* Ring */
-.p-f-5 { top: 50%; left: 88%; width: 50px; height: 50px; } /* Pinky */
+/* Positioning targets over the hand emoji */
+/* Hand orientation: 🖐🏼 - Pinky is on the Left, Thumb is on the Right */
+/* Pinky = Line 5 (Leftmost) */
+.p-f-5 { top: 60%; left: 0%; width: 50px; height: 50px; } /* Pinky */
+.p-f-4 { top: 35%; left: 20%; width: 50px; height: 50px; } /* Ring */
+.p-f-3 { top: 25%; left: 40%; width: 50px; height: 50px; }  /* Middle */
+.p-f-2 { top: 30%; left: 65%; width: 50px; height: 50px; }  /* Index */
+/* Thumb = Line 1 (Rightmost) */
+.p-f-1 { top: 50%; left: 88%; width: 50px; height: 50px; } /* Thumb */
 
-.p-s-1 { top: 48%; left: 15%; background: rgba(33, 150, 243, 0.2); border-color: var(--accent-blue); width: 40px; height: 40px; }
-.p-s-2 { top: 30%; left: 35%; background: rgba(33, 150, 243, 0.2); border-color: var(--accent-blue); width: 40px; height: 40px; }
-.p-s-3 { top: 28%; left: 55%; background: rgba(33, 150, 243, 0.2); border-color: var(--accent-blue); width: 40px; height: 40px; }
-.p-s-4 { top: 40%; left: 80%; background: rgba(33, 150, 243, 0.2); border-color: var(--accent-blue); width: 40px; height: 40px; }
+/* Spaces between fingers going from right to left (Space 1 is between Thumb and Index) */
+.p-s-4 { top: 48%; left: 10%; background: rgba(33, 150, 243, 0.2); border-color: var(--accent-blue); width: 40px; height: 40px; } /* Between Pinky and Ring */
+.p-s-3 { top: 30%; left: 30%; background: rgba(33, 150, 243, 0.2); border-color: var(--accent-blue); width: 40px; height: 40px; } /* Between Ring and Middle */
+.p-s-2 { top: 28%; left: 52%; background: rgba(33, 150, 243, 0.2); border-color: var(--accent-blue); width: 40px; height: 40px; } /* Between Middle and Index */
+.p-s-1 { top: 40%; left: 77%; background: rgba(33, 150, 243, 0.2); border-color: var(--accent-blue); width: 40px; height: 40px; } /* Between Index and Thumb */
 
 .drag-item {
     padding: 20px;
@@ -250,11 +252,13 @@ body {
     font-size: 30px;
 }
 
-.d-f-1 { top: 60%; left: 10%; }
-.d-f-2 { top: 35%; left: 25%; }
-.d-f-3 { top: 25%; left: 45%; }
-.d-f-4 { top: 30%; left: 70%; }
-.d-f-5 { top: 50%; left: 88%; }
+/* Pinky = Line 5 (Leftmost) */
+.d-f-5 { top: 60%; left: 0%; }
+.d-f-4 { top: 35%; left: 20%; }
+.d-f-3 { top: 25%; left: 40%; }
+.d-f-2 { top: 30%; left: 65%; }
+/* Thumb = Line 1 (Rightmost) */
+.d-f-1 { top: 50%; left: 88%; }
 
 .hand-label {
     position: absolute;
@@ -431,7 +435,7 @@ header {
     color: var(--accent-purple);
     flex: 1;
     text-align: center;
-    padding-right: 40px; /* Offset for back button to center text better */
+    padding: 0 10px; /* Adjusting for both sides having buttons now */
 }
 
 .back-btn {
