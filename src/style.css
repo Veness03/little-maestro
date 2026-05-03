@@ -35,7 +35,7 @@ body {
     max-width: 1400px;
     margin: 0 auto;
     padding: 20px;
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
@@ -752,8 +752,9 @@ header {
     position: relative;
     width: 100%;
     height: 100%;
-    min-height: 600px;
-    overflow: hidden;
+    min-height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
     margin: 0;
     padding: 0;
     background: transparent;
@@ -773,11 +774,11 @@ header {
 
 /* Animated Gradient Background */
 .arcade-bg {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 100vh;
     z-index: -2;
     background: linear-gradient(135deg, #E1BEE7, #BBDEFB, #F8BBD0);
     background-size: 400% 400%;
@@ -3136,8 +3137,9 @@ body {
     position: relative;
     width: 100%;
     height: 100%;
-    min-height: 600px;
-    overflow: hidden;
+    min-height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
     margin: 0;
     padding: 0;
     display: none;
@@ -3153,11 +3155,11 @@ body {
 
 /* Background animated gradient */
 .landing-bg {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 100vh;
     z-index: -2;
     background: linear-gradient(135deg, #FFB6C1, #FFDAB9, #E6E6FA, #ADD8E6);
     background-size: 400% 400%;
@@ -3742,40 +3744,3 @@ h2 {
     }
 }
 
-/* Force Landscape Layout for Mobile Portrait */
-@media screen and (orientation: portrait) {
-    html {
-        overflow: hidden !important;
-        width: 100vw !important;
-        height: 100vh !important;
-        position: fixed !important;
-        max-width: 100vw !important;
-        max-height: 100vh !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-    
-    body {
-        overflow: hidden !important;
-        position: absolute !important;
-        transform: rotate(90deg) !important;
-        transform-origin: top left !important;
-        width: 100vh !important;
-        height: 100vw !important;
-        max-width: 100vh !important;
-        max-height: 100vw !important;
-        top: 0 !important;
-        left: 100vw !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-
-    #app-container {
-        width: 100vh !important;
-        height: 100vw !important;
-        max-width: none !important;
-        max-height: none !important;
-        margin: 0 !important;
-        position: relative;
-    }
-}
