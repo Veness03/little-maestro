@@ -3421,10 +3421,12 @@ body {
     border-radius: 40px !important;
     padding: 6px !important;
     display: inline-flex !important;
-    position: absolute;
-    top: 30px;
-    right: 30px;
-    z-index: 1000;
+    position: fixed !important;
+    top: 15px !important;
+    right: 15px !important;
+    z-index: 9999 !important;
+    transform: scale(0.9);
+    transform-origin: top right;
 }
 
 .lang-btn {
@@ -3437,8 +3439,9 @@ body {
     font-size: 1.1rem !important;
     box-shadow: none !important;
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
-    min-width: 88px;
-    min-height: 48px;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    letter-spacing: -0.5px !important;
 }
 
 .lang-btn.active {
@@ -3542,8 +3545,9 @@ h2 {
         min-height: 88px !important;
     }
     .lang-btn {
-        min-height: 48px !important;
-        min-width: 88px !important;
+        min-height: 44px !important;
+        min-width: 44px !important;
+        padding: 5px 10px !important;
     }
     /* Exclude close buttons or specific UI if needed, but 88x88 is requested for all */
 }
@@ -3608,12 +3612,29 @@ h2 {
 /* Small Phones: 320px - 480px */
 @media (max-width: 480px) {
     .arcade-grid,
-    .landing-premium-page .landing-grid {
-        grid-template-columns: 1fr !important;
+    .landing-premium-page .landing-grid,
+    .theory-grid,
+    .level-map {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        scroll-snap-type: x mandatory !important;
+        padding: 10px 20px 30px 20px !important;
+        -webkit-overflow-scrolling: touch !important;
+        justify-content: flex-start !important;
+        margin: 0 -10px !important;
+        width: calc(100% + 20px) !important;
     }
 
+    .arcade-card, 
+    .landing-premium-page .landing-card,
+    .theory-card,
     .level-btn {
-        flex: 1 1 100% !important;
+        flex: 0 0 85% !important;
+        scroll-snap-align: center !important;
+        min-width: 0 !important;
+        margin-right: 15px !important;
     }
 
     .arcade-card {
@@ -3697,8 +3718,26 @@ h2 {
 /* Large Phones: 481px - 767px */
 @media (min-width: 481px) and (max-width: 767px) {
     @media (orientation: portrait) {
-        .arcade-grid {
-            grid-template-columns: 1fr !important;
+        .arcade-grid,
+        .landing-premium-page .landing-grid,
+        .theory-grid,
+        .level-map {
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+            overflow-x: auto !important;
+            scroll-snap-type: x mandatory !important;
+            padding-bottom: 30px !important;
+            -webkit-overflow-scrolling: touch !important;
+            justify-content: flex-start !important;
+        }
+        .arcade-card, 
+        .landing-premium-page .landing-card,
+        .theory-card,
+        .level-btn {
+            flex: 0 0 70% !important;
+            scroll-snap-align: center !important;
+            margin-right: 20px !important;
         }
     }
 }
