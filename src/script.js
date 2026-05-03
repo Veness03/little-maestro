@@ -1402,7 +1402,7 @@ function openLesson(type, level, withConfetti = true, skipNav = false) {
         <div class="lesson-card">
             <div class="mascot-bubble" style="justify-content: center;">
                 <div class="mascot">🐱</div>
-                <div class="bubble">${data.content}</div>
+                <div id="top-tutorial-text" class="bubble">${data.content}</div>
             </div>
             ${interactiveHtml}
             <div style="margin-top:30px;">
@@ -1436,12 +1436,6 @@ function renderInteractiveLesson(type, level) {
                         
                         <!-- TUTORIAL SECTION -->
                         <div id="l1-tutorial" class="l1-section active" style="flex-direction: column;">
-                            <div class="guide-row">
-                                <div class="guide-cat">🐱</div>
-                                <div class="guide-speech">
-                                    <p id="l1-tutorialText">${currentLanguage==='zh'?'五线谱是由五条线和四个间组成的。':'The staff is made of five lines and four spaces.'}</p>
-                                </div>
-                            </div>
                             
                             <div id="l1-staff-area" class="staff-display">
                                 <div class="s-line" id="sl-5"></div>
@@ -2057,7 +2051,7 @@ function attachLessonListeners(type, level) {
                         const numWordsZh = ['第一线', '第二线', '第三线', '第四线', '第五线'];
                         const word = currentLanguage === 'zh' ? numWordsZh[i-1] : 'Line ' + numWordsEn[i-1];
                         
-                        if (document.getElementById('l1-tutorialText')) document.getElementById('l1-tutorialText').innerText = word;
+                        if (document.getElementById('top-tutorial-text')) document.getElementById('top-tutorial-text').innerText = word;
                         SpeechService.speak(word, currentLanguage, () => {
                             i++;
                             setTimeout(speakNext, 300);
@@ -2074,7 +2068,7 @@ function attachLessonListeners(type, level) {
                                     const sWordsZh = ['第一间', '第二间', '第三间', '第四间'];
                                     const word = currentLanguage === 'zh' ? sWordsZh[j-1] : 'Space ' + sWordsEn[j-1];
                                     
-                                    if (document.getElementById('l1-tutorialText')) document.getElementById('l1-tutorialText').innerText = word;
+                                    if (document.getElementById('top-tutorial-text')) document.getElementById('top-tutorial-text').innerText = word;
                                     SpeechService.speak(word, currentLanguage, () => {
                                         j++;
                                         setTimeout(speakNextSpace, 300);
@@ -2085,7 +2079,7 @@ function attachLessonListeners(type, level) {
                                         if(handArea) handArea.style.display = 'block';
                                         
                                         const hText = currentLanguage === 'zh' ? '五根手指就像五条线！大拇指是第一线！' : 'Five fingers make the staff. The thumb is Line 1!';
-                                        if(document.getElementById('l1-tutorialText')) document.getElementById('l1-tutorialText').innerText = hText;
+                                        if(document.getElementById('top-tutorial-text')) document.getElementById('top-tutorial-text').innerText = hText;
                                         SpeechService.speak(hText, currentLanguage, () => {
                                             if (btnPractice) btnPractice.style.display = 'inline-block';
                                         });
