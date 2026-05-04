@@ -1852,38 +1852,68 @@ function renderInteractiveLesson(type, level) {
                         <div id="l5-minigame" class="l5-section" style="display:none;">
                             <div class="l-left">
                                 <div id="mg-train-scene" style="position:relative; width:100%; height:250px; background:var(--bg-main); border: 4px solid var(--accent-orange); border-radius:20px; overflow:hidden;">
-                                    <div id="mg-train-container" style="position:absolute; left: 10px; top: 20px; display:flex; align-items:center; transition: left 1s linear;">
-                                        <div style="font-size: 80px; transform: scaleX(-1);">🚂</div>
-                                        <div class="train-car-mg" style="border: 2px solid #555; padding: 10px; display:flex; gap: 10px; background: white; border-radius: 10px; align-items:center;">
-                                            <div style="width:30px;height:30px;">${getNoteSVG('quarter')}</div>
-                                            <div style="width:30px;height:30px;">${getNoteSVG('quarter')}</div>
-                                            <div style="width:30px;height:30px;">${getNoteSVG('quarter')}</div>
-                                            <div style="width:30px;height:30px;">${getNoteSVG('quarter')}</div>
+                                    
+                                    <!-- Tracks -->
+                                    <div style="position:absolute; bottom: 50px; width:100%; height:10px; background: #666; border-radius:5px;"></div>
+                                    
+                                    <!-- Notes sequence -->
+                                    <div id="mg-track-sequence" style="position:absolute; bottom: 60px; left: 20px; display:flex; align-items:flex-end; height: 60px;">
+                                        <!-- Group 1: 3 notes -->
+                                        <div style="display:flex; gap: 5px;">
+                                            <div style="width:30px; height:40px;">${getNoteSVG('quarter')}</div>
+                                            <div style="width:30px; height:40px;">${getNoteSVG('quarter')}</div>
+                                            <div style="width:30px; height:40px;">${getNoteSVG('quarter')}</div>
+                                        </div>
+                                        
+                                        <!-- DZ 1 (wrong, after 3 beats) -->
+                                        <div class="drop-zone l5-mg-dz" data-idx="1" data-accept="barline" style="width:20px; height:80px; border: 2px dashed #999; margin: 0 5px; position:relative; z-index:2; background:rgba(255,255,255,0.5);">
+                                             <div class="mg-built-barline" style="display:none; position:absolute; left:5px; top:0; width:10px; height:100%; background:var(--accent-blue); border-radius:5px;"></div>
+                                        </div>
+                                        
+                                        <!-- Note 4 -->
+                                        <div style="width:30px; height:40px;">${getNoteSVG('quarter')}</div>
+                                        
+                                        <!-- DZ 2 (correct, after 4 beats) -->
+                                        <div class="drop-zone l5-mg-dz correct-dz" data-idx="2" data-accept="barline" style="width:20px; height:80px; border: 2px dashed #999; margin: 0 5px; position:relative; z-index:2; background:rgba(255,255,255,0.5);">
+                                             <div class="mg-built-barline" style="display:none; position:absolute; left:5px; top:0; width:10px; height:100%; background:var(--accent-blue); border-radius:5px;"></div>
+                                        </div>
+
+                                        <!-- Note 5 -->
+                                        <div style="width:30px; height:40px;">${getNoteSVG('quarter')}</div>
+
+                                        <!-- DZ 3 (wrong, after 5 beats) -->
+                                        <div class="drop-zone l5-mg-dz" data-idx="3" data-accept="barline" style="width:20px; height:80px; border: 2px dashed #999; margin: 0 5px; position:relative; z-index:2; background:rgba(255,255,255,0.5);">
+                                             <div class="mg-built-barline" style="display:none; position:absolute; left:5px; top:0; width:10px; height:100%; background:var(--accent-blue); border-radius:5px;"></div>
+                                        </div>
+                                        
+                                        <!-- Group 2: remaining 3 notes -->
+                                        <div style="display:flex; gap: 5px;">
+                                            <div style="width:30px; height:40px;">${getNoteSVG('quarter')}</div>
+                                            <div style="width:30px; height:40px;">${getNoteSVG('quarter')}</div>
+                                            <div style="width:30px; height:40px;">${getNoteSVG('quarter')}</div>
                                         </div>
                                     </div>
-                                    <div style="position:absolute; bottom: 30px; width:100%; height:10px; background: #666; border-radius:5px;"></div>
                                     
-                                    <div style="position:absolute; bottom: 50px; right: 80px; width: 30px; height: 140px;">
-                                        <!-- Tracks broken area -->
-                                        <div class="drop-zone l5-mg-dz" data-accept="barline" style="width:100%; height:100%; border: 3px dashed var(--accent-blue); border-radius:8px; background: rgba(255,255,255,0.8);"></div>
-                                        <div id="mg-built-barline" style="display:none; position:absolute; top:10px; left:10px; width:10px; height:120px; background:#555; border-radius:5px;"></div>
+                                    <!-- Moving Train -->
+                                    <div id="mg-train-container" style="position:absolute; left: -100px; bottom: 50px; transition: left 1s linear; z-index:5;">
+                                        <div style="font-size: 80px; transform: scaleX(-1); line-height: 80px;">🚂</div>
                                     </div>
                                     
                                     <div id="mg-train-overlay" style="position:absolute; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:none; align-items:center; justify-content:center; flex-direction:column; z-index:10;">
                                         <div style="font-size: 80px;">🐹</div>
                                         <div style="color:white; font-size:2rem; font-weight:bold; background:var(--accent-red); padding:10px 20px; border-radius:20px; border: 3px solid white; text-align:center;">
-                                            ${currentLanguage==='zh'?'哎呀！让我们修理一下节奏！':"Let's fix the rhythm!"}
+                                            ${currentLanguage==='zh'?'哎呀！房间大小不对！':"Oops! The room sizes are wrong!"}
                                         </div>
                                         <button id="mg-train-retry" class="action-btn" style="background:var(--accent-blue); margin-top:20px;">↺ Retry</button>
                                     </div>
                                 </div>
                                 <div style="display:flex; justify-content:center; margin-top:20px;">
-                                     <div class="drag-item" draggable="true" id="mg-bar-line-drag" data-type="barline" style="width: 15px; height: 100px; background: #555; border-radius: 5px; cursor:grab;"></div>
+                                     <div class="drag-item" draggable="true" id="mg-bar-line-drag" data-type="barline" style="width: 15px; height: 100px; background: var(--accent-blue); border-radius: 5px; cursor:grab;"></div>
                                 </div>
                             </div>
                             <div class="l-right">
                                 <h3 id="note-game-title" style="font-size:2rem; color:var(--accent-orange);">🚂 ${currentLanguage === 'zh' ? '小火车找轨道' : 'Train Track Builder'}</h3>
-                                <p style="font-weight:800; font-size:1.2rem; margin-bottom:10px;">${currentLanguage==='zh'?'把小节线放在轨道上，让小火车通过！':'Place the bar line so the train can pass!'}</p>
+                                <p style="font-weight:800; font-size:1.2rem; margin-bottom:10px;">${currentLanguage==='zh'?'把小节线放在正确的位置上（每4拍一个房间），让小火车通过！':'Place the bar line in the correct spot (4 beats per room) so the train can pass!'}</p>
                                 <button id="mg-train-start" class="action-btn" style="background:var(--accent-green);">▶️ ${currentLanguage==='zh'?'开动火车':'Start Train'}</button>
                                 <div id="l5-mg-feedback" style="height:40px; font-weight:800; font-size: 1.5rem; color:var(--accent-green); margin-top:10px;"></div>
                             </div>
@@ -2912,9 +2942,9 @@ function attachLessonListeners(type, level) {
 
         // MiniGame Drag and Drop
         const mDrag = document.getElementById('mg-bar-line-drag');
-        const mDrop = document.querySelector('.l5-mg-dz');
+        const mDrops = document.querySelectorAll('.l5-mg-dz');
         const mFeedback = document.getElementById('l5-mg-feedback');
-        let mgTrackFixed = false;
+        let mgTrackStatus = 'none';
 
         mDrag.ondragstart = (e) => {
             e.dataTransfer.setData('type', mDrag.dataset.type);
@@ -2924,19 +2954,37 @@ function attachLessonListeners(type, level) {
             mDrag.style.opacity = '1';
         };
 
-        mDrop.ondragover = (e) => e.preventDefault();
-        mDrop.ondrop = (e) => {
-            e.preventDefault();
-            const type = e.dataTransfer.getData('type');
-            if (type === 'barline') {
-                SoundService.playSuccess();
-                mDrag.style.visibility = 'hidden';
-                mDrop.style.background = 'transparent';
-                document.getElementById('mg-built-barline').style.display = 'block';
-                mgTrackFixed = true;
-                mFeedback.innerText = currentLanguage === 'zh' ? '👍 轨道修好啦！' : '👍 Track fixed!';
-            }
+        const setupDrops = () => {
+            mDrops.forEach(drop => {
+                drop.ondragover = (e) => e.preventDefault();
+                drop.ondrop = (e) => {
+                    e.preventDefault();
+                    const type = e.dataTransfer.getData('type');
+                    if (type === 'barline') {
+                        SoundService.playSuccess();
+                        mDrag.style.visibility = 'hidden';
+                        
+                        mDrops.forEach(d => {
+                            d.style.background = 'rgba(255,255,255,0.5)';
+                            const line = d.querySelector('.mg-built-barline');
+                            if(line) line.style.display = 'none';
+                        });
+
+                        drop.style.background = 'transparent';
+                        const line = drop.querySelector('.mg-built-barline');
+                        if(line) line.style.display = 'block';
+                        
+                        if (drop.classList.contains('correct-dz')) {
+                            mgTrackStatus = 'correct';
+                        } else {
+                            mgTrackStatus = drop.dataset.idx;
+                        }
+                        mFeedback.innerText = currentLanguage === 'zh' ? '👍 轨道拼接好了，开动火车试试！' : '👍 Track fixed, start the train!';
+                    }
+                };
+            });
         };
+        setupDrops();
 
         const trainContainer = document.getElementById('mg-train-container');
         const trainStartBtn = document.getElementById('mg-train-start');
@@ -2944,45 +2992,64 @@ function attachLessonListeners(type, level) {
         const trainRetryBtn = document.getElementById('mg-train-retry');
 
         trainStartBtn.onclick = () => {
+            if (mgTrackStatus === 'none') {
+                mFeedback.innerText = currentLanguage === 'zh' ? '请先拖动小节线！' : 'Please drag a bar line first!';
+                return;
+            }
+
             trainStartBtn.disabled = true;
-            // Move train to right
-            trainContainer.style.transition = 'left 2s linear';
-            trainContainer.style.left = '40%';
-            
-            // Play chugging sound (approximate with claps)
+            mDrops.forEach(d => { d.ondragover = null; d.ondrop = null; });
+
+            // Play chugging sound
             let chugInterval = setInterval(() => {
                 playClap(0);
             }, 300);
 
-            setTimeout(() => {
-                clearInterval(chugInterval);
-                if (mgTrackFixed) {
-                    // Success, train continues
-                    trainContainer.style.transition = 'left 2s linear';
+            trainContainer.style.transition = 'left 1.5s linear';
+
+            if (mgTrackStatus === 'correct') {
+                trainContainer.style.left = '40%';
+                setTimeout(() => {
+                    clearInterval(chugInterval);
+                    trainContainer.style.transition = 'left 1.5s linear';
                     trainContainer.style.left = '100%';
                     
                     let completeInterval = setInterval(() => { playClap(0); }, 300);
-                    setTimeout(() => clearInterval(completeInterval), 2000);
+                    setTimeout(() => clearInterval(completeInterval), 1500);
 
                     SoundService.playSuccess();
                     mFeedback.innerText = currentLanguage === 'zh' ? '🌟 耶！火车安全通过！赢得3颗星！' : '🌟 Yay! Train passed! 3 Stars!';
                     ProgressService.updateStars('theory', 5, 3);
                     createConfetti();
-                } else {
-                    // Fail, train stops, overlay shows
+                }, 1500);
+            } else {
+                const stopPos = mgTrackStatus === '1' ? '120px' : '200px';
+                trainContainer.style.left = stopPos;
+                
+                setTimeout(() => {
+                    clearInterval(chugInterval);
                     SoundService.playWrong();
                     trainOverlay.style.display = 'flex';
-                    SpeechService.speak(currentLanguage === 'zh' ? '哎呀！让我们修理一下节奏！' : "Let's fix the rhythm!");
-                }
-            }, 2000);
+                    SpeechService.speak(currentLanguage === 'zh' ? '哎呀！让我们修理一下节奏！房间里必须有4拍！' : "Let's fix the rhythm! Rooms need 4 beats!");
+                }, 1500);
+            }
         };
 
         trainRetryBtn.onclick = () => {
             trainOverlay.style.display = 'none';
             trainContainer.style.transition = 'none';
-            trainContainer.style.left = '10px';
+            trainContainer.style.left = '-100px';
             trainStartBtn.disabled = false;
+            mgTrackStatus = 'none';
             mFeedback.innerText = '';
+            
+            mDrag.style.visibility = 'visible';
+            mDrops.forEach(d => {
+                d.style.background = 'rgba(255,255,255,0.5)';
+                const line = d.querySelector('.mg-built-barline');
+                if(line) line.style.display = 'none';
+            });
+            setupDrops();
         };
 
     }
