@@ -1817,11 +1817,16 @@ function renderInteractiveLesson(type, level) {
                             <div class="l-left" style="flex-direction:column; gap:20px;">
                                 <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
                                     <div style="font-size: 3rem; margin-left: 20px;">🐹</div>
-                                    <div class="drag-item" draggable="true" id="prac-bar-line-drag" data-type="barline" style="width: 10px; height: 100px; background: var(--accent-blue); border-radius: 5px; cursor:grab;"></div>
+                                    <div class="drag-item" draggable="true" id="prac-bar-line-drag" data-type="barline" style="width: 20px; height: 100px; background: repeating-linear-gradient(#A0522D, #A0522D 10px, #8B4513 10px, #8B4513 20px); border-radius: 5px; cursor:grab; border: 2px solid #5C3A21; box-shadow: 0 4px 6px rgba(0,0,0,0.2);"></div>
                                 </div>
-                                <div class="music-house-practice" style="position:relative; width: 100%; height: 160px; background:white; border: 4px solid var(--accent-purple); border-radius: 20px; display:flex; align-items:center; padding:0 20px; box-sizing:border-box;">
+                                <div class="music-house-practice" style="position:relative; width: 100%; height: 180px; background: linear-gradient(to bottom, #FFF3E0, #FFE0B2); border: 4px solid #8D6E63; border-radius: 10px; display:flex; align-items:center; padding:0 10px; box-sizing:border-box; box-shadow: 0 10px 15px rgba(0,0,0,0.1); margin-top: 10px;">
                                     
-                                    <div class="practice-note-group" style="display:flex; align-items:center; justify-content:space-around; width: 50%; height:100%;">
+                                    <!-- Roof overlay -->
+                                    <div style="position:absolute; top: -25px; left: -10px; width: calc(100% + 20px); height: 40px; background: #E53935; border-radius: 10px; border: 4px solid #B71C1C; box-shadow: 0 4px 6px rgba(0,0,0,0.2);"></div>
+                                    <div style="position:absolute; top: -45px; left: 10%; width: 20px; height: 30px; background: #616161; border: 2px solid #424242; border-radius: 2px; z-index: -1;"></div> <!-- Chimney -->
+                                    <div style="position:absolute; top: -60px; left: 12%; font-size: 14px; opacity: 0.6; animation: cloudFloat 3s infinite;">💨</div>
+
+                                    <div class="practice-note-group" style="display:flex; align-items:center; justify-content:space-around; width: 50%; height: 100px; background: rgba(255,255,255,0.6); border-radius: 10px; margin-top: 20px;">
                                         <div style="font-size: 40px; margin-right:-10px;">${getNoteSVG('quarter')}</div>
                                         <div style="font-size: 40px; margin-right:-10px;">${getNoteSVG('quarter')}</div>
                                         <div style="font-size: 40px; margin-right:-10px;">${getNoteSVG('quarter')}</div>
@@ -1829,15 +1834,15 @@ function renderInteractiveLesson(type, level) {
                                     </div>
                                     
                                     <!-- Drop zone for the barline -->
-                                    <div class="drop-zone l5-prac-dz" data-accept="barline" style="width:30px; height:120px; border: 3px dashed var(--accent-blue); border-radius:8px; margin: 0 10px; flex-shrink:0; background:rgba(255,255,255,0.8);"></div>
+                                    <div class="drop-zone l5-prac-dz" data-accept="barline" style="width:25px; height:120px; border: 3px dashed #795548; border-radius:8px; margin: 20px 10px 0; flex-shrink:0; background:rgba(255,255,255,0.4);"></div>
 
-                                    <div class="practice-note-group" style="display:flex; align-items:center; justify-content:space-around; width: 40%; height:100%;">
+                                    <div class="practice-note-group" style="display:flex; align-items:center; justify-content:space-around; width: 40%; height: 100px; background: rgba(255,255,255,0.6); border-radius: 10px; margin-top: 20px;">
                                         <div style="font-size: 40px;">${getNoteSVG('quarter')}</div>
                                         <div style="font-size: 40px;">${getNoteSVG('quarter')}</div>
                                     </div>
                                     
-                                    <div id="prac-built-barline" style="display:none; position:absolute; left: calc(50% + 20px); top: 20px; width:10px; height:120px; background:var(--accent-blue); border-radius:5px; z-index:2;"></div>
-                                    <div id="prac-room-overlay" style="position:absolute; left:0; top:0; height:100%; width:calc(50% + 35px); background:rgba(100, 150, 255, 0.2); border-radius: 16px 0 0 16px; display:none; pointer-events:none; z-index:1;"></div>
+                                    <div id="prac-built-barline" style="display:none; position:absolute; left: calc(50% + 15px); top: 30px; width:20px; height:130px; background:repeating-linear-gradient(#A0522D, #A0522D 10px, #8B4513 10px, #8B4513 20px); border: 2px solid #5C3A21; border-radius:5px; z-index:2;"></div>
+                                    <div id="prac-room-overlay" style="position:absolute; left:10px; top:25px; height:calc(100% - 30px); width:calc(50% + 20px); background:rgba(100, 150, 255, 0.4); border-radius: 10px; display:none; pointer-events:none; z-index:1;"></div>
                                 </div>
                             </div>
                             <div class="l-right">
@@ -1850,44 +1855,69 @@ function renderInteractiveLesson(type, level) {
 
                         <!-- MINIGAME SECTION -->
                         <div id="l5-minigame" class="l5-section" style="display:none;">
+                            <style>
+                                @keyframes cloudFloat { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
+                                @keyframes treeSway { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(2deg); } }
+                                .mg-scenery-cloud { animation: cloudFloat 4s ease-in-out infinite; }
+                                .mg-scenery-tree { animation: treeSway 6s ease-in-out infinite; transform-origin: bottom center; }
+                            </style>
                             <div class="l-left">
-                                <div id="mg-train-scene" style="position:relative; width:100%; height:250px; background:var(--bg-main); border: 4px solid var(--accent-orange); border-radius:20px; overflow:hidden;">
+                                <div id="mg-train-scene" style="position:relative; width:100%; height:250px; background: linear-gradient(to bottom, #8BE1FF 0%, #D4F4FF 55%, #7BC576 55%, #59A554 100%); border: 4px solid #4a2f1d; border-radius:20px; overflow:hidden; box-shadow: inset 0 0 20px rgba(0,0,0,0.1);">
                                     
-                                    <!-- Tracks -->
-                                    <div style="position:absolute; bottom: 50px; width:100%; height:10px; background: #666; border-radius:5px;"></div>
+                                    <!-- Scenery -->
+                                    <div class="mg-scenery-cloud" style="position:absolute; top:10px; left:30px; font-size:40px; opacity:0.8; animation-duration: 5s;">☁️</div>
+                                    <div class="mg-scenery-cloud" style="position:absolute; top:30px; right:50px; font-size:50px; opacity:0.9; animation-duration: 7s;">☁️</div>
+                                    <div class="mg-scenery-cloud" style="position:absolute; top:15px; left:50%; font-size:30px; opacity:0.7; animation-duration: 6s; animation-delay: 1s;">☁️</div>
+                                    
+                                    <div class="mg-scenery-tree" style="position:absolute; bottom:80px; left:10px; font-size:50px; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.2)); animation-delay: 0.5s;">🌲</div>
+                                    <div class="mg-scenery-tree" style="position:absolute; bottom:95px; left:50px; font-size:35px; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.2)); animation-delay: 1.5s;">🌳</div>
+                                    <div class="mg-scenery-tree" style="position:absolute; bottom:85px; right:20px; font-size:60px; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.2));">🌲</div>
+                                    <div style="position:absolute; bottom:80px; right:80px; font-size:40px; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.2));">🏠</div>
+
+                                    <!-- Tracks (Railway Design) -->
+                                    <div style="position:absolute; bottom: 30px; width:100%; height:35px;">
+                                        <!-- Sleepers -->
+                                        <div style="position:absolute; bottom:0; width:100%; height:35px; background: repeating-linear-gradient(90deg, transparent, transparent 25px, #5C3A21 25px, #5C3A21 40px);"></div>
+                                        <!-- Steel Rails -->
+                                        <div style="position:absolute; bottom: 8px; width:100%; height:6px; background: #E0E0E0; box-shadow: 0 16px 0 #E0E0E0, 0 -2px 0 rgba(0,0,0,0.2);"></div>
+                                    </div>
                                     
                                     <!-- Notes sequence -->
-                                    <div id="mg-track-sequence" style="position:absolute; bottom: 60px; left: 20px; display:flex; align-items:flex-end; height: 60px;">
+                                    <div id="mg-track-sequence" style="position:absolute; bottom: 75px; left: 10px; display:flex; align-items:flex-end; height: 60px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));">
                                         <!-- Group 1: 3 notes -->
-                                        <div style="display:flex; gap: 5px;">
+                                        <div style="display:flex; gap: 5px; background: rgba(255,255,255,0.8); border-radius: 10px; padding: 5px; border: 2px solid white;">
                                             <div style="width:30px; height:40px;">${getNoteSVG('quarter')}</div>
                                             <div style="width:30px; height:40px;">${getNoteSVG('quarter')}</div>
                                             <div style="width:30px; height:40px;">${getNoteSVG('quarter')}</div>
                                         </div>
                                         
                                         <!-- DZ 1 (wrong, after 3 beats) -->
-                                        <div class="drop-zone l5-mg-dz" data-idx="1" data-accept="barline" style="width:20px; height:80px; border: 2px dashed #999; margin: 0 5px; position:relative; z-index:2; background:rgba(255,255,255,0.5);">
-                                             <div class="mg-built-barline" style="display:none; position:absolute; left:5px; top:0; width:10px; height:100%; background:var(--accent-blue); border-radius:5px;"></div>
+                                        <div class="drop-zone l5-mg-dz" data-idx="1" data-accept="barline" style="width:25px; height:80px; border: 3px dashed #fff; border-radius:5px; margin: 0 5px; position:relative; z-index:2; background:rgba(255,255,255,0.4);">
+                                             <div class="mg-built-barline" style="display:none; position:absolute; left:-2px; top:-2px; width:100%; height:100%; background:repeating-linear-gradient(#A0522D, #A0522D 10px, #8B4513 10px, #8B4513 20px); border: 2px solid #5C3A21; border-radius:5px; box-sizing: content-box;"><div style="position:absolute; top: -5px; left: -2px; width: 25px; height: 10px; background: #FFD700; border-radius:5px; border: 1px solid #B8860B;"></div></div>
                                         </div>
                                         
                                         <!-- Note 4 -->
-                                        <div style="width:30px; height:40px;">${getNoteSVG('quarter')}</div>
+                                        <div style="background: rgba(255,255,255,0.8); border-radius: 10px; padding: 5px; border: 2px solid white;">
+                                            <div style="width:30px; height:40px;">${getNoteSVG('quarter')}</div>
+                                        </div>
                                         
                                         <!-- DZ 2 (correct, after 4 beats) -->
-                                        <div class="drop-zone l5-mg-dz correct-dz" data-idx="2" data-accept="barline" style="width:20px; height:80px; border: 2px dashed #999; margin: 0 5px; position:relative; z-index:2; background:rgba(255,255,255,0.5);">
-                                             <div class="mg-built-barline" style="display:none; position:absolute; left:5px; top:0; width:10px; height:100%; background:var(--accent-blue); border-radius:5px;"></div>
+                                        <div class="drop-zone l5-mg-dz correct-dz" data-idx="2" data-accept="barline" style="width:25px; height:80px; border: 3px dashed #fff; border-radius:5px; margin: 0 5px; position:relative; z-index:2; background:rgba(255,255,255,0.4);">
+                                             <div class="mg-built-barline" style="display:none; position:absolute; left:-2px; top:-2px; width:100%; height:100%; background:repeating-linear-gradient(#A0522D, #A0522D 10px, #8B4513 10px, #8B4513 20px); border: 2px solid #5C3A21; border-radius:5px; box-sizing: content-box;"><div style="position:absolute; top: -5px; left: -2px; width: 25px; height: 10px; background: #FFD700; border-radius:5px; border: 1px solid #B8860B;"></div></div>
                                         </div>
 
                                         <!-- Note 5 -->
-                                        <div style="width:30px; height:40px;">${getNoteSVG('quarter')}</div>
+                                        <div style="background: rgba(255,255,255,0.8); border-radius: 10px; padding: 5px; border: 2px solid white;">
+                                            <div style="width:30px; height:40px;">${getNoteSVG('quarter')}</div>
+                                        </div>
 
                                         <!-- DZ 3 (wrong, after 5 beats) -->
-                                        <div class="drop-zone l5-mg-dz" data-idx="3" data-accept="barline" style="width:20px; height:80px; border: 2px dashed #999; margin: 0 5px; position:relative; z-index:2; background:rgba(255,255,255,0.5);">
-                                             <div class="mg-built-barline" style="display:none; position:absolute; left:5px; top:0; width:10px; height:100%; background:var(--accent-blue); border-radius:5px;"></div>
+                                        <div class="drop-zone l5-mg-dz" data-idx="3" data-accept="barline" style="width:25px; height:80px; border: 3px dashed #fff; border-radius:5px; margin: 0 5px; position:relative; z-index:2; background:rgba(255,255,255,0.4);">
+                                             <div class="mg-built-barline" style="display:none; position:absolute; left:-2px; top:-2px; width:100%; height:100%; background:repeating-linear-gradient(#A0522D, #A0522D 10px, #8B4513 10px, #8B4513 20px); border: 2px solid #5C3A21; border-radius:5px; box-sizing: content-box;"><div style="position:absolute; top: -5px; left: -2px; width: 25px; height: 10px; background: #FFD700; border-radius:5px; border: 1px solid #B8860B;"></div></div>
                                         </div>
                                         
                                         <!-- Group 2: remaining 3 notes -->
-                                        <div style="display:flex; gap: 5px;">
+                                        <div style="display:flex; gap: 5px; background: rgba(255,255,255,0.8); border-radius: 10px; padding: 5px; border: 2px solid white;">
                                             <div style="width:30px; height:40px;">${getNoteSVG('quarter')}</div>
                                             <div style="width:30px; height:40px;">${getNoteSVG('quarter')}</div>
                                             <div style="width:30px; height:40px;">${getNoteSVG('quarter')}</div>
@@ -1896,7 +1926,8 @@ function renderInteractiveLesson(type, level) {
                                     
                                     <!-- Moving Train -->
                                     <div id="mg-train-container" style="position:absolute; left: -100px; bottom: 50px; transition: left 1s linear; z-index:5;">
-                                        <div style="font-size: 80px; transform: scaleX(-1); line-height: 80px;">🚂</div>
+                                        <div style="font-size: 80px; transform: scaleX(-1); line-height: 80px; filter: drop-shadow(4px 4px 2px rgba(0,0,0,0.3));">🚂</div>
+                                        <div id="mg-train-smoke" style="position:absolute; top:-10px; right:15px; font-size:30px; opacity:0; transition: opacity 0.2s;">💨</div>
                                     </div>
                                     
                                     <div id="mg-train-overlay" style="position:absolute; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:none; align-items:center; justify-content:center; flex-direction:column; z-index:10;">
@@ -1908,7 +1939,9 @@ function renderInteractiveLesson(type, level) {
                                     </div>
                                 </div>
                                 <div style="display:flex; justify-content:center; margin-top:20px;">
-                                     <div class="drag-item" draggable="true" id="mg-bar-line-drag" data-type="barline" style="width: 15px; height: 100px; background: var(--accent-blue); border-radius: 5px; cursor:grab;"></div>
+                                     <div class="drag-item" draggable="true" id="mg-bar-line-drag" data-type="barline" style="width: 25px; height: 100px; background: repeating-linear-gradient(#A0522D, #A0522D 10px, #8B4513 10px, #8B4513 20px); border-radius: 5px; cursor:grab; border: 2px solid #5C3A21; position:relative; box-shadow: 0 5px 10px rgba(0,0,0,0.2);">
+                                        <div style="position:absolute; top: -5px; left: -2px; width: 25px; height: 10px; background: #FFD700; border-radius:5px; border: 1px solid #B8860B;"></div>
+                                     </div>
                                 </div>
                             </div>
                             <div class="l-right">
@@ -2990,6 +3023,7 @@ function attachLessonListeners(type, level) {
         const trainStartBtn = document.getElementById('mg-train-start');
         const trainOverlay = document.getElementById('mg-train-overlay');
         const trainRetryBtn = document.getElementById('mg-train-retry');
+        const trainSmoke = document.getElementById('mg-train-smoke');
 
         trainStartBtn.onclick = () => {
             if (mgTrackStatus === 'none') {
@@ -3000,9 +3034,17 @@ function attachLessonListeners(type, level) {
             trainStartBtn.disabled = true;
             mDrops.forEach(d => { d.ondragover = null; d.ondrop = null; });
 
-            // Play chugging sound
+            // Play chugging sound and smoke
             let chugInterval = setInterval(() => {
                 playClap(0);
+                if (trainSmoke) {
+                    trainSmoke.style.opacity = '1';
+                    trainSmoke.style.transform = 'translate(20px, -20px) scale(1.5)';
+                    setTimeout(() => {
+                        trainSmoke.style.opacity = '0';
+                        trainSmoke.style.transform = 'translate(0, 0) scale(0.5)';
+                    }, 150);
+                }
             }, 300);
 
             trainContainer.style.transition = 'left 1.5s linear';
