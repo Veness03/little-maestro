@@ -1787,40 +1787,25 @@ function renderInteractiveLesson(type, level) {
                     </div>
                 `;
             case 5:
-                const carsCount = 3;
-                let carsHtml = '';
-                for(let i=1; i<=carsCount; i++) {
-                    carsHtml += `
-                        <div class="train-car ${i === 1 ? 'is-engine' : ''}" data-m="${i}">
-                             <div class="measure-notes-zone">
-                                ${i % 2 === 0 ? getNoteSVG('quarter') : getNoteSVG('quarter') + getNoteSVG('quarter')}
-                             </div>
-                             <div class="train-wheel wheel-left"></div>
-                             <div class="train-wheel wheel-right"></div>
-                             <div class="measure-label">${currentLanguage === 'zh' ? '第 '+i+' 小节' : 'Measure '+i}</div>
-                        </div>
-                    `;
-                    if (i < carsCount) {
-                        carsHtml += `<div class="bar-line-divider" data-type="barline"></div>`;
-                    }
-                }
-
                 const ttMeas = currentLanguage === 'zh' ? '划分小节' : 'Bar Lines';
 
                 return `
-                    <div id="level5-container" style="position:relative; width:100%; min-height:400px;">
+                    <div id="level5-container" style="position:relative; width:100%; min-height:400px; overflow:hidden;">
                         
                         <!-- TUTORIAL SECTION -->
                         <div id="l5-tutorial" class="l5-section active">
                             <div class="l-left">
-                                <div id="l5-tut-stage" style="display:none; text-align:center; padding: 20px; width: 100%;">
-                                    <div id="l5-tut-img" style="font-size:120px; transition: transform 0.3s; margin-bottom: 20px;"></div>
-                                    <div id="l5-tut-text" style="font-weight:bold; font-size:1.5rem; color:var(--accent-blue); height: 60px;"></div>
+                                <div id="l5-tut-stage" style="display:none; position:relative; width: 100%; height: 250px; background:var(--bg-main); border: 4px solid var(--accent-purple); border-radius: 20px; overflow:hidden;">
+                                    <div id="l5-music-house" style="position:absolute; width:100%; height:100%; display:flex; box-sizing:border-box; align-items:flex-end; padding-bottom:20px; justify-content:center; gap: 0px;">
+                                        <!-- Rooms will appear here -->
+                                    </div>
+                                    <div id="l5-tut-mole" style="font-size: 60px; position:absolute; left: -100px; bottom: 10px; transition: all 1s;">🐹</div>
                                 </div>
+                                <div id="l5-tut-text" style="font-weight:900; font-size:1.8rem; color:var(--text-main); margin-top:20px; text-align:center; min-height: 80px;"></div>
                             </div>
                             <div class="l-right">
                                 <h3 style="color:var(--accent-purple); font-size:2rem;">${ttMeas}</h3>
-                                <p style="font-size:1.2rem; margin-bottom:20px;">${currentLanguage==='zh'?'音乐也有房间！就像火车车厢！':'Music has rooms! Like train cars!'}</p>
+                                <p style="font-size:1.2rem; margin-bottom:20px;">${currentLanguage==='zh'?'音乐也有房间！一起来看看吧！':"Music has rooms! Let's take a look!"}</p>
                                 <button id="l5-btn-start-tut" class="action-btn">▶️ ${currentLanguage==='zh'?'开始讲解':'Start Tutorial'}</button>
                                 <button id="l5-btn-skip" class="action-btn skip-btn-dynamic" style="display:none; background:var(--accent-orange); margin-right: 10px;">⏭ ${currentLanguage==='zh'?'跳过讲解':'Skip'}</button>
                                 <button id="l5-btn-practice" class="action-btn" style="display:none; background:var(--accent-orange);">🎯 ${currentLanguage==='zh'?'去尝试':'Try it!'}</button>
@@ -1830,37 +1815,77 @@ function renderInteractiveLesson(type, level) {
                         <!-- PRACTICE SECTION -->
                         <div id="l5-practice" class="l5-section" style="display:none;">
                             <div class="l-left" style="flex-direction:column; gap:20px;">
-                                <div class="measure-train" id="train-board">
-                                    ${carsHtml}
+                                <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                                    <div style="font-size: 3rem; margin-left: 20px;">🐹</div>
+                                    <div class="drag-item" draggable="true" id="prac-bar-line-drag" data-type="barline" style="width: 10px; height: 100px; background: var(--accent-blue); border-radius: 5px; cursor:grab;"></div>
+                                </div>
+                                <div class="music-house-practice" style="position:relative; width: 100%; height: 160px; background:white; border: 4px solid var(--accent-purple); border-radius: 20px; display:flex; align-items:center; padding:0 20px; box-sizing:border-box;">
+                                    
+                                    <div class="practice-note-group" style="display:flex; align-items:center; justify-content:space-around; width: 50%; height:100%;">
+                                        <div style="font-size: 40px; margin-right:-10px;">${getNoteSVG('quarter')}</div>
+                                        <div style="font-size: 40px; margin-right:-10px;">${getNoteSVG('quarter')}</div>
+                                        <div style="font-size: 40px; margin-right:-10px;">${getNoteSVG('quarter')}</div>
+                                        <div style="font-size: 40px; margin-right:-10px;">${getNoteSVG('quarter')}</div>
+                                    </div>
+                                    
+                                    <!-- Drop zone for the barline -->
+                                    <div class="drop-zone l5-prac-dz" data-accept="barline" style="width:30px; height:120px; border: 3px dashed var(--accent-blue); border-radius:8px; margin: 0 10px; flex-shrink:0; background:rgba(255,255,255,0.8);"></div>
+
+                                    <div class="practice-note-group" style="display:flex; align-items:center; justify-content:space-around; width: 40%; height:100%;">
+                                        <div style="font-size: 40px;">${getNoteSVG('quarter')}</div>
+                                        <div style="font-size: 40px;">${getNoteSVG('quarter')}</div>
+                                    </div>
+                                    
+                                    <div id="prac-built-barline" style="display:none; position:absolute; left: calc(50% + 20px); top: 20px; width:10px; height:120px; background:var(--accent-blue); border-radius:5px; z-index:2;"></div>
+                                    <div id="prac-room-overlay" style="position:absolute; left:0; top:0; height:100%; width:calc(50% + 35px); background:rgba(100, 150, 255, 0.2); border-radius: 16px 0 0 16px; display:none; pointer-events:none; z-index:1;"></div>
                                 </div>
                             </div>
                             <div class="l-right">
-                                <h3 style="color:var(--accent-green); font-size:2rem;">${currentLanguage==='zh'?'点击车厢':'Tap the cars'}</h3>
-                                <div id="lesson-tip-bubble" class="tip-bubble" style="position:relative; margin: 20px 0;"></div>
-                                <button id="l5-btn-minigame" class="action-btn" style="background:var(--accent-purple);">🎮 ${currentLanguage==='zh'?'玩小游戏':'Mini Game'}</button>
+                                <h3 style="color:var(--accent-green); font-size:2rem;">${currentLanguage==='zh'?'装配房间':'Build a Room'}</h3>
+                                <p style="font-size: 1.2rem; margin-bottom: 20px;">${currentLanguage==='zh'?'拖动小节线，把4拍分到一个房间里！':'Drag the bar line to close the room after 4 beats!'}</p>
+                                <div id="l5-prac-feedback" style="height:40px; font-weight:bold; font-size:1.5rem; color:var(--accent-red);"></div>
+                                <button id="l5-btn-minigame" class="action-btn" style="display:none; background:var(--accent-purple);">🎮 ${currentLanguage==='zh'?'玩小游戏':'Mini Game'}</button>
                             </div>
                         </div>
 
                         <!-- MINIGAME SECTION -->
                         <div id="l5-minigame" class="l5-section" style="display:none;">
                             <div class="l-left">
-                                <div class="measure-train" style="transform: scale(0.8);">
-                                    ${carsHtml}
+                                <div id="mg-train-scene" style="position:relative; width:100%; height:250px; background:var(--bg-main); border: 4px solid var(--accent-orange); border-radius:20px; overflow:hidden;">
+                                    <div id="mg-train-container" style="position:absolute; left: 10px; top: 20px; display:flex; align-items:center; transition: left 1s linear;">
+                                        <div style="font-size: 80px; transform: scaleX(-1);">🚂</div>
+                                        <div class="train-car-mg" style="border: 2px solid #555; padding: 10px; display:flex; gap: 10px; background: white; border-radius: 10px; align-items:center;">
+                                            <div style="width:30px;height:30px;">${getNoteSVG('quarter')}</div>
+                                            <div style="width:30px;height:30px;">${getNoteSVG('quarter')}</div>
+                                            <div style="width:30px;height:30px;">${getNoteSVG('quarter')}</div>
+                                            <div style="width:30px;height:30px;">${getNoteSVG('quarter')}</div>
+                                        </div>
+                                    </div>
+                                    <div style="position:absolute; bottom: 30px; width:100%; height:10px; background: #666; border-radius:5px;"></div>
+                                    
+                                    <div style="position:absolute; bottom: 50px; right: 80px; width: 30px; height: 140px;">
+                                        <!-- Tracks broken area -->
+                                        <div class="drop-zone l5-mg-dz" data-accept="barline" style="width:100%; height:100%; border: 3px dashed var(--accent-blue); border-radius:8px; background: rgba(255,255,255,0.8);"></div>
+                                        <div id="mg-built-barline" style="display:none; position:absolute; top:10px; left:10px; width:10px; height:120px; background:#555; border-radius:5px;"></div>
+                                    </div>
+                                    
+                                    <div id="mg-train-overlay" style="position:absolute; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:none; align-items:center; justify-content:center; flex-direction:column; z-index:10;">
+                                        <div style="font-size: 80px;">🐹</div>
+                                        <div style="color:white; font-size:2rem; font-weight:bold; background:var(--accent-red); padding:10px 20px; border-radius:20px; border: 3px solid white; text-align:center;">
+                                            ${currentLanguage==='zh'?'哎呀！让我们修理一下节奏！':"Let's fix the rhythm!"}
+                                        </div>
+                                        <button id="mg-train-retry" class="action-btn" style="background:var(--accent-blue); margin-top:20px;">↺ Retry</button>
+                                    </div>
+                                </div>
+                                <div style="display:flex; justify-content:center; margin-top:20px;">
+                                     <div class="drag-item" draggable="true" id="mg-bar-line-drag" data-type="barline" style="width: 15px; height: 100px; background: #555; border-radius: 5px; cursor:grab;"></div>
                                 </div>
                             </div>
                             <div class="l-right">
-                                <h3 style="font-size:2rem;">🥁 ${currentLanguage === 'zh' ? '有几个小节？' : 'How many measures?'}</h3>
-                                <p style="font-size:1.2rem;">${currentLanguage === 'zh' ? '点击“播放”，数数小车厢！' : 'Click Play and count the cars!'}</p>
-                                <button class="action-btn" id="play-train-btn" style="margin-top: 15px;">
-                                    ${currentLanguage === 'zh' ? '🚂 播放' : '🚂 Play'}
-                                </button>
-                                <div class="measure-options" style="display:flex; gap:10px; margin-top:20px;">
-                                    <div class="num-btn" data-val="1">1</div>
-                                    <div class="num-btn" data-val="2">2</div>
-                                    <div class="num-btn" data-val="3">3</div>
-                                    <div class="num-btn" data-val="4">4</div>
-                                </div>
-                                <div id="l5-mg-feedback" style="height:40px; margin-top:10px; font-weight:bold; font-size:1.5rem;"></div>
+                                <h3 id="note-game-title" style="font-size:2rem; color:var(--accent-orange);">🚂 ${currentLanguage === 'zh' ? '小火车找轨道' : 'Train Track Builder'}</h3>
+                                <p style="font-weight:800; font-size:1.2rem; margin-bottom:10px;">${currentLanguage==='zh'?'把小节线放在轨道上，让小火车通过！':'Place the bar line so the train can pass!'}</p>
+                                <button id="mg-train-start" class="action-btn" style="background:var(--accent-green);">▶️ ${currentLanguage==='zh'?'开动火车':'Start Train'}</button>
+                                <div id="l5-mg-feedback" style="height:40px; font-weight:800; font-size: 1.5rem; color:var(--accent-green); margin-top:10px;"></div>
                             </div>
                         </div>
 
@@ -2769,13 +2794,17 @@ function attachLessonListeners(type, level) {
         const pracArea = document.getElementById('l5-practice');
         const mgArea = document.getElementById('l5-minigame');
         const tutStage = document.getElementById('l5-tut-stage');
-        const tutImg = document.getElementById('l5-tut-img');
+        const tutMole = document.getElementById('l5-tut-mole');
+        const tutHouse = document.getElementById('l5-music-house');
         const tutText = document.getElementById('l5-tut-text');
 
+        // Tutorial Logic
         const tutSteps = [
-            { id: 'train1', emoji: '🚂', name: currentLanguage === 'zh' ? '这是一列音乐小火车' : 'This is a music train' },
-            { id: 'train2', emoji: '🚂 🟫', name: currentLanguage === 'zh' ? '小节线就像车厢的墙壁' : 'Bar lines separate the cars' },
-            { id: 'train3', emoji: '🚂 🟫 🎵', name: currentLanguage === 'zh' ? '每个车厢住着音符' : 'Notes live in the cars' }
+            { act: 'enter', text: currentLanguage === 'zh' ? '音乐是被组织在小房间里的。' : 'Music is organized into little rooms.' },
+            { act: 'rooms', text: currentLanguage === 'zh' ? '这些房间被叫做“小节”。' : 'These rooms are called bars.' },
+            { act: 'lines', text: currentLanguage === 'zh' ? '这些垂直的线叫做小节线。' : 'These vertical lines are called bar lines.' },
+            { act: 'divide', text: currentLanguage === 'zh' ? '它们把音乐分成一个一个的房间。' : 'They divide music into rooms.' },
+            { act: 'notes', text: currentLanguage === 'zh' ? '当一个房间满了... 我们就建一个新房间！' : 'When a room is full... we make a new room!' }
         ];
 
         btnStartTut.onclick = () => {
@@ -2786,20 +2815,49 @@ function attachLessonListeners(type, level) {
             const runStep = () => {
                 if (step < tutSteps.length) {
                     const ts = tutSteps[step];
-                    tutImg.innerHTML = ts.emoji;
-                    tutText.innerText = ts.name;
+                    tutText.innerText = ts.text;
                     
-                    SoundService.playSuccess();
-                    tutImg.style.transform = 'scale(1.1)';
-                    setTimeout(() => { tutImg.style.transform = 'none'; }, 400);
+                    if (ts.act === 'enter') {
+                        tutMole.style.left = '40%';
+                    } else if (ts.act === 'rooms') {
+                        tutHouse.innerHTML = `
+                            <div style="width: 130px; height: 100px; border: 4px dashed #ccc; border-radius: 10px; position:relative; box-sizing:border-box;" id="tut-room-1"></div>
+                            <div style="width: 130px; height: 100px; border: 4px dashed #ccc; border-radius: 10px; position:relative; display:none; box-sizing:border-box;" id="tut-room-2"></div>
+                        `;
+                    } else if (ts.act === 'lines') {
+                        const rr = document.getElementById('tut-room-1');
+                        if (rr) {
+                            rr.style.borderRight = '6px solid var(--accent-blue)';
+                            rr.style.borderStyle = 'dashed dashed dashed solid';
+                            rr.style.borderRadius = '10px 0 0 10px';
+                        }
+                    } else if (ts.act === 'divide') {
+                        const rr2 = document.getElementById('tut-room-2');
+                        if (rr2) {
+                            rr2.style.display = 'block';
+                            rr2.style.borderRight = '6px solid var(--accent-blue)';
+                            rr2.style.borderStyle = 'dashed dashed dashed solid';
+                            rr2.style.borderRadius = '10px 0 0 10px';
+                        }
+                        tutMole.style.left = '10px';
+                        tutMole.style.transform = 'scale(0.8)';
+                    } else if (ts.act === 'notes') {
+                        const rr = document.getElementById('tut-room-1');
+                        if(rr) {
+                            rr.innerHTML = `<div style="display:flex; justify-content:space-around; align-items:center; width:100%; height:100%; font-size:30px; margin-right: -5px;">
+                                <div>${getNoteSVG('quarter')}</div><div>${getNoteSVG('quarter')}</div><div>${getNoteSVG('quarter')}</div><div>${getNoteSVG('quarter')}</div>
+                            </div>`;
+                            SoundService.playSuccess();
+                        }
+                    }
 
-                    SpeechService.speak(ts.name, currentLanguage, () => {
+                    SpeechService.speak(ts.text, currentLanguage, () => {
                         step++;
-                        setTimeout(runStep, 800);
+                        setTimeout(runStep, 1000);
                     });
                 } else {
                     btnPracticeBtn.style.display = 'inline-block';
-                    SpeechService.speak(currentLanguage==='zh'?'来点小节看看把！':'Let us tap the measures!');
+                    SpeechService.speak(currentLanguage === 'zh' ? '来试试放置小节线吧！' : 'Try placing a bar line!');
                 }
             };
             runStep();
@@ -2808,83 +2866,125 @@ function attachLessonListeners(type, level) {
         btnPracticeBtn.onclick = () => {
             tutArea.style.display = 'none';
             pracArea.style.display = 'block';
+            SpeechService.speak(currentLanguage === 'zh' ? '拖动小节线，把4拍分到一个房间里！' : 'Drag the bar line to close the room after 4 beats!');
         };
 
-        const tip = document.getElementById('lesson-tip-bubble');
-        const showTip = (text, color = 'var(--accent-orange)') => {
-            tip.innerText = text;
-            tip.style.backgroundColor = color;
-            tip.classList.add('show');
-            SpeechService.speak(text);
-            setTimeout(() => tip.classList.remove('show'), 3000);
+        // Practice Drag and Drop
+        const pDrag = document.getElementById('prac-bar-line-drag');
+        const pDrop = document.querySelector('.l5-prac-dz');
+        const pFeedback = document.getElementById('l5-prac-feedback');
+
+        pDrag.ondragstart = (e) => {
+            e.dataTransfer.setData('type', pDrag.dataset.type);
+            pDrag.style.opacity = '0.5';
+        };
+        pDrag.ondragend = () => {
+            pDrag.style.opacity = '1';
         };
 
-        // Train Car Interaction
-        document.querySelectorAll('#l5-practice .train-car').forEach(car => {
-            car.onclick = () => {
-                const m = car.dataset.m;
-                car.classList.add('playing');
-                playNote(261.63 + (m * 50), 0.3);
-                showTip(currentLanguage === 'zh' ? `这是第 ${m} 小节` : `This is Measure ${m}`, 'var(--accent-blue)');
-                setTimeout(() => car.classList.remove('playing'), 500);
-            };
-        });
+        pDrop.ondragover = (e) => e.preventDefault();
+        pDrop.ondrop = (e) => {
+            e.preventDefault();
+            const type = e.dataTransfer.getData('type');
+            if (type === 'barline') {
+                SoundService.playSuccess();
+                pDrag.style.visibility = 'hidden';
+                pDrop.style.display = 'none';
+                document.getElementById('prac-built-barline').style.display = 'block';
+                const overlay = document.getElementById('prac-room-overlay');
+                overlay.style.display = 'block';
+                
+                // Sparkle animation
+                overlay.animate([ {opacity: 0.2}, {opacity: 0.6}, {opacity: 0.2} ], { duration: 600, iterations: 2 });
+                playNote(261.63, 0.4); setTimeout(() => playNote(329.63, 0.4), 200); setTimeout(() => playNote(392.00, 0.6), 400);
 
-        // Bar Line Interaction
-        document.querySelectorAll('#l5-practice .bar-line-divider').forEach(line => {
-            line.onclick = () => {
-                playNote(800, 0.05);
-                showTip(currentLanguage === 'zh' ? "这是一条小节线！" : "This is a Bar Line!", 'var(--accent-green)');
-            };
-        });
-
-        // Play Rhythm Game
-        const playBtn = document.getElementById('play-train-btn');
-        if (playBtn) {
-            playBtn.onclick = async () => {
-                playBtn.disabled = true;
-                const cars = document.querySelectorAll('#l5-minigame .train-car');
-                for(let i=0; i<cars.length; i++) {
-                    const car = cars[i];
-                    car.classList.add('playing');
-                    if (i % 2 === 0) {
-                        playNote(300, 0.2); await new Promise(r => setTimeout(r, 400));
-                        playNote(300, 0.2); await new Promise(r => setTimeout(r, 400));
-                    } else {
-                        playNote(400, 0.5); await new Promise(r => setTimeout(r, 800));
-                    }
-                    car.classList.remove('playing');
-                }
-                playBtn.disabled = false;
-            };
-        }
-
-        // Quiz Logic
-        document.querySelectorAll('#l5-minigame .num-btn').forEach(btn => {
-            btn.onclick = () => {
-                const feedback = document.getElementById('l5-mg-feedback');
-                const val = btn.dataset.val;
-                if (val == "3") {
-                    SoundService.playSuccess();
-                    feedback.innerText = "🎉 " + (currentLanguage === 'zh' ? "太棒了！一共3个小节" : "Awesome! 3 measures in total");
-                    feedback.style.color = "var(--accent-green)";
-                    createConfetti();
-                    ProgressService.updateStars('theory', 5, 3);
-                } else {
-                    SoundService.playWrong();
-                    document.querySelector('#l5-minigame .measure-train').classList.add('shake-error');
-                    setTimeout(() => document.querySelector('#l5-minigame .measure-train').classList.remove('shake-error'), 400);
-                    feedback.innerText = currentLanguage === 'zh' ? "不对哦，再数数看？" : "Try counting again?";
-                    feedback.style.color = "var(--accent-red)";
-                }
-            };
-        });
+                pFeedback.innerText = currentLanguage === 'zh' ? '✨ 完美！房间建好了！' : '✨ Perfect! Room closed!';
+                pFeedback.style.color = "var(--accent-green)";
+                btnMinigame.style.display = 'inline-block';
+            }
+        };
 
         btnMinigame.onclick = () => {
             pracArea.style.display = 'none';
             mgArea.style.display = 'block';
-            SpeechService.speak(currentLanguage === 'zh' ? '点击播放按钮，数数有几个小节！' : 'Click play, and count the measures!');
+            SpeechService.speak(currentLanguage === 'zh' ? '把小节线放在轨道上，让小火车通过！' : 'Place the bar line so the train can pass!');
         };
+
+        // MiniGame Drag and Drop
+        const mDrag = document.getElementById('mg-bar-line-drag');
+        const mDrop = document.querySelector('.l5-mg-dz');
+        const mFeedback = document.getElementById('l5-mg-feedback');
+        let mgTrackFixed = false;
+
+        mDrag.ondragstart = (e) => {
+            e.dataTransfer.setData('type', mDrag.dataset.type);
+            mDrag.style.opacity = '0.5';
+        };
+        mDrag.ondragend = () => {
+            mDrag.style.opacity = '1';
+        };
+
+        mDrop.ondragover = (e) => e.preventDefault();
+        mDrop.ondrop = (e) => {
+            e.preventDefault();
+            const type = e.dataTransfer.getData('type');
+            if (type === 'barline') {
+                SoundService.playSuccess();
+                mDrag.style.visibility = 'hidden';
+                mDrop.style.background = 'transparent';
+                document.getElementById('mg-built-barline').style.display = 'block';
+                mgTrackFixed = true;
+                mFeedback.innerText = currentLanguage === 'zh' ? '👍 轨道修好啦！' : '👍 Track fixed!';
+            }
+        };
+
+        const trainContainer = document.getElementById('mg-train-container');
+        const trainStartBtn = document.getElementById('mg-train-start');
+        const trainOverlay = document.getElementById('mg-train-overlay');
+        const trainRetryBtn = document.getElementById('mg-train-retry');
+
+        trainStartBtn.onclick = () => {
+            trainStartBtn.disabled = true;
+            // Move train to right
+            trainContainer.style.transition = 'left 2s linear';
+            trainContainer.style.left = '40%';
+            
+            // Play chugging sound (approximate with claps)
+            let chugInterval = setInterval(() => {
+                playClap(0);
+            }, 300);
+
+            setTimeout(() => {
+                clearInterval(chugInterval);
+                if (mgTrackFixed) {
+                    // Success, train continues
+                    trainContainer.style.transition = 'left 2s linear';
+                    trainContainer.style.left = '100%';
+                    
+                    let completeInterval = setInterval(() => { playClap(0); }, 300);
+                    setTimeout(() => clearInterval(completeInterval), 2000);
+
+                    SoundService.playSuccess();
+                    mFeedback.innerText = currentLanguage === 'zh' ? '🌟 耶！火车安全通过！赢得3颗星！' : '🌟 Yay! Train passed! 3 Stars!';
+                    ProgressService.updateStars('theory', 5, 3);
+                    createConfetti();
+                } else {
+                    // Fail, train stops, overlay shows
+                    SoundService.playWrong();
+                    trainOverlay.style.display = 'flex';
+                    SpeechService.speak(currentLanguage === 'zh' ? '哎呀！让我们修理一下节奏！' : "Let's fix the rhythm!");
+                }
+            }, 2000);
+        };
+
+        trainRetryBtn.onclick = () => {
+            trainOverlay.style.display = 'none';
+            trainContainer.style.transition = 'none';
+            trainContainer.style.left = '10px';
+            trainStartBtn.disabled = false;
+            mFeedback.innerText = '';
+        };
+
     }
     if (type === 'vision') {
         const resetAll = () => {
