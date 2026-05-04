@@ -7,7 +7,20 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Bubblegum+Sans&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/mobile-drag-drop/default.css">
     <link rel="stylesheet" href="src/style.css">
+    <script src="https://unpkg.com/mobile-drag-drop/index.min.js"></script>
+    <script src="https://unpkg.com/mobile-drag-drop/scroll-behaviour.min.js"></script>
+    <script>
+        // Options are optional
+        MobileDragDrop.polyfill({
+            // Use this to make it compatible with scroll interfaces
+            dragImageTranslateOverride: MobileDragDrop.scrollBehaviourDragImageTranslateOverride
+        });
+        
+        // Prevent generic default touchmove to avoid breaking some touch logic while dragging
+        window.addEventListener('touchmove', function() {}, {passive: false});
+    </script>
 </head>
 <body>
     
