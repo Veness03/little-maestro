@@ -232,6 +232,7 @@ body {
     cursor: grab;
     user-select: none;
     box-shadow: 0 4px 0 var(--accent-purple);
+    touch-action: none !important;
 }
 
 .drag-item:active {
