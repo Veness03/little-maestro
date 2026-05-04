@@ -2334,6 +2334,7 @@ function attachLessonListeners(type, level) {
             let matchedFound = 0;
             drops.forEach(d => {
                 d.ondragover = (e) => e.preventDefault();
+                d.ondragenter = (e) => e.preventDefault();
                 d.ondrop = (e) => {
                     e.preventDefault();
                     const type = e.dataTransfer.getData('type');
@@ -2486,6 +2487,7 @@ function attachLessonListeners(type, level) {
             let matched = 0;
             drops.forEach(d => {
                 d.ondragover = (e) => e.preventDefault();
+                d.ondragenter = (e) => e.preventDefault();
                 d.ondrop = (e) => {
                     e.preventDefault();
                     const type = e.dataTransfer.getData('type');
@@ -2956,6 +2958,7 @@ function attachLessonListeners(type, level) {
         };
 
         pDrop.ondragover = (e) => e.preventDefault();
+        pDrop.ondragenter = (e) => e.preventDefault();
         pDrop.ondrop = (e) => {
             e.preventDefault();
             const type = e.dataTransfer.getData('type');
@@ -3004,6 +3007,7 @@ function attachLessonListeners(type, level) {
                 // Initialize dataset appropriately
                 drop.dataset.filled = "false";
                 drop.ondragover = (e) => e.preventDefault();
+                drop.ondragenter = (e) => e.preventDefault();
                 drop.ondrop = (e) => {
                     e.preventDefault();
                     const type = e.dataTransfer.getData('type');
@@ -3045,7 +3049,7 @@ function attachLessonListeners(type, level) {
             }
 
             trainStartBtn.disabled = true;
-            mDrops.forEach(d => { d.ondragover = null; d.ondrop = null; });
+            mDrops.forEach(d => { d.ondragover = null; d.ondragenter = null; d.ondrop = null; });
 
             // Play chugging sound and smoke
             let chugInterval = setInterval(() => {
