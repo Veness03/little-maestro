@@ -3131,7 +3131,9 @@ body {
     background: transparent !important;
     position: relative;
     width: 100%;
-    min-height: 100vh;
+    height: 100vh;
+    max-height: 100vh;
+    overflow: hidden;
     margin: 0;
     padding: 0;
     display: none;
@@ -3187,6 +3189,9 @@ body {
     border: 2px solid rgba(255, 255, 255, 0.8) !important;
     width: 90% !important;
     max-width: 900px !important;
+    max-height: calc(100vh - 40px) !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
     margin: 0 auto !important;
     z-index: 10;
     position: relative;
@@ -3195,6 +3200,22 @@ body {
     align-items: center;
     gap: 30px;
     animation: premiumCardFloat 6s ease-in-out infinite;
+}
+
+/* Custom scrollbar for premium-glass to make it look nice */
+.premium-glass::-webkit-scrollbar {
+    width: 8px;
+}
+.premium-glass::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.2);
+    border-radius: 4px;
+}
+.premium-glass::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.5);
+    border-radius: 4px;
+}
+.premium-glass::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,255,255,0.8);
 }
 
 @keyframes premiumCardFloat {
