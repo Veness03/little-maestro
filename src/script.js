@@ -473,6 +473,9 @@ function navigateTo(pageId) {
     // Sync body attribute for CSS responsive targeting
     document.body.dataset.activePage = pageId;
     
+    // Check for running intervals
+    if (window.balloonInterval) clearInterval(window.balloonInterval);
+    
     // Close any open mini-games
     closeMiniGame();
 
@@ -640,6 +643,96 @@ function playClap(timeOffset = 0) {
     
     osc.start(time);
     osc.stop(time + 0.1);
+}
+
+function playBirdSound() {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    osc.type = 'sine';
+    
+    osc.frequency.setValueAtTime(2000, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(3000, audioCtx.currentTime + 0.1);
+    gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 0.05);
+    gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.1);
+
+    osc.frequency.setValueAtTime(2500, audioCtx.currentTime + 0.15);
+    osc.frequency.exponentialRampToValueAtTime(3500, audioCtx.currentTime + 0.25);
+    gainNode.gain.setValueAtTime(0, audioCtx.currentTime + 0.15);
+    gainNode.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 0.2);
+    gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.25);
+
+    osc.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    osc.start(audioCtx.currentTime);
+    osc.stop(audioCtx.currentTime + 0.3);
+}
+
+function playElephantSound() {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator();
+    const osc2 = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    
+    osc.type = 'sawtooth';
+    osc2.type = 'square';
+    
+    osc.frequency.setValueAtTime(100, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(250, audioCtx.currentTime + 0.3);
+    osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 1.0);
+    
+    osc2.frequency.setValueAtTime(120, audioCtx.currentTime);
+    osc2.frequency.exponentialRampToValueAtTime(270, audioCtx.currentTime + 0.3);
+    osc2.frequency.exponentialRampToValueAtTime(60, audioCtx.currentTime + 1.0);
+    
+    gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0.8, audioCtx.currentTime + 0.2);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1.0);
+    
+    osc.connect(gainNode);
+    osc2.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    osc.start(audioCtx.currentTime);
+    osc2.start(audioCtx.currentTime);
+    osc.stop(audioCtx.currentTime + 1.0);
+    osc2.stop(audioCtx.currentTime + 1.0);
+}
+
+function playDogSound() {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(200, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.15);
+    
+    gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0.6, audioCtx.currentTime + 0.02);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+    
+    osc.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    osc.start(audioCtx.currentTime);
+    osc.stop(audioCtx.currentTime + 0.15);
+    
+    setTimeout(() => {
+        const osc2 = audioCtx.createOscillator();
+        const gainNode2 = audioCtx.createGain();
+        osc2.type = 'triangle';
+        osc2.frequency.setValueAtTime(220, audioCtx.currentTime);
+        osc2.frequency.exponentialRampToValueAtTime(90, audioCtx.currentTime + 0.15);
+        gainNode2.gain.setValueAtTime(0, audioCtx.currentTime);
+        gainNode2.gain.linearRampToValueAtTime(0.7, audioCtx.currentTime + 0.02);
+        gainNode2.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+        osc2.connect(gainNode2);
+        gainNode2.connect(audioCtx.destination);
+        osc2.start(audioCtx.currentTime);
+        osc2.stop(audioCtx.currentTime + 0.15);
+    }, 200);
 }
 
 // --- PIANO GENERATION & PRACTICE ---
@@ -1735,7 +1828,7 @@ function renderInteractiveLesson(type, level) {
                     </div>
                 `;
             case 4:
-                const ttSym = currentLanguage === 'zh' ? '神秘符号' : 'Secret Signs';
+                const ttSym = currentLanguage === 'zh' ? '符号峡谷' : 'The Symbol Valley';
                 return `
                     <div id="level4-container" style="position:relative; width:100%; min-height:400px;">
                         
@@ -1743,13 +1836,13 @@ function renderInteractiveLesson(type, level) {
                         <div id="l4-tutorial" class="l4-section active">
                             <div class="l-left">
                                 <div id="l4-tut-stage" style="display:none; text-align:center; padding: 20px; width: 100%;">
-                                    <div id="l4-tut-img" style="font-size:120px; transition: transform 0.3s; margin-bottom: 20px;"></div>
+                                    <div id="l4-tut-img" style="font-size:120px; transition: transform 0.3s; margin-bottom: 20px; height: 120px; line-height: 1;"></div>
                                     <div id="l4-tut-text" style="font-weight:bold; font-size:1.5rem; color:var(--accent-blue); height: 60px;"></div>
                                 </div>
                             </div>
                             <div class="l-right">
                                 <h3 style="color:var(--accent-purple); font-size:2rem;">${ttSym}</h3>
-                                <p style="font-size:1.2rem; margin-bottom:20px;">${currentLanguage==='zh'?'这是音乐的魔法符号！':'These are musical magic symbols!'}</p>
+                                <p style="font-size:1.2rem; margin-bottom:20px;">${currentLanguage==='zh'?'认识音乐的神秘门卫！':'Recognize the magical music gates!'}</p>
                                 <button id="l4-btn-start-tut" class="action-btn">▶️ ${currentLanguage==='zh'?'开始讲解':'Start Tutorial'}</button>
                                 <button id="l4-btn-skip" class="action-btn skip-btn-dynamic" style="display:none; background:var(--accent-orange); margin-right: 10px;">⏭ ${currentLanguage==='zh'?'跳过讲解':'Skip'}</button>
                                 <button id="l4-btn-practice" class="action-btn" style="display:none; background:var(--accent-orange);">🎯 ${currentLanguage==='zh'?'去尝试':'Try it!'}</button>
@@ -1760,41 +1853,35 @@ function renderInteractiveLesson(type, level) {
                         <div id="l4-practice" class="l4-section" style="display:none;">
                             <div class="l-left" style="flex-direction:column; gap:20px;">
                                 <div class="symbols-gallery" style="display:flex; justify-content:center; gap:30px; flex-wrap:wrap;">
-                                    <div class="symbol-card" data-sym="sharp">
-                                        <div class="symbol-icon-large">${getNoteSVG('sharp')}</div>
-                                        <span class="symbol-title">${currentLanguage === 'zh' ? '升号' : 'Sharp'}</span>
+                                    <div class="symbol-card" data-sym="treble">
+                                        <div class="symbol-icon-large" style="font-size:80px; line-height:1;">𝄞</div>
+                                        <span class="symbol-title">${currentLanguage === 'zh' ? '高音谱号' : 'Treble Clef'}</span>
                                     </div>
-                                    <div class="symbol-card" data-sym="flat">
-                                        <div class="symbol-icon-large">${getNoteSVG('flat')}</div>
-                                        <span class="symbol-title">${currentLanguage === 'zh' ? '降号' : 'Flat'}</span>
+                                    <div class="symbol-card" data-sym="bass">
+                                        <div class="symbol-icon-large" style="font-size:80px; line-height:1;">𝄢</div>
+                                        <span class="symbol-title">${currentLanguage === 'zh' ? '低音谱号' : 'Bass Clef'}</span>
                                     </div>
-                                    <div class="symbol-card" data-sym="rest">
-                                        <div class="symbol-icon-large">🤫</div>
-                                        <span class="symbol-title">${currentLanguage === 'zh' ? '休止' : 'Rest'}</span>
+                                    <div class="symbol-card" data-sym="alto">
+                                        <div class="symbol-icon-large" style="font-size:80px; line-height:1;">𝄡</div>
+                                        <span class="symbol-title">${currentLanguage === 'zh' ? '中音谱号' : 'Alto Clef'}</span>
                                     </div>
                                 </div>
                             </div>
                             <div class="l-right">
-                                <h3 style="color:var(--accent-green); font-size:2rem;">${currentLanguage==='zh'?'点击符号看魔法':'Click to see magic'}</h3>
+                                <h3 style="color:var(--accent-green); font-size:2rem;">${currentLanguage==='zh'?'找到魔法门卫！':'Find the magic gates!'}</h3>
                                 <div id="sym-info-txt" style="height:40px; font-weight:800; color:var(--accent-orange); margin:15px 0; font-size: 1.2rem;"></div>
-                                <button id="l4-btn-minigame" class="action-btn" style="background:var(--accent-purple);">🎮 ${currentLanguage==='zh'?'玩小游戏':'Mini Game'}</button>
+                                <button id="l4-btn-minigame" class="action-btn" style="display:none; background:var(--accent-purple);">🎮 ${currentLanguage==='zh'?'玩小游戏':'Mini Game'}</button>
                             </div>
                         </div>
 
                         <!-- MINIGAME SECTION -->
-                        <div id="l4-minigame" class="l4-section" style="display:none;">
-                            <div class="l-left">
-                                <div class="note-options" style="display:flex; justify-content:center; gap:40px;">
-                                    <div class="opt-btn" data-ans="sharp">${getNoteSVG('sharp')}</div>
-                                    <div class="opt-btn" data-ans="flat">${getNoteSVG('flat')}</div>
-                                    <div class="opt-btn" data-ans="rest">🤫</div>
-                                </div>
+                        <div id="l4-minigame" class="l4-section" style="display:none; flex-direction:column; align-items:center; justify-content:center; width:100%;">
+                            <h3 style="font-size:2rem; text-align:center; width: 100%;">🎈 ${currentLanguage === 'zh' ? '接住飞走的气球！' : 'Clef Catch!'}</h3>
+                            <p id="sym-quiz-prompt" style="font-weight:800; font-size:1.5rem; color:var(--accent-blue); text-align:center; width: 100%;"></p>
+                            <div id="balloon-container" style="position:relative; width:100%; max-width:600px; height:350px; background:linear-gradient(to top, #E0F6FF, #87CEEB); border-radius:20px; overflow:hidden; border:4px solid var(--accent-purple); box-shadow: inset 0 0 20px rgba(255,255,255,0.7); margin: 20px auto 0 auto;">
+                                <!-- Balloons spawn here -->
                             </div>
-                            <div class="l-right">
-                                <h3 style="font-size:2rem;">🎯 ${currentLanguage === 'zh' ? '音乐魔法' : 'Musical Magic'}</h3>
-                                <p id="sym-quiz-prompt" style="font-weight:800; font-size:1.2rem;"></p>
-                                <div id="sym-quiz-feedback" style="height:40px; margin-top:10px; font-weight:800; font-size:1.5rem;"></div>
-                            </div>
+                            <div id="sym-quiz-feedback" style="height:40px; margin-top:20px; font-weight:800; font-size:1.5rem; text-align:center; width: 100%;"></div>
                         </div>
                         
                         <div id="lesson-pause-overlay" class="pause-overlay">
@@ -1812,17 +1899,23 @@ function renderInteractiveLesson(type, level) {
                         <!-- TUTORIAL SECTION -->
                         <div id="l5-tutorial" class="l5-section active">
                             <div class="l-left">
-                                <div id="l5-tut-stage" style="display:none; position:relative; width: 100%; height: 250px; background:var(--bg-main); border: 4px solid var(--accent-purple); border-radius: 20px; overflow:hidden;">
-                                    <div id="l5-music-house" style="position:absolute; width:100%; height:100%; display:flex; box-sizing:border-box; align-items:flex-end; padding-bottom:20px; justify-content:center; gap: 0px;">
-                                        <!-- Rooms will appear here -->
+                                <div id="l5-tut-stage" style="display:none; position:relative; width: 100%; height: 250px; background:linear-gradient(to bottom, #8BE1FF 0%, #D4F4FF 100%); border: 4px solid var(--accent-purple); border-radius: 20px; overflow:hidden; box-shadow: inset 0 0 20px rgba(0,0,0,0.1);">
+                                    <!-- Tracks -->
+                                    <div style="position:absolute; bottom: 30px; width:100%; height:35px;">
+                                        <div style="position:absolute; bottom:0; width:100%; height:35px; background: repeating-linear-gradient(90deg, transparent, transparent 25px, #5C3A21 25px, #5C3A21 40px);"></div>
+                                        <div style="position:absolute; bottom: 8px; width:100%; height:6px; background: #E0E0E0; box-shadow: 0 16px 0 #E0E0E0, 0 -2px 0 rgba(0,0,0,0.2);"></div>
+                                    </div>
+                                    <div id="l5-music-house" style="position:absolute; width:100%; height:100%; display:flex; box-sizing:border-box; align-items:flex-end; padding-bottom:60px; justify-content:center; gap: 5px;">
+                                        <!-- Train cars will appear here -->
                                     </div>
                                     <div id="l5-tut-mole" style="font-size: 60px; position:absolute; left: -100px; bottom: 10px; transition: all 1s;">🐹</div>
+                                    <div id="l5-tut-engine" style="display:none; font-size: 80px; position:absolute; left: 100%; transform: scaleX(-1); bottom: 50px; transition: all 1s; filter: drop-shadow(4px 4px 2px rgba(0,0,0,0.3)); z-index: 10;">🚂</div>
                                 </div>
                                 <div id="l5-tut-text" style="font-weight:900; font-size:1.8rem; color:var(--text-main); margin-top:20px; text-align:center; min-height: 80px;"></div>
                             </div>
                             <div class="l-right">
                                 <h3 style="color:var(--accent-purple); font-size:2rem;">${ttMeas}</h3>
-                                <p style="font-size:1.2rem; margin-bottom:20px;">${currentLanguage==='zh'?'音乐也有房间！一起来看看吧！':"Music has rooms! Let's take a look!"}</p>
+                                <p style="font-size:1.2rem; margin-bottom:20px;">${currentLanguage==='zh'?'音乐也有小火车！一起来看看吧！':"Music is like a train! Let's take a look!"}</p>
                                 <button id="l5-btn-start-tut" class="action-btn">▶️ ${currentLanguage==='zh'?'开始讲解':'Start Tutorial'}</button>
                                 <button id="l5-btn-skip" class="action-btn skip-btn-dynamic" style="display:none; background:var(--accent-orange); margin-right: 10px;">⏭ ${currentLanguage==='zh'?'跳过讲解':'Skip'}</button>
                                 <button id="l5-btn-practice" class="action-btn" style="display:none; background:var(--accent-orange);">🎯 ${currentLanguage==='zh'?'去尝试':'Try it!'}</button>
@@ -1834,28 +1927,39 @@ function renderInteractiveLesson(type, level) {
                             <div class="l-left" style="flex-direction:column; gap:20px;">
                                 <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
                                     <div style="font-size: 3rem; margin-left: 20px;">🐹</div>
-                                    <div class="drag-item" draggable="true" id="prac-bar-line-drag" data-type="barline" style="width: 20px; height: 100px; background: repeating-linear-gradient(#A0522D, #A0522D 10px, #8B4513 10px, #8B4513 20px); border-radius: 5px; cursor:grab; border: 2px solid #5C3A21; box-shadow: 0 4px 6px rgba(0,0,0,0.2);"></div>
+                                    <div class="drag-item" draggable="true" id="prac-bar-line-drag" data-type="barline" style="width: 20px; height: 100px; background: repeating-linear-gradient(#A0522D, #A0522D 10px, #8B4513 10px, #8B4513 20px); border-radius: 5px; cursor:grab; border: 2px solid #5C3A21; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
+                                        <div style="position:absolute; top: 40px; left: -8px; font-size: 20px; transform: rotate(90deg);">🔗</div>
+                                    </div>
                                 </div>
-                                <div class="music-house-practice" style="position:relative; width: 100%; height: 180px; background: linear-gradient(to bottom, #FFF3E0, #FFE0B2); border: 4px solid #8D6E63; border-radius: 10px; display:flex; justify-content:center; align-items:center; padding:0 10px; box-sizing:border-box; box-shadow: 0 10px 15px rgba(0,0,0,0.1); margin-top: 10px;">
+                                <div class="music-house-practice" style="position:relative; width: 100%; height: 180px; background: linear-gradient(to bottom, #8BE1FF, #D4F4FF); border: 4px solid var(--accent-purple); border-radius: 10px; display:flex; justify-content:center; align-items:center; padding:0 10px; box-sizing:border-box; box-shadow: inset 0 0 20px rgba(0,0,0,0.1); margin-top: 10px; overflow:hidden;">
                                     
-                                    <!-- Roof overlay -->
-                                    <div style="position:absolute; top: -25px; left: -10px; width: calc(100% + 20px); height: 40px; background: #E53935; border-radius: 10px; border: 4px solid #B71C1C; box-shadow: 0 4px 6px rgba(0,0,0,0.2);"></div>
-                                    <div style="position:absolute; top: -45px; left: 10%; width: 20px; height: 30px; background: #616161; border: 2px solid #424242; border-radius: 2px; z-index: -1;"></div> <!-- Chimney -->
-                                    <div style="position:absolute; top: -60px; left: 12%; font-size: 14px; opacity: 0.6; animation: cloudFloat 3s infinite;">💨</div>
+                                    <!-- Tracks -->
+                                    <div style="position:absolute; bottom: 10px; width:100%; height:35px;">
+                                        <div style="position:absolute; bottom:0; width:100%; height:35px; background: repeating-linear-gradient(90deg, transparent, transparent 25px, #5C3A21 25px, #5C3A21 40px);"></div>
+                                        <div style="position:absolute; bottom: 8px; width:100%; height:6px; background: #E0E0E0; box-shadow: 0 16px 0 #E0E0E0, 0 -2px 0 rgba(0,0,0,0.2);"></div>
+                                    </div>
 
-                                    <div class="practice-note-group" style="display:flex; align-items:center; justify-content:space-evenly; width: 100%; max-width: 400px; height: 100px; background: rgba(255,255,255,0.6); border-radius: 10px; margin-top: 20px; padding: 0 10px; box-sizing: border-box; position:relative;">
+                                    <div class="practice-note-group" style="display:flex; align-items:center; justify-content:space-evenly; width: 100%; max-width: 450px; height: 100px; background: var(--bg-card); border: 3px solid var(--accent-blue); border-radius: 10px; padding: 0; box-sizing: border-box; position:relative; box-shadow: 0 5px 10px rgba(0,0,0,0.2);">
+                                        
+                                        <!-- Engine Graphic -->
+                                        <div style="position:absolute; left:-90px; top:-10px; font-size: 60px; transform: scaleX(-1); filter: drop-shadow(4px 4px 2px rgba(0,0,0,0.3)); z-index: 10;">🚂</div>
+
                                         <!-- Overlay for successful completion -->
-                                        <div id="prac-room-overlay" style="position:absolute; left:0; top:0; height:100%; width: 62%; background:rgba(100, 150, 255, 0.4); border-radius: 10px 0 0 10px; display:none; pointer-events:none; z-index:1;"></div>
+                                        <div id="prac-room-overlay" style="position:absolute; left:0; top:0; height:100%; width: 62%; background:rgba(255, 215, 0, 0.4); border-radius: 10px 0 0 10px; display:none; pointer-events:none; z-index:1;"></div>
 
-                                        <div style="font-size: 40px; z-index:2; width:30px; display:flex; justify-content:center;">${getNoteSVG('quarter')}</div>
-                                        <div style="font-size: 40px; z-index:2; width:30px; display:flex; justify-content:center;">${getNoteSVG('quarter')}</div>
                                         <div style="font-size: 40px; z-index:2; width:30px; display:flex; justify-content:center;">${getNoteSVG('quarter')}</div>
                                         <div style="font-size: 40px; z-index:2; width:30px; display:flex; justify-content:center;">${getNoteSVG('quarter')}</div>
                                         
-                                        <!-- Drop zone for the barline -->
-                                        <div class="drop-zone l5-prac-dz" data-accept="barline" style="position:relative; width:22px; height:110px; border: 3px dashed #795548; border-radius:8px; flex-shrink:0; background:rgba(255,255,255,0.8); z-index:10; margin: 0 5px;">
+                                        <!-- WRONG Drop zone -->
+                                        <div class="drop-zone l5-prac-dz wrong-dz" data-accept="barline" style="position:relative; width:22px; height:110px; border: 3px dashed #795548; border-radius:8px; flex-shrink:0; background:rgba(255,255,255,0.8); z-index:10; margin: 0 5px;"></div>
+
+                                        <div style="font-size: 40px; z-index:2; width:30px; display:flex; justify-content:center;">${getNoteSVG('quarter')}</div>
+                                        <div style="font-size: 40px; z-index:2; width:30px; display:flex; justify-content:center;">${getNoteSVG('quarter')}</div>
+                                        
+                                        <!-- Correct Drop zone -->
+                                        <div class="drop-zone l5-prac-dz correct-dz" data-accept="barline" style="position:relative; width:22px; height:110px; border: 3px dashed #795548; border-radius:8px; flex-shrink:0; background:rgba(255,255,255,0.8); z-index:10; margin: 0 5px;">
                                             <div id="prac-built-barline" style="display:none; position:absolute; left:-2px; top:-2px; width:100%; height:100%; background:repeating-linear-gradient(#A0522D, #A0522D 10px, #8B4513 10px, #8B4513 20px); border: 2px solid #5C3A21; border-radius:5px; box-sizing:content-box;">
-                                                <div style="position:absolute; top: -5px; left: -2px; width: 100%; height: 10px; background: #FFD700; border-radius:5px; border: 1px solid #B8860B;"></div>
+                                                <div style="position:absolute; top: 40px; left: -2px; font-size: 20px; transform: rotate(90deg); filter: drop-shadow(0 0 5px yellow);">🔗</div>
                                             </div>
                                         </div>
 
@@ -1865,8 +1969,8 @@ function renderInteractiveLesson(type, level) {
                                 </div>
                             </div>
                             <div class="l-right">
-                                <h3 style="color:var(--accent-green); font-size:2rem;">${currentLanguage==='zh'?'装配房间':'Build a Room'}</h3>
-                                <p style="font-size: 1.2rem; margin-bottom: 20px;">${currentLanguage==='zh'?'拖动小节线，把4拍分到一个房间里！':'Drag the bar line to close the room after 4 beats!'}</p>
+                                <h3 style="color:var(--accent-green); font-size:2rem;">${currentLanguage==='zh'?'连接车厢':'Connect the Train Cars'}</h3>
+                                <p style="font-size: 1.2rem; margin-bottom: 20px;">${currentLanguage==='zh'?'拖动小节线（连接器），把4拍分到一个车厢里！':'Drag the bar line (coupler) to connect the train car after 4 beats!'}</p>
                                 <div id="l5-prac-feedback" style="height:40px; font-weight:bold; font-size:1.5rem; color:var(--accent-red);"></div>
                                 <button id="l5-btn-minigame" class="action-btn" style="display:none; background:var(--accent-purple);">🎮 ${currentLanguage==='zh'?'玩小游戏':'Mini Game'}</button>
                             </div>
@@ -1879,6 +1983,8 @@ function renderInteractiveLesson(type, level) {
                                 @keyframes treeSway { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(2deg); } }
                                 .mg-scenery-cloud { animation: cloudFloat 4s ease-in-out infinite; }
                                 .mg-scenery-tree { animation: treeSway 6s ease-in-out infinite; transform-origin: bottom center; }
+                                .train-shake { animation: trainHalt 0.3s cubic-bezier(.36,.07,.19,.97) both; }
+                                @keyframes trainHalt { 10%, 90% { transform: translate3d(-1px, 0, 0) scaleX(-1); } 20%, 80% { transform: translate3d(2px, 0, 0) scaleX(-1); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0) scaleX(-1); } 40%, 60% { transform: translate3d(4px, 0, 0) scaleX(-1); } }
                             </style>
                             <div class="l-left">
                                 <div id="mg-train-scene" style="position:relative; width:100%; height:250px; background: linear-gradient(to bottom, #8BE1FF 0%, #D4F4FF 55%, #7BC576 55%, #59A554 100%); border: 4px solid #4a2f1d; border-radius:20px; overflow:hidden; box-shadow: inset 0 0 20px rgba(0,0,0,0.1);">
@@ -1913,7 +2019,7 @@ function renderInteractiveLesson(type, level) {
                                         
                                         <!-- correct1: 4 beats -->
                                         <div class="drop-zone l5-mg-dz correct-dz" data-idx="correct1" data-accept="barline" style="width:25px; height:70px; border: 3px dashed #795548; border-radius:5px; position:relative; z-index:2; background:rgba(255,255,255,0.4);">
-                                             <div class="mg-built-barline" style="display:none; position:absolute; left:-2px; top:-2px; width:100%; height:100%; background:repeating-linear-gradient(#A0522D, #A0522D 10px, #8B4513 10px, #8B4513 20px); border: 2px solid #5C3A21; border-radius:5px; box-sizing: content-box;"><div style="position:absolute; top: -5px; left: -2px; width: 25px; height: 10px; background: #FFD700; border-radius:5px; border: 1px solid #B8860B;"></div></div>
+                                             <div class="mg-built-barline" style="display:none; position:absolute; left:-2px; top:-2px; width:100%; height:100%; background:repeating-linear-gradient(#A0522D, #A0522D 10px, #8B4513 10px, #8B4513 20px); border: 2px solid #5C3A21; border-radius:5px; box-sizing: content-box;"><div style="position:absolute; top: 25px; left: -8px; font-size: 20px; transform: rotate(90deg); filter: drop-shadow(0 0 5px yellow);">🔗</div></div>
                                         </div>
                                         
                                         <!-- Beat 5, 6 -->
@@ -1922,7 +2028,7 @@ function renderInteractiveLesson(type, level) {
                                         
                                         <!-- wrong1: 6 beats -->
                                         <div class="drop-zone l5-mg-dz" data-idx="wrong1" data-accept="barline" style="width:25px; height:70px; border: 3px dashed #795548; border-radius:5px; position:relative; z-index:2; background:rgba(255,255,255,0.4);">
-                                             <div class="mg-built-barline" style="display:none; position:absolute; left:-2px; top:-2px; width:100%; height:100%; background:repeating-linear-gradient(#A0522D, #A0522D 10px, #8B4513 10px, #8B4513 20px); border: 2px solid #5C3A21; border-radius:5px; box-sizing: content-box;"><div style="position:absolute; top: -5px; left: -2px; width: 25px; height: 10px; background: #FFD700; border-radius:5px; border: 1px solid #B8860B;"></div></div>
+                                             <div class="mg-built-barline" style="display:none; position:absolute; left:-2px; top:-2px; width:100%; height:100%; background:repeating-linear-gradient(#A0522D, #A0522D 10px, #8B4513 10px, #8B4513 20px); border: 2px solid #5C3A21; border-radius:5px; box-sizing: content-box;"><div style="position:absolute; top: 25px; left: -8px; font-size: 20px; transform: rotate(90deg); filter: drop-shadow(0 0 5px yellow);">🔗</div></div>
                                         </div>
                                         
                                         <!-- Beat 7, 8 -->
@@ -1930,7 +2036,7 @@ function renderInteractiveLesson(type, level) {
                                         
                                         <!-- correct2: 8 beats -->
                                         <div class="drop-zone l5-mg-dz correct-dz" data-idx="correct2" data-accept="barline" style="width:25px; height:70px; border: 3px dashed #795548; border-radius:5px; position:relative; z-index:2; background:rgba(255,255,255,0.4);">
-                                             <div class="mg-built-barline" style="display:none; position:absolute; left:-2px; top:-2px; width:100%; height:100%; background:repeating-linear-gradient(#A0522D, #A0522D 10px, #8B4513 10px, #8B4513 20px); border: 2px solid #5C3A21; border-radius:5px; box-sizing: content-box;"><div style="position:absolute; top: -5px; left: -2px; width: 25px; height: 10px; background: #FFD700; border-radius:5px; border: 1px solid #B8860B;"></div></div>
+                                             <div class="mg-built-barline" style="display:none; position:absolute; left:-2px; top:-2px; width:100%; height:100%; background:repeating-linear-gradient(#A0522D, #A0522D 10px, #8B4513 10px, #8B4513 20px); border: 2px solid #5C3A21; border-radius:5px; box-sizing: content-box;"><div style="position:absolute; top: 25px; left: -8px; font-size: 20px; transform: rotate(90deg); filter: drop-shadow(0 0 5px yellow);">🔗</div></div>
                                         </div>
 
                                         <!-- Beat 9 -->
@@ -1938,7 +2044,7 @@ function renderInteractiveLesson(type, level) {
                                         
                                         <!-- wrong2: 9 beats -->
                                         <div class="drop-zone l5-mg-dz" data-idx="wrong2" data-accept="barline" style="width:25px; height:70px; border: 3px dashed #795548; border-radius:5px; position:relative; z-index:2; background:rgba(255,255,255,0.4);">
-                                             <div class="mg-built-barline" style="display:none; position:absolute; left:-2px; top:-2px; width:100%; height:100%; background:repeating-linear-gradient(#A0522D, #A0522D 10px, #8B4513 10px, #8B4513 20px); border: 2px solid #5C3A21; border-radius:5px; box-sizing: content-box;"><div style="position:absolute; top: -5px; left: -2px; width: 25px; height: 10px; background: #FFD700; border-radius:5px; border: 1px solid #B8860B;"></div></div>
+                                             <div class="mg-built-barline" style="display:none; position:absolute; left:-2px; top:-2px; width:100%; height:100%; background:repeating-linear-gradient(#A0522D, #A0522D 10px, #8B4513 10px, #8B4513 20px); border: 2px solid #5C3A21; border-radius:5px; box-sizing: content-box;"><div style="position:absolute; top: 25px; left: -8px; font-size: 20px; transform: rotate(90deg); filter: drop-shadow(0 0 5px yellow);">🔗</div></div>
                                         </div>
                                         
                                         <!-- Beat 10, 11 -->
@@ -1950,30 +2056,30 @@ function renderInteractiveLesson(type, level) {
                                     
                                     <!-- Moving Train -->
                                     <div id="mg-train-container" style="position:absolute; left: -100px; bottom: 50px; transition: left 1s linear; z-index:5;">
-                                        <div style="font-size: 80px; transform: scaleX(-1); line-height: 80px; filter: drop-shadow(4px 4px 2px rgba(0,0,0,0.3));">🚂</div>
+                                        <div id="mg-train-emoji" style="font-size: 80px; transform: scaleX(-1); line-height: 80px; filter: drop-shadow(4px 4px 2px rgba(0,0,0,0.3)); display:inline-block;">🚂</div>
                                         <div id="mg-train-smoke" style="position:absolute; top:-10px; right:15px; font-size:30px; opacity:0; transition: opacity 0.2s;">💨</div>
                                     </div>
                                     
                                     <div id="mg-train-overlay" style="position:absolute; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:none; align-items:center; justify-content:center; flex-direction:column; z-index:10;">
                                         <div style="font-size: 80px;">🐹</div>
                                         <div style="color:white; font-size:2rem; font-weight:bold; background:var(--accent-red); padding:10px 20px; border-radius:20px; border: 3px solid white; text-align:center;">
-                                            ${currentLanguage==='zh'?'哎呀！房间大小不对！':"Oops! The room sizes are wrong!"}
+                                            ${currentLanguage==='zh'?'哎呀！连接器尺寸不合适！':'Oops! That coupler does not fit!'}
                                         </div>
-                                        <button id="mg-train-retry" class="action-btn" style="background:var(--accent-blue); margin-top:20px;">↺ Retry</button>
+                                        <button id="mg-train-retry" class="action-btn" style="background:var(--accent-blue); margin-top:20px;">↺ ${currentLanguage==='zh'?'再试一次':'Retry'}</button>
                                     </div>
                                 </div>
                                 <div style="display:flex; justify-content:center; margin-top:20px; gap:20px;">
                                      <div class="drag-item mg-bar-line-drag" draggable="true" id="mg-bar-line-drag-1" data-type="barline" style="width: 25px; height: 100px; background: repeating-linear-gradient(#A0522D, #A0522D 10px, #8B4513 10px, #8B4513 20px); border-radius: 5px; cursor:grab; border: 2px solid #5C3A21; position:relative; box-shadow: 0 5px 10px rgba(0,0,0,0.2);">
-                                        <div style="position:absolute; top: -5px; left: -2px; width: 25px; height: 10px; background: #FFD700; border-radius:5px; border: 1px solid #B8860B;"></div>
+                                        <div style="position:absolute; top: 40px; left: -4px; font-size: 20px; transform: rotate(90deg);">🔗</div>
                                      </div>
                                      <div class="drag-item mg-bar-line-drag" draggable="true" id="mg-bar-line-drag-2" data-type="barline" style="width: 25px; height: 100px; background: repeating-linear-gradient(#A0522D, #A0522D 10px, #8B4513 10px, #8B4513 20px); border-radius: 5px; cursor:grab; border: 2px solid #5C3A21; position:relative; box-shadow: 0 5px 10px rgba(0,0,0,0.2);">
-                                        <div style="position:absolute; top: -5px; left: -2px; width: 25px; height: 10px; background: #FFD700; border-radius:5px; border: 1px solid #B8860B;"></div>
+                                        <div style="position:absolute; top: 40px; left: -4px; font-size: 20px; transform: rotate(90deg);">🔗</div>
                                      </div>
                                 </div>
                             </div>
                             <div class="l-right">
                                 <h3 id="note-game-title" style="font-size:2rem; color:var(--accent-orange);">🚂 ${currentLanguage === 'zh' ? '小火车找轨道' : 'Train Track Builder'}</h3>
-                                <p style="font-weight:800; font-size:1.2rem; margin-bottom:10px;">${currentLanguage==='zh'?'把小节线放在正确的位置上（每4拍一个房间），让小火车通过！注意：蓝色的空心二分音符算2拍哦！':'Place the bar line in the correct spot (4 beats per room) so the train can pass! Note: Blue half notes are 2 beats!'}</p>
+                                <p style="font-weight:800; font-size:1.2rem; margin-bottom:10px;">${currentLanguage==='zh'?'把连接器放在正确的位置上（每4拍一节车厢），让小火车通过！注意：蓝色的空心二分音符算2拍哦！':'Place the couplers in the correct spot (4 beats per car) so the train can pass! Note: Blue half notes are 2 beats!'}</p>
                                 <button id="mg-train-start" class="action-btn" style="background:var(--accent-green);">▶️ ${currentLanguage==='zh'?'开动火车':'Start Train'}</button>
                                 <div id="l5-mg-feedback" style="height:40px; font-weight:800; font-size: 1.5rem; color:var(--accent-green); margin-top:10px;"></div>
                             </div>
@@ -2752,9 +2858,12 @@ function attachLessonListeners(type, level) {
         const tutText = document.getElementById('l4-tut-text');
 
         const tutSteps = [
-            { id: 'sharp', sound: 'high', name: currentLanguage === 'zh' ? '升号：变高！' : 'Sharp: Higher!' },
-            { id: 'flat', sound: 'low', name: currentLanguage === 'zh' ? '降号：变低！' : 'Flat: Lower!' },
-            { id: 'rest', sound: 'shh', name: currentLanguage === 'zh' ? '休止符：嘘...' : 'Rest: Shh...' }
+            { id: 'intro', text: currentLanguage === 'zh' ? '在音乐里，有些特殊的符号帮我们读懂音符。' : 'In music, special symbols help us read the notes.' },
+            { id: 'intro2', text: currentLanguage === 'zh' ? '它们被称为"谱号"！' : 'They are called clefs.' },
+            { id: 'treble', symbol: '𝄞', color: '#FFD700', soundType: 'high', name: currentLanguage === 'zh' ? '这是高音谱号。用于偏高的声音！听到小鸟唱歌了吗？' : 'This is the Treble Clef. Used for high sounds! Hear the bird?' },
+            { id: 'bass', symbol: '𝄢', color: '#1565C0', soundType: 'low', name: currentLanguage === 'zh' ? '这是低音谱号。用于很低的声音！听到大象的声音了吗？' : 'This is the Bass Clef. Used for low sounds! Hear the elephant?' },
+            { id: 'alto', symbol: '𝄡', color: '#4CAF50', soundType: 'mid', name: currentLanguage === 'zh' ? '这是中音谱号。它刚好在中间，就像小狗的叫声。' : 'This is the Alto Clef. It sits in the middle, like a dog bark.' },
+            { id: 'summary', text: currentLanguage === 'zh' ? '高音谱号管高音，低音谱号管低音，中音谱号在中间！' : 'Treble is high, Bass is low, Alto is middle!' }
         ];
 
         btnStartTut.onclick = () => {
@@ -2765,28 +2874,47 @@ function attachLessonListeners(type, level) {
             const runStep = () => {
                 if (step < tutSteps.length) {
                     const ts = tutSteps[step];
-                    tutImg.innerHTML = ts.id === 'rest' ? '🤫' : getNoteSVG(ts.id);
-                    tutText.innerText = ts.name;
-                    
-                    if (ts.sound === 'high') {
-                        playNote(261, 0.3); setTimeout(() => playNote(277, 0.5), 300);
-                        tutImg.style.transform = 'translateY(-20px)';
-                    } else if (ts.sound === 'low') {
-                        playNote(261, 0.3); setTimeout(() => playNote(246, 0.5), 300);
-                        tutImg.style.transform = 'translateY(20px)';
+                    if (ts.id === 'intro' || ts.id === 'intro2' || ts.id === 'summary') {
+                        tutImg.innerHTML = '🐹';
+                        tutImg.style.color = 'var(--text-main)';
+                        tutImg.style.textShadow = 'none';
+                        tutText.innerText = ts.text;
+                        SpeechService.speak(ts.text, currentLanguage, () => {
+                            step++;
+                            setTimeout(runStep, 800);
+                        });
                     } else {
-                        tutImg.style.transform = 'scale(1.2)';
+                        tutImg.innerHTML = ts.symbol;
+                        tutImg.style.color = ts.color;
+                        if(ts.id === 'treble') {
+                            tutImg.style.textShadow = '0 0 30px #FFD700';
+                        } else {
+                            tutImg.style.textShadow = 'none';
+                        }
+                        
+                        tutText.innerText = ts.name;
+                        
+                        if (ts.soundType === 'high') {
+                            playBirdSound();
+                            tutImg.style.transform = 'translateY(-20px)';
+                        } else if (ts.soundType === 'low') {
+                            playElephantSound();
+                            tutImg.style.transform = 'translateY(20px)';
+                        } else if (ts.soundType === 'mid') {
+                            playDogSound();
+                            tutImg.style.transform = 'scale(1.1)';
+                        }
+
+                        setTimeout(() => { tutImg.style.transform = 'none'; }, 800);
+
+                        SpeechService.speak(ts.name, currentLanguage, () => {
+                            step++;
+                            setTimeout(runStep, 800);
+                        });
                     }
-
-                    setTimeout(() => { tutImg.style.transform = 'none'; }, 800);
-
-                    SpeechService.speak(ts.name, currentLanguage, () => {
-                        step++;
-                        setTimeout(runStep, 800);
-                    });
                 } else {
                     btnPracticeBtn.style.display = 'inline-block';
-                    SpeechService.speak(currentLanguage==='zh'?'点击魔法探索！':'Tap the magic!');
+                    SpeechService.speak(currentLanguage==='zh'?'你能找到它们吗？':'Can you find them?');
                 }
             };
             runStep();
@@ -2799,9 +2927,9 @@ function attachLessonListeners(type, level) {
 
         const info = document.getElementById('sym-info-txt');
         const msgs = {
-            sharp: currentLanguage === 'zh' ? '⚡ 升号让声音变高！' : '⚡ Sharp makes it higher!',
-            flat: currentLanguage === 'zh' ? '💧 降号让声音变低！' : '💧 Flat makes it lower!',
-            rest: currentLanguage === 'zh' ? '🤫 休止符意味着安静。' : '🤫 Rest means silence.'
+            treble: currentLanguage === 'zh' ? '高音谱号！找找高音哦！' : 'Treble Clef! Find the high sounds!',
+            bass: currentLanguage === 'zh' ? '低音谱号！准备听低音！' : 'Bass Clef! Get ready for low sounds!',
+            alto: currentLanguage === 'zh' ? '中音谱号！正好在中间的位置。' : 'Alto Clef! Right in the middle.'
         };
 
         document.querySelectorAll('.symbol-card').forEach(card => {
@@ -2814,78 +2942,159 @@ function attachLessonListeners(type, level) {
                 card.classList.add('active');
 
                 const icon = card.querySelector('.symbol-icon-large');
-                if (sym === 'sharp') {
-                    if(icon) icon.classList.add('spark-anim');
-                    playNote(261, 0.3); 
-                    await new Promise(r => setTimeout(r, 500));
-                    playNote(277, 0.5); 
-                    setTimeout(() => icon && icon.classList.remove('spark-anim'), 1000);
-                } else if (sym === 'flat') {
-                    if(icon) icon.classList.add('drop-anim');
-                    playNote(261, 0.3); 
-                    await new Promise(r => setTimeout(r, 500));
-                    playNote(246, 0.5); 
-                    setTimeout(() => icon && icon.classList.remove('drop-anim'), 1000);
+                icon.classList.add('spark-anim');
+                if (sym === 'treble') {
+                    playBirdSound();
+                } else if (sym === 'bass') {
+                    playElephantSound();
                 } else {
-                    const overlay = document.getElementById('lesson-pause-overlay');
-                    if(overlay) overlay.classList.add('show');
-                    setTimeout(() => overlay && overlay.classList.remove('show'), 1500);
+                    playDogSound();
                 }
+                setTimeout(() => icon.classList.remove('spark-anim'), 1000);
+                
+                // Show minigame button once user taps at least one
+                btnMinigame.style.display = 'inline-block';
             };
         });
 
         const updateSymQuiz = () => {
             const prompt = document.getElementById('sym-quiz-prompt');
             const feedback = document.getElementById('sym-quiz-feedback');
-            const options = ['sharp', 'flat', 'rest'];
+            const container = document.getElementById('balloon-container');
+            if(!container) return; // fail safe
+            if(window.balloonInterval) clearInterval(window.balloonInterval);
+            container.innerHTML = '';
+            
+            const options = ['treble', 'bass', 'alto'];
             const target = options[Math.floor(Math.random() * options.length)];
             
             const prompts = {
-                sharp: currentLanguage === 'zh' ? '哪个符号会让声音变高？(⚡)' : 'Which symbol makes sound higher? (⚡)',
-                flat: currentLanguage === 'zh' ? '哪个符号会让声音变低？(💧)' : 'Which symbol makes sound lower? (💧)',
-                rest: currentLanguage === 'zh' ? '哪个符号代表安静地休息？(🤫)' : 'Which symbol means to rest? (🤫)'
+                treble: currentLanguage === 'zh' ? '抓住 高音谱号！' : 'Catch the Treble Clef!',
+                bass: currentLanguage === 'zh' ? '抓住 低音谱号！' : 'Catch the Bass Clef!',
+                alto: currentLanguage === 'zh' ? '抓住 中音谱号！' : 'Catch the Alto Clef!'
+            };
+            
+            const symbols = {
+                 treble: '𝄞',
+                 bass: '𝄢',
+                 alto: '𝄡'
+            };
+
+            const colors = {
+                 treble: '#FFD700',
+                 bass: '#1565C0',
+                 alto: '#4CAF50'
             };
             
             if (prompt) prompt.innerText = prompts[target];
+            if (feedback) feedback.innerText = '';
+            SpeechService.speak(prompts[target]);
             
-            document.querySelectorAll('.opt-btn[data-ans]').forEach(btn => {
-                btn.onclick = () => {
-                    const ans = btn.dataset.ans;
-                    if (ans === target) {
+            let gameActive = true;
+            
+            const spawnBalloon = () => {
+                if (!gameActive) return;
+                
+                const b = document.createElement('div');
+                const symType = options[Math.floor(Math.random() * options.length)];
+                
+                b.innerHTML = symbols[symType];
+                b.className = 'balloon';
+                
+                // Styles
+                b.style.position = 'absolute';
+                b.style.left = Math.random() * 80 + 10 + '%';
+                b.style.bottom = '-80px'; 
+                b.style.color = colors[symType];
+                b.style.fontSize = '80px';
+                b.style.cursor = 'pointer';
+                b.style.transition = 'transform 0.1s';
+                b.style.webkitTextStroke = "2px white";
+                b.style.filter = "drop-shadow(0 10px 10px rgba(0,0,0,0.2))";
+                b.style.userSelect = "none";
+                
+                // Add a balloon graphic
+                b.innerHTML = `<div class="balloon-wiggle" style="position:relative; width: 80px; text-align:center;">
+                    <div style="font-size: 80px; position:absolute; top:-30px; left:0; width:100%; text-align:center; z-index:1; text-shadow:none; -webkit-text-stroke:0;">🎈</div>
+                    <div style="position:relative; z-index:2; line-height:1; transform:translateY(-15px);">${symbols[symType]}</div>
+                </div>`;
+                
+                container.appendChild(b);
+                
+                let pos = -80;
+                let horizontalPos = 0;
+                let speed = Math.random() * 2 + 1.5;
+                let swaySpeed = Math.random() * 0.05 + 0.02;
+                let time = Math.random() * 100;
+                
+                const move = setInterval(() => {
+                    if (!gameActive) {
+                         clearInterval(move);
+                         return;
+                    }
+                    pos += speed;
+                    time += swaySpeed;
+                    horizontalPos = Math.sin(time) * 30; // Sway +/- 30px
+                    
+                    if(b) {
+                        b.style.bottom = pos + 'px';
+                        b.style.transform = `translateX(${horizontalPos}px)`;
+                    }
+                    
+                    if (pos > container.offsetHeight + 100) {
+                        clearInterval(move);
+                        if (b && b.parentNode) b.parentNode.removeChild(b);
+                    }
+                }, 20);
+                
+                b.onpointerdown = (e) => {
+                    e.preventDefault();
+                    if (!gameActive) return;
+                    
+                    if (symType === target) {
+                        gameActive = false;
+                        clearInterval(window.balloonInterval);
                         SoundService.playSuccess();
+                        
+                        b.style.transform = 'scale(2)';
+                        b.style.opacity = '0';
+                        b.style.transition = 'all 0.3s';
+                        
                         if (feedback) {
-                            feedback.innerText = "🎊 " + (currentLanguage === 'zh' ? '没错！太聪明了' : 'Bingo! So smart');
+                            feedback.innerText = "🎊 " + (currentLanguage === 'zh' ? '没错！气球破啦！' : 'Pop! You got it!');
                             feedback.style.color = "var(--accent-green)";
                         }
-                        btn.style.background = 'var(--accent-green)';
                         createConfetti();
                         ProgressService.updateStars('theory', 4, 3);
-                        setTimeout(() => {
-                            btn.style.background = 'var(--white)';
-                            updateSymQuiz();
-                        }, 2000);
+                        setTimeout(() => updateSymQuiz(), 2500);
                     } else {
                         SoundService.playWrong();
-                        btn.classList.add('shake-error');
-                        btn.style.background = '#FFCDD2';
+                        b.style.transform = 'rotate(15deg) scale(0.9)';
+                        b.style.filter = 'drop-shadow(0 0 10px red)';
                         setTimeout(() => {
-                            btn.classList.remove('shake-error');
-                            btn.style.background = 'var(--white)';
-                        }, 400);
+                            if(b) {
+                                b.style.transform = 'none';
+                                b.style.filter = "drop-shadow(0 10px 10px rgba(0,0,0,0.2))";
+                            }
+                        }, 300);
                         if (feedback) {
-                            feedback.innerText = (currentLanguage === 'zh' ? '不对哦，再试一次' : 'Not quite, try again');
+                            feedback.innerText = currentLanguage === 'zh' ? '不是这个气球哦~' : 'Not quite!';
                             feedback.style.color = "var(--accent-red)";
                         }
                     }
                 };
-            });
+            };
+
+            window.balloonInterval = setInterval(() => {
+                 if(gameActive) spawnBalloon();
+                 else clearInterval(window.balloonInterval);
+            }, 800);
         };
-        updateSymQuiz();
 
         btnMinigame.onclick = () => {
             pracArea.style.display = 'none';
-            mgArea.style.display = 'block';
-            SpeechService.speak(document.getElementById('sym-quiz-prompt').innerText);
+            mgArea.style.display = 'flex';
+            updateSymQuiz();
         };
     }
     if (type === 'theory' && level == 5) {
@@ -2903,11 +3112,11 @@ function attachLessonListeners(type, level) {
 
         // Tutorial Logic
         const tutSteps = [
-            { act: 'enter', text: currentLanguage === 'zh' ? '音乐是被组织在小房间里的。' : 'Music is organized into little rooms.' },
-            { act: 'rooms', text: currentLanguage === 'zh' ? '这些房间被叫做“小节”。' : 'These rooms are called bars.' },
-            { act: 'lines', text: currentLanguage === 'zh' ? '这些垂直的线叫做小节线。' : 'These vertical lines are called bar lines.' },
-            { act: 'divide', text: currentLanguage === 'zh' ? '它们把音乐分成一个一个的房间。' : 'They divide music into rooms.' },
-            { act: 'notes', text: currentLanguage === 'zh' ? '当一个房间满了... 我们就建一个新房间！' : 'When a room is full... we make a new room!' }
+            { act: 'enter', text: currentLanguage === 'zh' ? '音乐就像小火车一样！' : 'Music is organized like a train.' },
+            { act: 'rooms', text: currentLanguage === 'zh' ? '每一节车厢就是一个“小节”。' : 'Each train car is called a bar.' },
+            { act: 'lines', text: currentLanguage === 'zh' ? '这些垂直的线被称为小节线——它们是车厢之间的连接器！' : 'These lines are bar lines — they are the couplers between train cars.' },
+            { act: 'divide', text: currentLanguage === 'zh' ? '车头是每一小节的开始。' : 'The engine is the start of each bar.' },
+            { act: 'notes', text: currentLanguage === 'zh' ? '当一个车厢装满了音符（4拍）...我们就增加一节新车厢！' : 'When a train car is full of notes (4 beats)... we add a new car!' }
         ];
 
         btnStartTut.onclick = () => {
@@ -2919,38 +3128,55 @@ function attachLessonListeners(type, level) {
                 if (step < tutSteps.length) {
                     const ts = tutSteps[step];
                     tutText.innerText = ts.text;
+                    const tutEngine = document.getElementById('l5-tut-engine');
                     
                     if (ts.act === 'enter') {
-                        tutMole.style.left = '40%';
+                        tutMole.style.left = '10%';
+                        if(tutEngine) { tutEngine.style.display = 'block'; tutEngine.style.left = '80%'; }
                     } else if (ts.act === 'rooms') {
                         tutHouse.innerHTML = `
-                            <div style="width: 130px; height: 100px; border: 4px dashed #ccc; border-radius: 10px; position:relative; box-sizing:border-box;" id="tut-room-1"></div>
-                            <div style="width: 130px; height: 100px; border: 4px dashed #ccc; border-radius: 10px; position:relative; display:none; box-sizing:border-box;" id="tut-room-2"></div>
+                            <div style="width: 130px; height: 100px; border: 4px solid var(--accent-blue); background: var(--bg-card); display:flex; justify-content:center; align-items:center; border-radius: 10px; position:relative; box-sizing:border-box; box-shadow: 0 4px 6px rgba(0,0,0,0.1);" id="tut-room-1">
+                                <!-- Wheels -->
+                                <div style="position:absolute; bottom:-18px; left:10px; font-size:24px;">🍩</div>
+                                <div style="position:absolute; bottom:-18px; right:10px; font-size:24px;">🍩</div>
+                            </div>
+                            <div style="width: 130px; height: 100px; border: 4px solid var(--accent-blue); background: var(--bg-card); display:flex; justify-content:center; align-items:center; border-radius: 10px; position:relative; display:none; box-sizing:border-box; box-shadow: 0 4px 6px rgba(0,0,0,0.1);" id="tut-room-2">
+                                <div style="position:absolute; bottom:-18px; left:10px; font-size:24px;">🍩</div>
+                                <div style="position:absolute; bottom:-18px; right:10px; font-size:24px;">🍩</div>
+                            </div>
                         `;
                     } else if (ts.act === 'lines') {
                         const rr = document.getElementById('tut-room-1');
                         if (rr) {
-                            rr.style.borderRight = '6px solid var(--accent-blue)';
-                            rr.style.borderStyle = 'dashed dashed dashed solid';
-                            rr.style.borderRadius = '10px 0 0 10px';
+                            const coupler = document.createElement('div');
+                            coupler.innerHTML = '🔗';
+                            coupler.style.position = 'absolute';
+                            coupler.style.right = '-20px';
+                            coupler.style.top = '30px';
+                            coupler.style.fontSize = '24px';
+                            coupler.style.transform = 'rotate(90deg)';
+                            rr.appendChild(coupler);
                         }
                     } else if (ts.act === 'divide') {
                         const rr2 = document.getElementById('tut-room-2');
                         if (rr2) {
-                            rr2.style.display = 'block';
-                            rr2.style.borderRight = '6px solid var(--accent-blue)';
-                            rr2.style.borderStyle = 'dashed dashed dashed solid';
-                            rr2.style.borderRadius = '10px 0 0 10px';
+                            rr2.style.display = 'flex';
                         }
-                        tutMole.style.left = '10px';
+                        tutMole.style.left = '-10px';
                         tutMole.style.transform = 'scale(0.8)';
+                        if(tutEngine) {
+                            tutEngine.style.left = '75%'; // move up engine a bit
+                            tutEngine.style.bottom = '40px';
+                        }
+                        
                     } else if (ts.act === 'notes') {
                         const rr = document.getElementById('tut-room-1');
                         if(rr) {
-                            rr.innerHTML = `<div style="display:flex; justify-content:space-around; align-items:center; width:100%; height:100%; font-size:30px; margin-right: -5px;">
+                            rr.innerHTML += `<div style="display:flex; justify-content:space-around; align-items:center; width:100%; height:100%; font-size:30px; margin-right: -5px; z-index:2;">
                                 <div>${getNoteSVG('quarter')}</div><div>${getNoteSVG('quarter')}</div><div>${getNoteSVG('quarter')}</div><div>${getNoteSVG('quarter')}</div>
                             </div>`;
                             SoundService.playSuccess();
+                            if(tutEngine) tutEngine.style.left = '85%'; // Move train engine to make space
                         }
                     }
 
@@ -2960,7 +3186,7 @@ function attachLessonListeners(type, level) {
                     });
                 } else {
                     btnPracticeBtn.style.display = 'inline-block';
-                    SpeechService.speak(currentLanguage === 'zh' ? '来试试放置小节线吧！' : 'Try placing a bar line!');
+                    SpeechService.speak(currentLanguage === 'zh' ? '来试试连接车厢吧！' : 'Try placing a coupler!');
                 }
             };
             runStep();
@@ -2969,12 +3195,12 @@ function attachLessonListeners(type, level) {
         btnPracticeBtn.onclick = () => {
             tutArea.style.display = 'none';
             pracArea.style.display = 'block';
-            SpeechService.speak(currentLanguage === 'zh' ? '拖动小节线，把4拍分到一个房间里！' : 'Drag the bar line to close the room after 4 beats!');
+            SpeechService.speak(currentLanguage === 'zh' ? '拖动连接器，把4拍分到一个车厢里！' : 'Drag the coupler to connect the train car after 4 beats!');
         };
 
         // Practice Drag and Drop
         const pDrag = document.getElementById('prac-bar-line-drag');
-        const pDrop = document.querySelector('.l5-prac-dz');
+        const pDrops = document.querySelectorAll('.l5-prac-dz');
         const pFeedback = document.getElementById('l5-prac-feedback');
 
         pDrag.ondragstart = (e) => {
@@ -2985,33 +3211,48 @@ function attachLessonListeners(type, level) {
             pDrag.style.opacity = '1';
         };
 
-        pDrop.ondragover = (e) => e.preventDefault();
-        pDrop.ondragenter = (e) => e.preventDefault();
-        pDrop.ondrop = (e) => {
-            e.preventDefault();
-            const type = e.dataTransfer.getData('type');
-            if (type === 'barline') {
-                SoundService.playSuccess();
-                pDrag.style.visibility = 'hidden';
-                pDrop.style.display = 'none';
-                document.getElementById('prac-built-barline').style.display = 'block';
-                const overlay = document.getElementById('prac-room-overlay');
-                overlay.style.display = 'block';
-                
-                // Sparkle animation
-                overlay.animate([ {opacity: 0.2}, {opacity: 0.6}, {opacity: 0.2} ], { duration: 600, iterations: 2 });
-                playNote(261.63, 0.4); setTimeout(() => playNote(329.63, 0.4), 200); setTimeout(() => playNote(392.00, 0.6), 400);
+        pDrops.forEach(drop => {
+            drop.ondragover = (e) => e.preventDefault();
+            drop.ondragenter = (e) => e.preventDefault();
+            drop.ondrop = (e) => {
+                e.preventDefault();
+                const type = e.dataTransfer.getData('type');
+                if (type === 'barline') {
+                    if (drop.classList.contains('wrong-dz')) {
+                        SoundService.playWrong();
+                        pFeedback.innerText = currentLanguage === 'zh' ? '那个连接器不合适！我们需要4拍！' : 'That coupler doesn\'t fit! We need 4 beats!';
+                        pFeedback.style.color = "var(--accent-red)";
+                        SpeechService.speak(currentLanguage === 'zh' ? '那个连接器不合适！我们需要4拍！' : 'That coupler doesn\'t fit! We need 4 beats!');
+                        return;
+                    }
 
-                pFeedback.innerText = currentLanguage === 'zh' ? '✨ 完美！房间建好了！' : '✨ Perfect! Room closed!';
-                pFeedback.style.color = "var(--accent-green)";
-                btnMinigame.style.display = 'inline-block';
-            }
-        };
+                    SoundService.playSuccess();
+                    pDrag.style.visibility = 'hidden';
+                    drop.style.background = 'transparent';
+                    drop.style.border = 'none';
+                    const line = document.getElementById('prac-built-barline');
+                    if(line) {
+                        line.style.display = 'block';
+                        drop.appendChild(line);
+                    }
+                    const overlay = document.getElementById('prac-room-overlay');
+                    overlay.style.display = 'block';
+                    
+                    // Sparkle animation
+                    overlay.animate([ {opacity: 0.2}, {opacity: 0.6}, {opacity: 0.2} ], { duration: 600, iterations: 2 });
+                    playNote(261.63, 0.4); setTimeout(() => playNote(329.63, 0.4), 200); setTimeout(() => playNote(392.00, 0.6), 400);
+
+                    pFeedback.innerText = currentLanguage === 'zh' ? '✨ 完美！车厢连接好了！' : '✨ Perfect! Train car connected!';
+                    pFeedback.style.color = "var(--accent-green)";
+                    btnMinigame.style.display = 'inline-block';
+                }
+            };
+        });
 
         btnMinigame.onclick = () => {
             pracArea.style.display = 'none';
             mgArea.style.display = 'block';
-            SpeechService.speak(currentLanguage === 'zh' ? '把小节线放在轨道上，让小火车通过！' : 'Place the bar line so the train can pass!');
+            SpeechService.speak(currentLanguage === 'zh' ? '把连接器放在确的位置上，让小火车通过！' : 'Place the couplers so the train can pass!');
         };
 
         // MiniGame Drag and Drop
@@ -3055,7 +3296,7 @@ function attachLessonListeners(type, level) {
                         
                         const filledCount = Array.from(mDrops).filter(d => d.dataset.filled === "true").length;
                         if (filledCount === 2) {
-                            mFeedback.innerText = currentLanguage === 'zh' ? '👍 轨道拼接好了，开动火车试试！' : '👍 Tracks placed, start the train!';
+                            mFeedback.innerText = currentLanguage === 'zh' ? '👍 车厢连接好了，开动火车试试！' : '👍 Couplers connected, start the train!';
                         }
                     }
                 };
@@ -3072,7 +3313,7 @@ function attachLessonListeners(type, level) {
         trainStartBtn.onclick = () => {
             const filledCount = Array.from(mDrops).filter(d => d.dataset.filled === "true").length;
             if (filledCount < 2) {
-                mFeedback.innerText = currentLanguage === 'zh' ? '请先放好 2 根小节线！' : 'Please place 2 bar lines first!';
+                mFeedback.innerText = currentLanguage === 'zh' ? '请先放好 2 个连接器！' : 'Please place 2 couplers first!';
                 return;
             }
 
@@ -3129,7 +3370,9 @@ function attachLessonListeners(type, level) {
                     clearInterval(chugInterval);
                     SoundService.playWrong();
                     trainOverlay.style.display = 'flex';
-                    SpeechService.speak(currentLanguage === 'zh' ? '哎呀！让我们修理一下节奏！房间里必须有4拍！' : "Let's fix the rhythm! Rooms need 4 beats!");
+                    const trnEmoji = document.getElementById('mg-train-emoji');
+                    if(trnEmoji) { trnEmoji.classList.remove('train-shake'); void trnEmoji.offsetWidth; trnEmoji.classList.add('train-shake'); }
+                    SpeechService.speak(currentLanguage === 'zh' ? '哎呀！让我们修理一下节奏！每节车厢必须有4拍！' : "Let's fix the rhythm! Cars need 4 beats!");
                 }, 1500);
             }
         };
