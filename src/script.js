@@ -1584,10 +1584,10 @@ function renderInteractiveLesson(type, level) {
                         <div id="l2-tutorial" class="l2-section active">
                             <div class="l-left">
                                 <div id="l2-tut-stage" style="display:none; text-align:center; padding: 20px; width:100%;">
-                                    <div style="background:var(--white); border-radius:30px; padding:30px; max-width:250px; margin:0 auto; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 3px solid var(--color-bg-alt);">
+                                    <div style="background:var(--white); border-radius:30px; padding:30px; max-width:250px; margin:0 auto; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 3px solid #eee;">
                                         <svg width="150" height="220" viewBox="0 0 100 150" style="overflow:visible;">
-                                            <rect id="tut-note-stem" x="65" y="20" width="8" height="90" fill="var(--color-bg-alt)" rx="4" style="transition:all 0.4s cubic-bezier(0.4, 0, 0.2, 1);" />
-                                            <ellipse id="tut-note-head" cx="45" cy="105" rx="28" ry="18" fill="var(--color-bg-alt)" transform="rotate(-25 45 105)" style="transition:all 0.4s cubic-bezier(0.4, 0, 0.2, 1);" />
+                                            <rect id="tut-note-stem" x="54" y="20" width="6" height="80" fill="#ddd" rx="3" style="transition:all 0.4s cubic-bezier(0.4, 0, 0.2, 1); transform-origin: 57px 100px;" />
+                                            <ellipse id="tut-note-head" cx="38" cy="95" rx="20" ry="14" fill="#ddd" style="transition:all 0.4s cubic-bezier(0.4, 0, 0.2, 1); transform-origin: 38px 95px; transform: rotate(-20deg);" />
                                         </svg>
                                     </div>
                                     <div id="l2-tut-text" style="font-weight:900; font-size:2.5rem; color:var(--text-main); min-height:80px; margin-top:30px; display:flex; align-items:center; justify-content:center;"></div>
@@ -2004,6 +2004,15 @@ function renderInteractiveLesson(type, level) {
                                 <div id="vision-feedback" class="feedback-msg" style="height: 40px; font-size:1.5rem;"></div>
                                 <div id="vision-target-note" style="font-size: 2rem; font-weight: 800; color: var(--accent-purple); margin-bottom: 20px;"></div>
                                 <button id="vision-start-game" class="action-btn">🎮 ${currentLanguage === 'zh' ? '听音辩位' : 'Match Pitch'}</button>
+                                
+                                <div class="mic-controls" style="margin-top:20px;">
+                                    <button id="vision-record-start" class="action-btn" style="background:var(--accent-red);">🎤 ${currentLanguage === 'zh' ? '开始录音' : 'Start Recording'}</button>
+                                    <button id="vision-record-stop" class="action-btn" style="display:none; background:var(--accent-orange);">🛑 ${currentLanguage === 'zh' ? '停止' : 'Stop'}</button>
+                                    <div id="record-status" style="margin-top:10px; font-size:1.2rem; min-height:24px;"></div>
+                                </div>
+                                <div id="mic-visualizer" style="display:none; width: 100%; height: 20px; background: #ddd; border-radius: 10px; margin-top: 10px; position: relative; overflow: hidden;">
+                                    <div id="mic-bar" style="position: absolute; bottom: 0; left: 0; width: 0%; height: 100%; background: var(--accent-green); transition: width 0.1s;"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -2386,7 +2395,7 @@ function attachLessonListeners(type, level) {
                 
                 // Animate Head
                 tutHead.style.fill = 'var(--accent-red)';
-                tutHead.style.transform = 'rotate(-20deg) scale(1.2) translate(-5px, -5px)';
+                tutHead.style.transform = 'rotate(-20deg) scale(1.2)';
                 tutText.innerHTML = `<span style="color:var(--accent-red); background:var(--bg-main); padding: 5px 20px; border-radius: 20px; border: 3px solid var(--accent-red);">${currentLanguage === 'zh' ? '符头 (Note Head)' : 'Note Head'}</span>`;
                 
                 SoundService.playSuccess();
@@ -2398,7 +2407,7 @@ function attachLessonListeners(type, level) {
                     // Animate Stem
                     setTimeout(() => {
                         tutStem.style.fill = 'var(--accent-blue)';
-                        tutStem.style.transform = 'translate(-4px, -10px) scale(1.1)';
+                        tutStem.style.transform = 'scale(1.1)';
                         tutText.innerHTML = `<span style="color:var(--accent-blue); background:var(--bg-main); padding: 5px 20px; border-radius: 20px; border: 3px solid var(--accent-blue);">${currentLanguage === 'zh' ? '符杆 (Note Stem)' : 'Note Stem'}</span>`;
                         
                         SoundService.playSuccess();
@@ -3238,13 +3247,17 @@ function attachLessonListeners(type, level) {
                 }
             };
 
-            document.getElementById('vision-start-game').onclick = () => {
-                isPlaying = true;
-                pickNewNote();
-                setTimeout(() => isPlaying = false, 1000);
-            };
+            const visionStartGame = document.getElementById('vision-start-game');
+            if (visionStartGame) {
+                visionStartGame.onclick = () => {
+                    isPlaying = true;
+                    pickNewNote();
+                    setTimeout(() => isPlaying = false, 1000);
+                };
+            }
 
-            startBtn.onclick = async () => {
+            if (startBtn) {
+                startBtn.onclick = async () => {
                 if (!currentTargetFreq) {
                     showFeedback('vision-feedback', currentLanguage === 'zh' ? '先点开始游戏哦！' : 'Start the game first!', 'var(--accent-orange)');
                     return;
@@ -3287,46 +3300,51 @@ function attachLessonListeners(type, level) {
                         if(isRecording && stopBtn.onclick) stopBtn.onclick(); 
                     }, 4000));
 
-                    stopBtn.onclick = () => {
-                        if(!isRecording) return;
-                        isRecording = false;
-                        startBtn.style.display = 'block';
-                        stopBtn.style.display = 'none';
-                        micVisualizer.style.display = 'none';
-                        status.classList.remove('recording-active');
-                        status.innerText = currentLanguage === 'zh' ? '⌛ 正在处理...' : '⌛ Processing...';
-                        
-                        if (audioStream) {
-                            audioStream.getTracks().forEach(t => t.stop());
-                        }
-                        
-                        setTimeout(() => {
-                            if (detectedFreqs.length < 5) {
-                                showFeedback('vision-feedback', currentLanguage === 'zh' ? '没听清楚，唱响一点？' : "Didn't hear clearly, sing louder?", 'var(--accent-red)');
-                                status.innerText = "";
-                                return;
+                    if (stopBtn) {
+                        stopBtn.onclick = () => {
+                            if(!isRecording) return;
+                            isRecording = false;
+                            startBtn.style.display = 'block';
+                            stopBtn.style.display = 'none';
+                            if (micVisualizer) micVisualizer.style.display = 'none';
+                            if (status) {
+                                status.classList.remove('recording-active');
+                                status.innerText = currentLanguage === 'zh' ? '⌛ 正在处理...' : '⌛ Processing...';
                             }
-
-                            detectedFreqs.sort((a,b) => a-b);
-                            const medianPitch = detectedFreqs[Math.floor(detectedFreqs.length/2)];
                             
-                            const diff = Math.abs(medianPitch - currentTargetFreq);
-                            if (diff < 45) { // 45Hz tolerance is generous for kids
-                                showFeedback('vision-feedback', currentLanguage === 'zh' ? '⭐ 太棒了！唱得很准' : '⭐ Great job! Perfect pitch', 'var(--accent-green)');
-                                createConfetti();
-                                setTimeout(pickNewNote, 2000);
-                            } else {
-                                showFeedback('vision-feedback', currentLanguage === 'zh' ? '有点可惜，再试一次？' : 'Not quite, try again!', 'var(--accent-red)');
+                            if (audioStream) {
+                                audioStream.getTracks().forEach(t => t.stop());
                             }
-                            status.innerText = "";
-                        }, 500);
-                    };
+                            
+                            setTimeout(() => {
+                                if (detectedFreqs.length < 5) {
+                                    showFeedback('vision-feedback', currentLanguage === 'zh' ? '没听清楚，唱响一点？' : "Didn't hear clearly, sing louder?", 'var(--accent-red)');
+                                    if (status) status.innerText = "";
+                                    return;
+                                }
+
+                                detectedFreqs.sort((a,b) => a-b);
+                                const medianPitch = detectedFreqs[Math.floor(detectedFreqs.length/2)];
+                                
+                                const diff = Math.abs(medianPitch - currentTargetFreq);
+                                if (diff < 45) { // 45Hz tolerance is generous for kids
+                                    showFeedback('vision-feedback', currentLanguage === 'zh' ? '⭐ 太棒了！唱得很准' : '⭐ Great job! Perfect pitch', 'var(--accent-green)');
+                                    createConfetti();
+                                    setTimeout(pickNewNote, 2000);
+                                } else {
+                                    showFeedback('vision-feedback', currentLanguage === 'zh' ? '有点可惜，再试一次？' : 'Not quite, try again!', 'var(--accent-red)');
+                                }
+                                if (status) status.innerText = "";
+                            }, 500);
+                        };
+                    }
 
                 } catch (err) {
                     console.error(err);
                     showFeedback('vision-feedback', currentLanguage === 'zh' ? '需要麦克风权限哦' : 'Microphone access denied', 'var(--accent-red)');
                 }
             };
+            }
         }
 
         if (level == 2) {
