@@ -600,7 +600,8 @@ function playClap(timeOffset = 0) {
     if (audioCtx.state === 'suspended') audioCtx.resume();
     const time = audioCtx.currentTime + timeOffset;
     
-    const bufferSize = audioCtx.sampleRate * 0.1; // 100ms duration
+    // Noise burst
+    const bufferSize = audioCtx.sampleRate * 0.1;
     const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
     const data = buffer.getChannelData(0);
     for (let i = 0; i < bufferSize; i++) {
@@ -614,15 +615,31 @@ function playClap(timeOffset = 0) {
     filter.type = 'bandpass';
     filter.frequency.value = 1000;
     
-    const gainNode = audioCtx.createGain();
-    gainNode.gain.setValueAtTime(1, time);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, time + 0.1);
+    const noiseGain = audioCtx.createGain();
+    noiseGain.gain.setValueAtTime(1, time);
+    noiseGain.gain.exponentialRampToValueAtTime(0.01, time + 0.1);
     
     noiseSource.connect(filter);
-    filter.connect(gainNode);
-    gainNode.connect(audioCtx.destination);
-    
+    filter.connect(noiseGain);
+    noiseGain.connect(audioCtx.destination);
     noiseSource.start(time);
+    
+    // Add a low thud for the hand impact
+    const osc = audioCtx.createOscillator();
+    osc.type = 'triangle';
+    const oscGain = audioCtx.createGain();
+    
+    osc.frequency.setValueAtTime(200, time);
+    osc.frequency.exponentialRampToValueAtTime(50, time + 0.05);
+    
+    oscGain.gain.setValueAtTime(0.6, time);
+    oscGain.gain.exponentialRampToValueAtTime(0.01, time + 0.05);
+    
+    osc.connect(oscGain);
+    oscGain.connect(audioCtx.destination);
+    
+    osc.start(time);
+    osc.stop(time + 0.1);
 }
 
 // --- PIANO GENERATION & PRACTICE ---
@@ -2563,23 +2580,25 @@ function attachLessonListeners(type, level) {
                     tutBarFill.style.width = '0%';
                     let widthPercent = (ts.beats / 4) * 100;
                     
-                    // Play Claps rather than synth note sweeping
-                    let numClaps = ts.beats >= 1 ? ts.beats : 1;
-                    for(let i=0; i < numClaps; i++) {
-                        // For quarter/eighth, it's just 1 clap at time 0
-                        // For half, claps at 0, 1
-                        // For whole, claps at 0, 1, 2, 3
-                        playClap(i); 
-                    }
-
-                    setTimeout(() => {
-                        tutBarFill.style.transition = `width ${ts.beats}s linear`;
-                        tutBarFill.style.width = widthPercent + '%';
-                    }, 50);
-
                     SpeechService.speak(ts.name, currentLanguage, () => {
-                        step++;
-                        setTimeout(runStep, 1000 + ts.beats*1000);
+                        // Play Claps rather than synth note sweeping
+                        let numClaps = ts.beats >= 1 ? ts.beats : 1;
+                        for(let i=0; i < numClaps; i++) {
+                            // For quarter/eighth, it's just 1 clap at time 0
+                            // For half, claps at 0, 1
+                            // For whole, claps at 0, 1, 2, 3
+                            playClap(i); 
+                        }
+
+                        setTimeout(() => {
+                            tutBarFill.style.transition = `width ${ts.beats}s linear`;
+                            tutBarFill.style.width = widthPercent + '%';
+                        }, 50);
+
+                        setTimeout(() => {
+                            step++;
+                            runStep();
+                        }, ts.beats * 1000 + 1000);
                     });
                 } else {
                     btnPracticeBtn.style.display = 'inline-block';
