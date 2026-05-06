@@ -531,6 +531,27 @@ const noteSVGs = {
     natural: '<svg viewBox="0 0 100 120" style="width:100%;height:100%"><line x1="35" y1="10" x2="35" y2="90" stroke="currentColor" stroke-width="8"/><line x1="65" y1="30" x2="65" y2="110" stroke="currentColor" stroke-width="8"/><line x1="35" y1="40" x2="65" y2="30" stroke="currentColor" stroke-width="8"/><line x1="35" y1="90" x2="65" y2="80" stroke="currentColor" stroke-width="8"/></svg>'
 };
 
+const getTrainEngineSVG = (width=80, height=80) => `
+<svg width="${width}" height="${height}" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <g transform="translate(0, 5)">
+    <path d="M 10 20 L 45 20 L 45 75 L 10 75 Z" fill="#E53935" stroke="#B71C1C" stroke-width="3"/>
+    <path d="M 18 30 L 38 30 L 38 50 L 18 50 Z" fill="#E0F7FA" stroke="#0288D1" stroke-width="2"/>
+    <path d="M 5 15 L 50 15 L 50 25 L 5 25 Z" fill="#424242"/>
+    <path d="M 45 40 L 85 40 L 85 75 L 45 75 Z" fill="#1E88E5" stroke="#1565C0" stroke-width="3"/>
+    <rect x="55" y="40" width="4" height="35" fill="#FFC107"/>
+    <rect x="70" y="40" width="4" height="35" fill="#FFC107"/>
+    <path d="M 65 20 L 75 20 L 75 40 L 65 40 Z" fill="#424242"/>
+    <path d="M 60 10 L 80 10 L 75 20 L 65 20 Z" fill="#616161"/>
+    <path d="M 100 75 L 85 55 L 85 75 Z" fill="#757575"/>
+    <path d="M 95 75 L 88 62 L 88 75 Z" fill="#424242"/>
+    <circle cx="28" cy="80" r="14" fill="#F44336" stroke="#424242" stroke-width="4"/>
+    <circle cx="55" cy="82" r="10" fill="#F44336" stroke="#424242" stroke-width="4"/>
+    <circle cx="80" cy="82" r="10" fill="#F44336" stroke="#424242" stroke-width="4"/>
+    <path d="M 28 80 L 80 82" stroke="#E0E0E0" stroke-width="4" stroke-linecap="round"/>
+  </g>
+</svg>
+`;
+
 function getNoteSVG(type) {
     return `<div class="note-svg-container">${noteSVGs[type] || ''}</div>`;
 }
@@ -1567,10 +1588,7 @@ function openLesson(type, level, withConfetti = true, skipNav = false) {
 
     document.getElementById('lesson-content').innerHTML = `
         <div class="lesson-card">
-            <div class="mascot-bubble" style="justify-content: center;">
-                <div class="mascot">🐱</div>
-                <div id="top-tutorial-text" class="bubble">${data.content}</div>
-            </div>
+            <div id="top-tutorial-text" class="bubble" style="text-align: center; margin-bottom: 20px;">${data.content}</div>
             ${interactiveHtml}
             <div style="margin-top:30px;">
                 <button class="action-btn" onclick="currentLessonState=null; navigateTo('${type}-hub')">${t("done")}</button>
@@ -1899,7 +1917,7 @@ function renderInteractiveLesson(type, level) {
                         <!-- TUTORIAL SECTION -->
                         <div id="l5-tutorial" class="l5-section active">
                             <div class="l-left">
-                                <div id="l5-tut-stage" style="display:none; position:relative; width: 100%; height: 250px; background:linear-gradient(to bottom, #8BE1FF 0%, #D4F4FF 100%); border: 4px solid var(--accent-purple); border-radius: 20px; overflow:hidden; box-shadow: inset 0 0 20px rgba(0,0,0,0.1);">
+                                <div id="l5-tut-stage" style="display:none; position:relative; width: 100%; height: 350px; background:linear-gradient(to bottom, #8BE1FF 0%, #D4F4FF 100%); border: 4px solid var(--accent-purple); border-radius: 20px; overflow:hidden; box-shadow: inset 0 0 20px rgba(0,0,0,0.1);">
                                     <!-- Tracks -->
                                     <div style="position:absolute; bottom: 30px; width:100%; height:35px;">
                                         <div style="position:absolute; bottom:0; width:100%; height:35px; background: repeating-linear-gradient(90deg, transparent, transparent 25px, #5C3A21 25px, #5C3A21 40px);"></div>
@@ -1908,8 +1926,10 @@ function renderInteractiveLesson(type, level) {
                                     <div id="l5-music-house" style="position:absolute; width:100%; height:100%; display:flex; box-sizing:border-box; align-items:flex-end; padding-bottom:60px; justify-content:center; gap: 5px;">
                                         <!-- Train cars will appear here -->
                                     </div>
-                                    <div id="l5-tut-mole" style="font-size: 60px; position:absolute; left: -100px; bottom: 10px; transition: all 1s;">🐹</div>
-                                    <div id="l5-tut-engine" style="display:none; font-size: 80px; position:absolute; left: 100%; transform: scaleX(-1); bottom: 50px; transition: all 1s; filter: drop-shadow(4px 4px 2px rgba(0,0,0,0.3)); z-index: 10;">🚂</div>
+                                    <div id="l5-tut-mole" style="display:none; font-size: 60px; position:absolute; left: -100px; bottom: 10px; transition: all 1s;"></div>
+                                    <div id="l5-tut-engine" style="display:none; position:absolute; left: 100%; bottom: 50px; transition: all 1s; filter: drop-shadow(4px 4px 2px rgba(0,0,0,0.3)); z-index: 10;">
+                                        ${getTrainEngineSVG(100, 100)}
+                                    </div>
                                 </div>
                                 <div id="l5-tut-text" style="font-weight:900; font-size:1.8rem; color:var(--text-main); margin-top:20px; text-align:center; min-height: 80px;"></div>
                             </div>
@@ -1926,7 +1946,7 @@ function renderInteractiveLesson(type, level) {
                         <div id="l5-practice" class="l5-section" style="display:none;">
                             <div class="l-left" style="flex-direction:column; gap:20px;">
                                 <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
-                                    <div style="font-size: 3rem; margin-left: 20px;">🐹</div>
+                                    <div style="font-size: 3rem; margin-left: 20px;"></div>
                                     <div class="drag-item" draggable="true" id="prac-bar-line-drag" data-type="barline" style="width: 20px; height: 100px; background: repeating-linear-gradient(#A0522D, #A0522D 10px, #8B4513 10px, #8B4513 20px); border-radius: 5px; cursor:grab; border: 2px solid #5C3A21; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
                                         <div style="position:absolute; top: 40px; left: -8px; font-size: 20px; transform: rotate(90deg);">🔗</div>
                                     </div>
@@ -1941,8 +1961,16 @@ function renderInteractiveLesson(type, level) {
 
                                     <div class="practice-note-group" style="display:flex; align-items:center; justify-content:space-evenly; width: 100%; max-width: 450px; height: 100px; background: var(--bg-card); border: 3px solid var(--accent-blue); border-radius: 10px; padding: 0; box-sizing: border-box; position:relative; box-shadow: 0 5px 10px rgba(0,0,0,0.2);">
                                         
+                                        <!-- Wheels -->
+                                        <div style="position:absolute; bottom:-12px; left:15px; width:24px; height:24px; background:#424242; border-radius:50%; border:4px solid #9E9E9E; box-sizing:border-box;"></div>
+                                        <div style="position:absolute; bottom:-12px; left:150px; width:24px; height:24px; background:#424242; border-radius:50%; border:4px solid #9E9E9E; box-sizing:border-box;"></div>
+                                        <div style="position:absolute; bottom:-12px; right:15px; width:24px; height:24px; background:#424242; border-radius:50%; border:4px solid #9E9E9E; box-sizing:border-box;"></div>
+                                        <div style="position:absolute; bottom:-12px; right:150px; width:24px; height:24px; background:#424242; border-radius:50%; border:4px solid #9E9E9E; box-sizing:border-box;"></div>
+
                                         <!-- Engine Graphic -->
-                                        <div style="position:absolute; left:-90px; top:-10px; font-size: 60px; transform: scaleX(-1); filter: drop-shadow(4px 4px 2px rgba(0,0,0,0.3)); z-index: 10;">🚂</div>
+                                        <div style="position:absolute; left:-90px; top:-10px; filter: drop-shadow(4px 4px 2px rgba(0,0,0,0.3)); z-index: 10;">
+                                            ${getTrainEngineSVG(80, 80)}
+                                        </div>
 
                                         <!-- Overlay for successful completion -->
                                         <div id="prac-room-overlay" style="position:absolute; left:0; top:0; height:100%; width: 62%; background:rgba(255, 215, 0, 0.4); border-radius: 10px 0 0 10px; display:none; pointer-events:none; z-index:1;"></div>
@@ -2056,12 +2084,12 @@ function renderInteractiveLesson(type, level) {
                                     
                                     <!-- Moving Train -->
                                     <div id="mg-train-container" style="position:absolute; left: -100px; bottom: 50px; transition: left 1s linear; z-index:5;">
-                                        <div id="mg-train-emoji" style="font-size: 80px; transform: scaleX(-1); line-height: 80px; filter: drop-shadow(4px 4px 2px rgba(0,0,0,0.3)); display:inline-block;">🚂</div>
-                                        <div id="mg-train-smoke" style="position:absolute; top:-10px; right:15px; font-size:30px; opacity:0; transition: opacity 0.2s;">💨</div>
+                                        <div id="mg-train-emoji" style="filter: drop-shadow(4px 4px 2px rgba(0,0,0,0.3)); display:inline-block;">${getTrainEngineSVG(100, 100)}</div>
+                                        <div id="mg-train-smoke" style="position:absolute; top:-20px; right:50px; font-size:30px; opacity:0; transition: opacity 0.2s;">💨</div>
                                     </div>
                                     
                                     <div id="mg-train-overlay" style="position:absolute; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:none; align-items:center; justify-content:center; flex-direction:column; z-index:10;">
-                                        <div style="font-size: 80px;">🐹</div>
+                                        <div style="font-size: 80px; transform: scaleX(-1);">${getTrainEngineSVG(80, 80)}</div>
                                         <div style="color:white; font-size:2rem; font-weight:bold; background:var(--accent-red); padding:10px 20px; border-radius:20px; border: 3px solid white; text-align:center;">
                                             ${currentLanguage==='zh'?'哎呀！连接器尺寸不合适！':'Oops! That coupler does not fit!'}
                                         </div>
@@ -2078,7 +2106,10 @@ function renderInteractiveLesson(type, level) {
                                 </div>
                             </div>
                             <div class="l-right">
-                                <h3 id="note-game-title" style="font-size:2rem; color:var(--accent-orange);">🚂 ${currentLanguage === 'zh' ? '小火车找轨道' : 'Train Track Builder'}</h3>
+                                <h3 id="note-game-title" style="font-size:2rem; color:var(--accent-orange); display:flex; align-items:center; gap: 10px;">
+                                    <div style="transform: scaleX(-1)">${getTrainEngineSVG(50, 50)}</div>
+                                    ${currentLanguage === 'zh' ? '小火车找轨道' : 'Train Track Builder'}
+                                </h3>
                                 <p style="font-weight:800; font-size:1.2rem; margin-bottom:10px;">${currentLanguage==='zh'?'把连接器放在正确的位置上（每4拍一节车厢），让小火车通过！注意：蓝色的空心二分音符算2拍哦！':'Place the couplers in the correct spot (4 beats per car) so the train can pass! Note: Blue half notes are 2 beats!'}</p>
                                 <button id="mg-train-start" class="action-btn" style="background:var(--accent-green);">▶️ ${currentLanguage==='zh'?'开动火车':'Start Train'}</button>
                                 <div id="l5-mg-feedback" style="height:40px; font-weight:800; font-size: 1.5rem; color:var(--accent-green); margin-top:10px;"></div>
@@ -2875,7 +2906,7 @@ function attachLessonListeners(type, level) {
                 if (step < tutSteps.length) {
                     const ts = tutSteps[step];
                     if (ts.id === 'intro' || ts.id === 'intro2' || ts.id === 'summary') {
-                        tutImg.innerHTML = '🐹';
+                        tutImg.innerHTML = '⭐';
                         tutImg.style.color = 'var(--text-main)';
                         tutImg.style.textShadow = 'none';
                         tutText.innerText = ts.text;
@@ -3137,12 +3168,12 @@ function attachLessonListeners(type, level) {
                         tutHouse.innerHTML = `
                             <div style="width: 130px; height: 100px; border: 4px solid var(--accent-blue); background: var(--bg-card); display:flex; justify-content:center; align-items:center; border-radius: 10px; position:relative; box-sizing:border-box; box-shadow: 0 4px 6px rgba(0,0,0,0.1);" id="tut-room-1">
                                 <!-- Wheels -->
-                                <div style="position:absolute; bottom:-18px; left:10px; font-size:24px;">🍩</div>
-                                <div style="position:absolute; bottom:-18px; right:10px; font-size:24px;">🍩</div>
+                                <div style="position:absolute; bottom:-12px; left:15px; width:24px; height:24px; background:#424242; border-radius:50%; border:4px solid #9E9E9E; box-sizing:border-box;"></div>
+                                <div style="position:absolute; bottom:-12px; right:15px; width:24px; height:24px; background:#424242; border-radius:50%; border:4px solid #9E9E9E; box-sizing:border-box;"></div>
                             </div>
                             <div style="width: 130px; height: 100px; border: 4px solid var(--accent-blue); background: var(--bg-card); display:flex; justify-content:center; align-items:center; border-radius: 10px; position:relative; display:none; box-sizing:border-box; box-shadow: 0 4px 6px rgba(0,0,0,0.1);" id="tut-room-2">
-                                <div style="position:absolute; bottom:-18px; left:10px; font-size:24px;">🍩</div>
-                                <div style="position:absolute; bottom:-18px; right:10px; font-size:24px;">🍩</div>
+                                <div style="position:absolute; bottom:-12px; left:15px; width:24px; height:24px; background:#424242; border-radius:50%; border:4px solid #9E9E9E; box-sizing:border-box;"></div>
+                                <div style="position:absolute; bottom:-12px; right:15px; width:24px; height:24px; background:#424242; border-radius:50%; border:4px solid #9E9E9E; box-sizing:border-box;"></div>
                             </div>
                         `;
                     } else if (ts.act === 'lines') {
