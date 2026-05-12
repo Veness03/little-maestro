@@ -10,13 +10,13 @@ let currentLessonState = null; // { type, level }
 const ProgressService = {
     data: {
         theory: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-        vision: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
+        sight: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
     },
     load() {
         try {
             const saved = localStorage.getItem('littleMaestroProgress');
             if (saved) {
-                this.data = JSON.parse(saved);
+                const parsed = JSON.parse(saved); if (parsed.vision && !parsed.sight) { parsed.sight = parsed.vision; delete parsed.vision; } this.data = { ...this.data, ...parsed };
             }
         } catch(e) {}
     },
@@ -227,7 +227,7 @@ const translations = {
         "app-title": "Little Maestro",
         "landing-subtitle": "Pick your musical path!",
         "music-theory": "Music Theory",
-        "vision-singing": "Vision Singing",
+        "sight-singing": "Sight Singing",
         "go-arcade": "Go to Arcade 🎮",
         "back": "Back",
         "score": "Score",
@@ -284,11 +284,11 @@ const translations = {
         "theory-lv3": "Level 3: Names and Values",
         "theory-lv4": "Level 4: Musical Symbols",
         "theory-lv5": "Level 5: Bars and Bar Lines",
-        "vision-lv1": "Level 1: Sound of Music (Do Re Mi)",
-        "vision-lv2": "Level 2: Simple Melody",
-        "vision-lv3": "Level 3: Beat",
-        "vision-lv4": "Level 4: Sing the Rhythm",
-        "vision-lv5": "Level 5: Rhythm Practice",
+        "sight-lv1": "Level 1: Sound of Music (Do Re Mi)",
+        "sight-lv2": "Level 2: Simple Melody",
+        "sight-lv3": "Level 3: Beat",
+        "sight-lv4": "Level 4: Sing the Rhythm",
+        "sight-lv5": "Level 5: Rhythm Practice",
         "arcade-subtitle": "Let's make some music!",
         "arcade-title": "Music Arcade",
         "done": "Done!",
@@ -325,7 +325,7 @@ const translations = {
         "app-title": "小小大宗师",
         "landing-subtitle": "开启你的音乐之旅！",
         "music-theory": "音乐理论",
-        "vision-singing": "视唱练习",
+        "sight-singing": "视唱练习",
         "go-arcade": "去游乐场 🎮",
         "back": "返回",
         "score": "得分",
@@ -382,11 +382,11 @@ const translations = {
         "theory-lv3": "第三关: 音符的名称与时值",
         "theory-lv4": "第四关: 音乐中的符号",
         "theory-lv5": "第五关: 小节与小节线",
-        "vision-lv1": "第一关: 音乐之声 (Do Re Mi)",
-        "vision-lv2": "第二关: 简单旋律",
-        "vision-lv3": "第三关: 拍子",
-        "vision-lv4": "第四关: 唱节奏",
-        "vision-lv5": "第五关: 节奏综合练习",
+        "sight-lv1": "第一关: 音乐之声 (Do Re Mi)",
+        "sight-lv2": "第二关: 简单旋律",
+        "sight-lv3": "第三关: 拍子",
+        "sight-lv4": "第四关: 唱节奏",
+        "sight-lv5": "第五关: 节奏综合练习",
         "arcade-subtitle": "一起来玩音乐吧！",
         "arcade-title": "音乐游乐场",
         "done": "完成！",
@@ -500,10 +500,10 @@ function navigateTo(pageId) {
     }
     SpeechService.stop();
 
-    // Clean up Vision Singing intervals
-    if (window._visionInterval) clearInterval(window._visionInterval);
-    if (window._visionTimeouts) window._visionTimeouts.forEach(clearTimeout);
-    window._visionTimeouts = [];
+    // Clean up Sight Singing intervals
+    if (window._sightInterval) clearInterval(window._sightInterval);
+    if (window._sightTimeouts) window._sightTimeouts.forEach(clearTimeout);
+    window._sightTimeouts = [];
 
     // Mascot logic for Theory Page
     if (pageId === 'theory-page') {
@@ -1551,7 +1551,7 @@ const lessonData = {
             zh: { title: "第五关: 小节与小节线", content: "音符住在叫‘小节’的队伍里。你能填满这些火车车厢吗？" }
         }
     },
-    vision: {
+    sight: {
         1: { 
             en: { title: "Level 1: Do Re Mi Fa So", content: "Meet the Note Family! Tap each card to hear them sing." },
             zh: { title: "第一关: Do Re Mi Fa So", content: "认识音符一家人！点击每张卡片听听它们怎么唱。" }
@@ -2120,14 +2120,14 @@ function renderInteractiveLesson(type, level) {
                 `;
         }
     } else {
-        // Vision Singing
+        // Sight Singing
         switch(parseInt(level)) {
             case 1:
                 return `
-                    <div id="vision1-container" class="level-split-container">
+                    <div id="sight1-container" class="level-split-container">
                         
                         <!-- TUTORIAL SECTION -->
-                        <div id="v1-tutorial" class="vision-section active l-split">
+                        <div id="v1-tutorial" class="sight-section active l-split">
                             <div class="l-left">
                                 <div id="v1-tut-stage" style="display:none; text-align:center; padding: 20px;">
                                     <div id="v1-tut-img" style="font-size:120px; transition: transform 0.3s; margin-bottom: 20px;"></div>
@@ -2144,7 +2144,7 @@ function renderInteractiveLesson(type, level) {
                         </div>
 
                         <!-- PRACTICE/GAME SECTION -->
-                        <div id="v1-practice" class="vision-section l-split" style="display:none;">
+                        <div id="v1-practice" class="sight-section l-split" style="display:none;">
                             <div class="l-left" style="gap:20px; align-items:center;">
                                 <div class="pitch-cards">
                                     <div class="pitch-card color-1" data-note="C">Do</div>
@@ -2155,13 +2155,13 @@ function renderInteractiveLesson(type, level) {
                                 </div>
                             </div>
                             <div class="l-right">
-                                <div id="vision-feedback" class="feedback-msg" style="height: 40px; font-size:1.5rem;"></div>
-                                <div id="vision-target-note" style="font-size: 2rem; font-weight: 800; color: var(--accent-purple); margin-bottom: 20px;"></div>
-                                <button id="vision-start-game" class="action-btn">🎮 ${currentLanguage === 'zh' ? '听音辩位' : 'Match Pitch'}</button>
+                                <div id="sight-feedback" class="feedback-msg" style="height: 40px; font-size:1.5rem;"></div>
+                                <div id="sight-target-note" style="font-size: 2rem; font-weight: 800; color: var(--accent-purple); margin-bottom: 20px;"></div>
+                                <button id="sight-start-game" class="action-btn">🎮 ${currentLanguage === 'zh' ? '听音辩位' : 'Match Pitch'}</button>
                                 
                                 <div class="mic-controls" style="margin-top:20px;">
-                                    <button id="vision-record-start" class="action-btn" style="background:var(--accent-red);">🎤 ${currentLanguage === 'zh' ? '开始录音' : 'Start Recording'}</button>
-                                    <button id="vision-record-stop" class="action-btn" style="display:none; background:var(--accent-orange);">🛑 ${currentLanguage === 'zh' ? '停止' : 'Stop'}</button>
+                                    <button id="sight-record-start" class="action-btn" style="background:var(--accent-red);">🎤 ${currentLanguage === 'zh' ? '开始录音' : 'Start Recording'}</button>
+                                    <button id="sight-record-stop" class="action-btn" style="display:none; background:var(--accent-orange);">🛑 ${currentLanguage === 'zh' ? '停止' : 'Stop'}</button>
                                     <div id="record-status" style="margin-top:10px; font-size:1.2rem; min-height:24px;"></div>
                                 </div>
                                 <div id="mic-visualizer" style="display:none; width: 100%; height: 20px; background: #ddd; border-radius: 10px; margin-top: 10px; position: relative; overflow: hidden;">
@@ -2173,10 +2173,10 @@ function renderInteractiveLesson(type, level) {
                 `;
             case 2:
                 return `
-                    <div id="vision2-container" class="level-split-container">
+                    <div id="sight2-container" class="level-split-container">
                         
                         <!-- TUTORIAL SECTION -->
-                        <div id="v2-tutorial" class="vision-section active l-split">
+                        <div id="v2-tutorial" class="sight-section active l-split">
                             <div class="l-left">
                                 <div id="v2-tut-stage" style="display:none; text-align:center; padding: 20px;">
                                     <div id="v2-tut-img" style="font-size:100px; display:flex; justify-content:center; gap:10px; margin-bottom: 20px;"></div>
@@ -2193,7 +2193,7 @@ function renderInteractiveLesson(type, level) {
                         </div>
 
                         <!-- PRACTICE/GAME SECTION -->
-                        <div id="v2-practice" class="vision-section l-split" style="display:none;">
+                        <div id="v2-practice" class="sight-section l-split" style="display:none;">
                             <div class="l-left" style="flex-direction:column; gap:20px;">
                                 <div class="sequence-display" id="sequence-bars" style="height: 60px;"></div>
                                 <div class="pitch-cards mini" style="justify-content:center;">
@@ -2213,10 +2213,10 @@ function renderInteractiveLesson(type, level) {
                 `;
             case 3:
                 return `
-                    <div id="vision3-container" class="level-split-container">
+                    <div id="sight3-container" class="level-split-container">
                         
                         <!-- TUTORIAL SECTION -->
-                        <div id="v3-tutorial" class="vision-section active l-split">
+                        <div id="v3-tutorial" class="sight-section active l-split">
                             <div class="l-left">
                                 <div id="v3-tut-stage" style="display:none; text-align:center; padding: 20px;">
                                     <div id="v3-tut-img" style="font-size:120px; transition: transform 0.1s; margin-bottom: 20px;"></div>
@@ -2233,7 +2233,7 @@ function renderInteractiveLesson(type, level) {
                         </div>
 
                         <!-- PRACTICE/GAME SECTION -->
-                        <div id="v3-practice" class="vision-section l-split" style="display:none;">
+                        <div id="v3-practice" class="sight-section l-split" style="display:none;">
                             <div class="l-left">
                                 <div id="beat-ripple-pad" class="ripple-container" style="margin: 0 auto;">
                                     <span id="heart-beat" class="heart-icon">❤️</span>
@@ -2249,10 +2249,10 @@ function renderInteractiveLesson(type, level) {
                 `;
             case 4:
                 return `
-                    <div id="vision4-container" class="level-split-container">
+                    <div id="sight4-container" class="level-split-container">
                         
                         <!-- TUTORIAL SECTION -->
-                        <div id="v4-tutorial" class="vision-section active l-split">
+                        <div id="v4-tutorial" class="sight-section active l-split">
                             <div class="l-left">
                                 <div id="v4-tut-stage" style="display:none; text-align:center; padding: 20px;">
                                     <div id="v4-tut-img" style="font-size:120px; transition: transform 0.1s; margin-bottom: 20px;"></div>
@@ -2269,7 +2269,7 @@ function renderInteractiveLesson(type, level) {
                         </div>
 
                         <!-- PRACTICE/GAME SECTION -->
-                        <div id="v4-practice" class="vision-section l-split" style="display:none;">
+                        <div id="v4-practice" class="sight-section l-split" style="display:none;">
                             <div class="l-left" style="flex-direction:column; gap:20px;">
                                 <div class="rhythm-tray">
                                     <div class="pattern-display" id="rhythm-pattern" style="justify-content: center; gap: 15px;">
@@ -2292,10 +2292,10 @@ function renderInteractiveLesson(type, level) {
                 `;
             case 5:
                 return `
-                    <div id="vision5-container" class="level-split-container">
+                    <div id="sight5-container" class="level-split-container">
                         
                         <!-- TUTORIAL SECTION -->
-                        <div id="v5-tutorial" class="vision-section active l-split">
+                        <div id="v5-tutorial" class="sight-section active l-split">
                             <div class="l-left">
                                 <div id="v5-tut-stage" style="display:none; text-align:center; padding: 20px;">
                                     <div id="v5-tut-img" style="font-size:120px; transition: transform 0.1s; margin-bottom: 20px;"></div>
@@ -2312,7 +2312,7 @@ function renderInteractiveLesson(type, level) {
                         </div>
 
                         <!-- PRACTICE/GAME SECTION -->
-                        <div id="v5-practice" class="vision-section l-split" style="display:none;">
+                        <div id="v5-practice" class="sight-section l-split" style="display:none;">
                             <div class="l-left" style="align-items:center; flex-direction:column; gap:10px;">
                                 <div class="rhythm-game-frame" style="width:100%; max-width:400px; height: 300px; border-radius:12px; margin-top:20px;">
                                     <div class="game-lane" id="game-lane">
@@ -3426,12 +3426,12 @@ function attachLessonListeners(type, level) {
         };
 
     }
-    if (type === 'vision') {
+    if (type === 'sight') {
         const resetAll = () => {
              // Stop any intervals or timeouts from previous games
-             if (window._visionInterval) clearInterval(window._visionInterval);
-             if (window._visionTimeouts) window._visionTimeouts.forEach(clearTimeout);
-             window._visionTimeouts = [];
+             if (window._sightInterval) clearInterval(window._sightInterval);
+             if (window._sightTimeouts) window._sightTimeouts.forEach(clearTimeout);
+             window._sightTimeouts = [];
         };
         resetAll();
 
@@ -3510,10 +3510,10 @@ function attachLessonListeners(type, level) {
             let audioStream = null;
 
             const cards = document.querySelectorAll('.pitch-card');
-            const startBtn = document.getElementById('vision-record-start');
-            const stopBtn = document.getElementById('vision-record-stop');
+            const startBtn = document.getElementById('sight-record-start');
+            const stopBtn = document.getElementById('sight-record-stop');
             const status = document.getElementById('record-status');
-            const targetDisplay = document.getElementById('vision-target-note');
+            const targetDisplay = document.getElementById('sight-target-note');
             const micVisualizer = document.getElementById('mic-visualizer');
             const micBar = document.getElementById('mic-bar');
 
@@ -3540,9 +3540,9 @@ function attachLessonListeners(type, level) {
                 }
             };
 
-            const visionStartGame = document.getElementById('vision-start-game');
-            if (visionStartGame) {
-                visionStartGame.onclick = () => {
+            const sightStartGame = document.getElementById('sight-start-game');
+            if (sightStartGame) {
+                sightStartGame.onclick = () => {
                     isPlaying = true;
                     pickNewNote();
                     setTimeout(() => isPlaying = false, 1000);
@@ -3552,7 +3552,7 @@ function attachLessonListeners(type, level) {
             if (startBtn) {
                 startBtn.onclick = async () => {
                 if (!currentTargetFreq) {
-                    showFeedback('vision-feedback', currentLanguage === 'zh' ? '先点开始游戏哦！' : 'Start the game first!', 'var(--accent-orange)');
+                    showFeedback('sight-feedback', currentLanguage === 'zh' ? '先点开始游戏哦！' : 'Start the game first!', 'var(--accent-orange)');
                     return;
                 }
                 try {
@@ -3589,7 +3589,7 @@ function attachLessonListeners(type, level) {
                     };
                     checkPitch();
 
-                    window._visionTimeouts.push(setTimeout(() => { 
+                    window._sightTimeouts.push(setTimeout(() => { 
                         if(isRecording && stopBtn.onclick) stopBtn.onclick(); 
                     }, 4000));
 
@@ -3611,7 +3611,7 @@ function attachLessonListeners(type, level) {
                             
                             setTimeout(() => {
                                 if (detectedFreqs.length < 5) {
-                                    showFeedback('vision-feedback', currentLanguage === 'zh' ? '没听清楚，唱响一点？' : "Didn't hear clearly, sing louder?", 'var(--accent-red)');
+                                    showFeedback('sight-feedback', currentLanguage === 'zh' ? '没听清楚，唱响一点？' : "Didn't hear clearly, sing louder?", 'var(--accent-red)');
                                     if (status) status.innerText = "";
                                     return;
                                 }
@@ -3621,11 +3621,11 @@ function attachLessonListeners(type, level) {
                                 
                                 const diff = Math.abs(medianPitch - currentTargetFreq);
                                 if (diff < 45) { // 45Hz tolerance is generous for kids
-                                    showFeedback('vision-feedback', currentLanguage === 'zh' ? '⭐ 太棒了！唱得很准' : '⭐ Great job! Perfect pitch', 'var(--accent-green)');
+                                    showFeedback('sight-feedback', currentLanguage === 'zh' ? '⭐ 太棒了！唱得很准' : '⭐ Great job! Perfect pitch', 'var(--accent-green)');
                                     createConfetti();
                                     setTimeout(pickNewNote, 2000);
                                 } else {
-                                    showFeedback('vision-feedback', currentLanguage === 'zh' ? '有点可惜，再试一次？' : 'Not quite, try again!', 'var(--accent-red)');
+                                    showFeedback('sight-feedback', currentLanguage === 'zh' ? '有点可惜，再试一次？' : 'Not quite, try again!', 'var(--accent-red)');
                                 }
                                 if (status) status.innerText = "";
                             }, 500);
@@ -3634,7 +3634,7 @@ function attachLessonListeners(type, level) {
 
                 } catch (err) {
                     console.error(err);
-                    showFeedback('vision-feedback', currentLanguage === 'zh' ? '需要麦克风权限哦' : 'Microphone access denied', 'var(--accent-red)');
+                    showFeedback('sight-feedback', currentLanguage === 'zh' ? '需要麦克风权限哦' : 'Microphone access denied', 'var(--accent-red)');
                 }
             };
             }
@@ -3843,7 +3843,7 @@ function attachLessonListeners(type, level) {
                 isTapping = true;
                 lastBeatTime = Date.now();
                 
-                window._visionInterval = setInterval(() => {
+                window._sightInterval = setInterval(() => {
                     lastBeatTime = Date.now();
                     heart.classList.add('pulse');
                     playNote(150, 0.1);
@@ -4107,7 +4107,7 @@ function attachLessonListeners(type, level) {
                 }, 20);
 
                 note.dataset.moveInterval = move;
-                window._visionTimeouts.push(setTimeout(spawnNote, 2000 + Math.random() * 2000));
+                window._sightTimeouts.push(setTimeout(spawnNote, 2000 + Math.random() * 2000));
             };
 
             document.getElementById('star-game-start').onclick = () => {
@@ -4175,9 +4175,9 @@ function attachLessonListeners(type, level) {
     }
 }
 
-// Global cleanup for Vision Singing state
-window._visionInterval = null;
-window._visionTimeouts = [];
+// Global cleanup for Sight Singing state
+window._sightInterval = null;
+window._sightTimeouts = [];
 
 function createConfetti() {
     for (let i = 0; i < 30; i++) {
