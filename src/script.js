@@ -2,6 +2,7 @@
  * Little Maestro - Music for Kids
  * Vanilla JavaScript Logic
  */
+import * as Tone from 'tone';
 
 // --- STATE MANAGEMENT & PROGRESS ---
 let currentLanguage = 'en';
@@ -446,6 +447,26 @@ function setLanguage(lang) {
 
     // Refresh current page if needed
     updateDynamicLocalization();
+}
+
+function toggleFullScreen() {
+    const fsBtn = document.getElementById('fs-btn');
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().then(() => {
+            if (fsBtn) fsBtn.innerText = '⤓';
+            if (fsBtn) fsBtn.title = 'Exit Fullscreen';
+        }).catch((err) => {
+            console.log(`Error attempting to enable fullscreen: ${err.message} (${err.name})`);
+            alert(currentLanguage === 'zh' ? '全屏模式在该浏览器中不可用，可能需要点击在新标签页打开应用。' : 'Fullscreen not available here. You may need to open the app in a new tab.');
+        });
+    } else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen().then(() => {
+                if (fsBtn) fsBtn.innerText = '⛶';
+                if (fsBtn) fsBtn.title = 'Toggle Fullscreen';
+            });
+        }
+    }
 }
 
 function updateDynamicLocalization() {
@@ -2581,38 +2602,97 @@ function renderInteractiveLesson(type, level) {
                         <!-- TUTORIAL SECTION -->
                         <div id="v5-tutorial" class="sight-section active l-split">
                             <div class="l-left">
-                                <div id="v5-tut-stage" style="display:none; text-align:center; padding: 20px;">
-                                    <div id="v5-tut-img" style="font-size:120px; transition: transform 0.1s; margin-bottom: 20px;"></div>
-                                    <div id="v5-tut-text" style="font-weight:bold; font-size:1.5rem; color:var(--accent-blue);"></div>
+                                <div id="v5-tut-stage" style="width: 100%; min-height: 350px; background: linear-gradient(to bottom, #111827, #374151); border-radius: 20px; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 2px solid #FCD34D;">
+                                    <div style="position:absolute; top: 10px; width:100%; display:flex; justify-content:space-around; opacity:0.6;">
+                                        <div style="width:50px; height:50px; background:radial-gradient(circle, #FCD34D, transparent); border-radius:50%; filter:blur(10px);"></div>
+                                        <div style="width:50px; height:50px; background:radial-gradient(circle, #60A5FA, transparent); border-radius:50%; filter:blur(10px);"></div>
+                                        <div style="width:50px; height:50px; background:radial-gradient(circle, #F472B6, transparent); border-radius:50%; filter:blur(10px);"></div>
+                                    </div>
+                                    <div id="v5-tut-birdie" style="font-size: 60px; z-index: 10; margin-bottom: 20px;">🐦</div>
+                                    <div id="v5-tut-text" style="color: #fff; font-size: 1.5rem; font-weight: bold; text-align: center; max-width: 80%; z-index: 10; min-height: 60px;"></div>
+                                    
+                                    <div id="v5-tut-cards" style="display:none; flex-wrap:wrap; justify-content:center; gap: 10px; z-index: 10;">
+                                        <div class="v5-song-card" data-song="twinkle">🌟 Twinkle Twinkle<br>Little Star</div>
+                                        <div class="v5-song-card" data-song="boat">🚣 Row Row Row<br>Your Boat</div>
+                                        <div class="v5-song-card" data-song="happy">😊 If You're Happy<br>And You Know It</div>
+                                    </div>
+                                    
+                                    <div id="v5-tut-visuals" style="display:none; width:100%; height:150px; position:absolute; bottom:0; align-items:center; justify-content:center;">
+                                        <div id="v5-tut-star" style="font-size:80px; opacity:0.3; transition: all 0.1s;">⭐</div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="l-right">
-                                <h3 style="color:var(--accent-purple); font-size:2rem;">⭐ ${currentLanguage === 'zh' ? '星光节拍' : 'Star catching beat'}</h3>
-                                <p style="font-size:1.2rem; margin-bottom:20px;">${currentLanguage === 'zh' ? '在星星落在底线时按下鼓！' : 'Tap the drum when the star hits the line!'}</p>
-                                <button id="v5-btn-start-tut" class="action-btn">▶️ ${currentLanguage==='zh'?'开始讲解':'Start Tutorial'}</button>
+                                <h3 style="color:var(--accent-purple); font-size:2rem;">👏 ${currentLanguage === 'zh' ? '跟着歌曲拍手' : 'Song Clapper'}</h3>
+                                <p style="font-size:1.2rem; margin-bottom:20px;">${currentLanguage === 'zh' ? '在歌曲中感受稳定的节拍！' : 'Feel the steady beat in real songs!'}</p>
+                                <button id="v5-btn-start-tut" class="action-btn" style="background:var(--accent-green);">▶️ ${currentLanguage==='zh'?'开始讲解':'Start Tutorial'}</button>
                                 <button id="v5-btn-skip" class="action-btn skip-btn-dynamic" style="display:none; background:var(--accent-orange); margin-right: 10px;">⏭ ${currentLanguage==='zh'?'跳过讲解':'Skip'}</button>
-                                <button id="v5-btn-practice" class="action-btn" style="display:none; background:var(--accent-orange);">🎯 ${currentLanguage==='zh'?'去尝试':'Try it!'}</button>
+                                <button id="v5-btn-practice" class="action-btn" style="display:none; background:var(--accent-blue);">🎯 ${currentLanguage==='zh'?'去练习':'Practice Time!'}</button>
                             </div>
                         </div>
 
-                        <!-- PRACTICE/GAME SECTION -->
+                        <!-- PRACTICE SECTION -->
                         <div id="v5-practice" class="sight-section l-split" style="display:none;">
-                            <div class="l-left" style="align-items:center; flex-direction:column; gap:10px;">
-                                <div class="rhythm-game-frame" style="width:100%; max-width:400px; height: 300px; border-radius:12px; margin-top:20px;">
-                                    <div class="game-lane" id="game-lane">
-                                        <div class="target-line"></div>
+                            <div class="l-left" style="flex-direction:column; gap:20px;">
+                                <div id="v5-prac-stage" style="width: 100%; min-height: 250px; background: linear-gradient(to bottom, #1E1B4B, #312E81); border-radius: 20px; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 2px solid #818CF8;">
+                                    <div id="v5-prac-stars" style="position:absolute; width:100%; height:100%; background-image: radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px); background-size: 90px 90px; opacity:0.3;"></div>
+                                    
+                                    <div style="display:flex; justify-content:center; align-items:center; width:100%; margin-top:20px;">
+                                        <div id="v5-prac-birdie" style="font-size: 50px; margin-right: 20px; transition: transform 0.2s;">🐦</div>
+                                        <div id="v5-prac-lyric" style="color:#A5B4FC; font-size:1.8rem; font-weight:bold; min-height:40px; text-align:center; max-width:60%;">Select a song!</div>
                                     </div>
-                                    <div class="game-ui-overlay">
-                                        <div id="game-score">0</div>
-                                        <div id="game-feedback" class="game-popup-fb"></div>
+                                    
+                                    <div id="v5-prac-rhythm-area" style="position:relative; width: 80%; height: 100px; margin-top:30px; display:flex; justify-content:space-around; align-items:center;">
+                                        <!-- Animated beats go here -->
+                                        <div id="v5-prac-ball" style="display:none; position:absolute; width:30px; height:30px; background:#FCD34D; border-radius:50%; box-shadow:0 0 15px #FCD34D; z-index:20;"></div>
+                                    </div>
+                                </div>
+                                <div id="v5-prac-feedback" style="height: 30px; font-weight: bold; font-size: 1.4rem; color: var(--accent-orange); text-align: center;"></div>
+                            </div>
+                            <div class="l-right">
+                                <h3 style="color:var(--accent-blue); font-size:1.8rem; margin-bottom: 20px;">${currentLanguage === 'zh' ? '选择一首儿歌' : 'Choose a Song'}</h3>
+                                <div id="v5-prac-songs" style="display:flex; flex-direction:column; gap:10px; margin-bottom:20px; width:100%;">
+                                    <button class="v5-prac-song-btn action-btn" data-song="twinkle" style="background:#4F46E5; width:100%;">🌟 Twinkle Twinkle</button>
+                                    <button class="v5-prac-song-btn action-btn" data-song="boat" style="background:#0284C7; width:100%;">🚣 Row Your Boat</button>
+                                    <button class="v5-prac-song-btn action-btn" data-song="happy" style="background:#16A34A; width:100%;">😊 If You're Happy</button>
+                                </div>
+                                <div class="drum-input-area" style="display:flex; justify-content:center;">
+                                    <button id="v5-prac-tap-pad" class="drum-pad-large" style="background:var(--accent-purple); width: 120px; height: 120px; font-size: 50px; border-radius:50%; box-shadow: 0 10px 0 #6A1B9A; display:flex; align-items:center; justify-content:center; cursor:pointer;-webkit-tap-highlight-color: transparent;">👏</button>
+                                </div>
+                                <button id="v5-btn-game" class="action-btn" style="display:none; background:var(--accent-orange); margin-top:20px;">🎮 ${currentLanguage==='zh'?'玩小游戏':'Mini Game'}</button>
+                            </div>
+                        </div>
+
+                        <!-- MINI GAME SECTION -->
+                        <div id="v5-minigame" class="sight-section l-split" style="display:none;">
+                            <div class="l-left" style="flex-direction:column; gap:20px; background:linear-gradient(135deg, #FFDEE9 0%, #B5FFFC 100%); border-radius:20px; padding: 20px; position:relative; overflow:hidden; border: 4px solid #fff; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">
+                                <h3 style="text-align:center; color:#006064; z-index:10;">🎼 ${currentLanguage === 'zh' ? '跟着指挥家' : 'Follow the Conductor'}</h3>
+                                
+                                <div id="v5-mg-stage" style="background:rgba(255,255,255,0.6); border-radius:15px; flex:1; min-height:250px; position:relative; display:flex; flex-direction:column; align-items:center; padding: 20px;">
+                                    <div id="v5-mg-conductor" style="font-size: 80px; z-index: 10; margin-bottom: 20px; transition: transform 0.2s;">🦁</div>
+                                    <div id="v5-mg-lyric" style="font-size: 24px; font-weight: bold; color: #333; min-height: 40px; text-align: center; margin-bottom: 20px;"></div>
+                                    
+                                    <div id="v5-mg-action-icons" style="display:flex; justify-content:center; gap: 20px; height: 60px;">
+                                        <!-- Action icons will appear here -->
+                                    </div>
+                                    
+                                    <div id="v5-mg-progress-container" style="width: 80%; height: 20px; background: #ddd; border-radius: 10px; overflow: hidden; margin-top: auto;">
+                                        <div id="v5-mg-progress-bar" style="width: 0%; height: 100%; background: #4CAF50; transition: width 0.3s;"></div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="l-right">
-                                <div class="drum-input-area" style="display:flex; justify-content:center; margin-bottom:20px;">
-                                    <div id="star-tap-pad" class="drum-pad-large" style="width:100px; height:100px; font-size:50px;">🥁</div>
+                            <div class="l-right" style="justify-content: flex-start; padding-top:20px;">
+                                <div id="v5-mg-bubble" style="background:var(--bg-card); padding:15px; border-radius:15px; box-shadow:0 4px 10px rgba(0,0,0,0.1); margin-bottom:20px; font-size:1.2rem; font-weight:bold; color:var(--text-main);">
+                                    ${currentLanguage === 'zh' ? '选择歌曲，跟着动物指挥家点击屏幕或拍手吧！' : 'Choose a song and tap or clap with the animal conductor!'}
                                 </div>
-                                <button id="star-game-start" class="action-btn" style="background:var(--accent-green);">🚀 ${currentLanguage === 'zh' ? '开始冲刺' : 'Start Game'}</button>
+                                <div id="v5-mg-songs" style="display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-bottom: 20px;">
+                                    <button class="v5-mg-song-btn action-btn sm" data-song="twinkle">🌟</button>
+                                    <button class="v5-mg-song-btn action-btn sm" data-song="boat">🚣</button>
+                                    <button class="v5-mg-song-btn action-btn sm" data-song="happy">😊</button>
+                                </div>
+                                <div class="drum-input-area" style="display:flex; justify-content:center; margin-top: auto;">
+                                    <button id="v5-mg-tap-pad" class="drum-pad-large" style="background:#FF9800; width: 100px; height: 100px; font-size: 40px; border-radius:15px; box-shadow: 0 8px 0 #F57C00; display:flex; align-items:center; justify-content:center; cursor:pointer;-webkit-tap-highlight-color: transparent;">👏</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -5634,106 +5714,369 @@ function attachLessonListeners(type, level) {
 
             const btnStartTut = document.getElementById('v5-btn-start-tut');
             const btnPracticeBtn = document.getElementById('v5-btn-practice');
+            const btnMinigame = document.getElementById('v5-btn-game');
+            const btnSkip = document.getElementById('v5-btn-skip');
+            
+            const tutStage = document.getElementById('v5-tut-stage');
             const tutArea = document.getElementById('v5-tutorial');
             const pracArea = document.getElementById('v5-practice');
-            const tutStage = document.getElementById('v5-tut-stage');
-            const tutImg = document.getElementById('v5-tut-img');
-            const tutText = document.getElementById('v5-tut-text');
+            const mgArea = document.getElementById('v5-minigame');
 
+            const SONGS = {
+                twinkle: {
+                    name: "Twinkle Twinkle Little Star",
+                    bpm: 100,
+                    notes: [
+                        {time: "0:0:0", note: "C4", dur: "8n"}, {time: "0:1:0", note: "C4", dur: "8n"},
+                        {time: "0:2:0", note: "G4", dur: "8n"}, {time: "0:3:0", note: "G4", dur: "8n"},
+                        {time: "1:0:0", note: "A4", dur: "8n"}, {time: "1:1:0", note: "A4", dur: "8n"},
+                        {time: "1:2:0", note: "G4", dur: "4n"},
+                        {time: "2:0:0", note: "F4", dur: "8n"}, {time: "2:1:0", note: "F4", dur: "8n"},
+                        {time: "2:2:0", note: "E4", dur: "8n"}, {time: "2:3:0", note: "E4", dur: "8n"},
+                        {time: "3:0:0", note: "D4", dur: "8n"}, {time: "3:1:0", note: "D4", dur: "8n"},
+                        {time: "3:2:0", note: "C4", dur: "4n"}
+                    ],
+                    beats: ["0:0:0","0:1:0","0:2:0","0:3:0","1:0:0","1:1:0","1:2:0","1:3:0",
+                            "2:0:0","2:1:0","2:2:0","2:3:0","3:0:0","3:1:0","3:2:0","3:3:0"]
+                },
+                boat: {
+                    name: "Row Your Boat",
+                    bpm: 110,
+                    notes: [
+                         {time: "0:0:0", note: "C4", dur: "4n"},  {time: "0:1:0", note: "C4", dur: "4n"},
+                         {time: "0:2:0", note: "C4", dur: "8n"},  {time: "0:2:2", note: "D4", dur: "8n"},
+                         {time: "0:3:0", note: "E4", dur: "4n"},  
+                         {time: "1:0:0", note: "E4", dur: "8n"},  {time: "1:0:2", note: "D4", dur: "8n"},
+                         {time: "1:1:0", note: "E4", dur: "8n"},  {time: "1:1:2", note: "F4", dur: "8n"},
+                         {time: "1:2:0", note: "G4", dur: "2n"}
+                    ],
+                    beats: ["0:0:0","0:1:0","0:2:0","0:3:0","1:0:0","1:1:0","1:2:0","1:3:0"]
+                },
+                happy: {
+                    name: "If You're Happy & You Know It",
+                    bpm: 120,
+                    notes: [
+                        {time: "0:0:0", note: "C4", dur: "8n"}, {time: "0:0:2", note: "C4", dur: "8n"},
+                        {time: "0:1:0", note: "F4", dur: "8n"}, {time: "0:1:2", note: "F4", dur: "8n"},
+                        {time: "0:2:0", note: "F4", dur: "8n"}, {time: "0:2:2", note: "F4", dur: "8n"},
+                        {time: "0:3:0", note: "F4", dur: "4n"},
+                        {time: "1:0:0", note: "E4", dur: "8n"}, {time: "1:0:2", note: "F4", dur: "8n"},
+                        {time: "1:1:0", note: "G4", dur: "2n"}
+                    ],
+                    beats: ["0:0:0","0:1:0","0:2:0","0:3:0","1:0:0","1:1:0","1:2:0","1:3:0"],
+                    actions: {"1:2:0":"clap", "1:3:0":"clap"}
+                }
+            };
+            
+            let synth = null;
+            let currentPart = null;
+            let beatEvents = [];
+            
+            const stopAllMusic = () => {
+                if(currentPart) currentPart.dispose();
+                beatEvents.forEach(e => Tone.Transport.clear(e));
+                beatEvents = [];
+                Tone.Transport.stop();
+                Tone.Transport.cancel(0);
+            };
+
+            const initSynth = async () => {
+                if(!synth) {
+                    await Tone.start();
+                    synth = new Tone.Synth({
+                        oscillator: { type: "sine" },
+                        envelope: { attack: 0.05, decay: 0.2, sustain: 0.2, release: 1.5 }
+                    }).toDestination();
+                }
+            };
+
+            let isMicListening = false;
+            let micStream = null;
+            const startMic = async (onClap) => {
+                if (isMicListening) return;
+                try {
+                    micStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+                    const audioCtx = Tone.getContext().rawContext;
+                    const source = audioCtx.createMediaStreamSource(micStream);
+                    const analyser = audioCtx.createAnalyser();
+                    analyser.fftSize = 512;
+                    source.connect(analyser);
+                    const dataArray = new Uint8Array(analyser.frequencyBinCount);
+                    
+                    let clapping = false;
+                    const detect = () => {
+                        if(!isMicListening) return;
+                        analyser.getByteFrequencyData(dataArray);
+                        let sum = 0;
+                        for(let i=0; i<dataArray.length;i++) sum += dataArray[i];
+                        const avg = sum / dataArray.length;
+                        if(avg > 90 && !clapping) {
+                            clapping = true;
+                            onClap();
+                            setTimeout(()=> {clapping = false}, 200); 
+                        }
+                        window._clapDetectorFrame = requestAnimationFrame(detect);
+                    };
+                    isMicListening = true;
+                    detect();
+                } catch(e) {
+                    console.warn("Mic not available", e);
+                }
+            };
+            
+            const stopMic = () => {
+                isMicListening = false;
+                if(window._clapDetectorFrame) cancelAnimationFrame(window._clapDetectorFrame);
+                if(micStream) micStream.getTracks().forEach(t=>t.stop());
+            };
+
+            // TUTORIAL
             const tutSteps = [
-                { emoji: '📦', text: currentLanguage === 'zh' ? '在音乐里，长长短短的节奏被装进了一个个小节里。' : 'In music, rhythms are put together into measures.' },
-                { emoji: '⭐', text: currentLanguage === 'zh' ? '我们要练习综合的节奏。把星星想象成节奏，它会落向底线。' : 'Let us practice combined rhythms. Stars are like rhythms falling to the line.' },
-                { emoji: '🥁', text: currentLanguage === 'zh' ? '当星星刚好落到底部时，精准地按下小鼓吧！' : 'Tap the drum exactly when the star reaches the bottom line!' }
+                { emoji: '👋', text: currentLanguage === 'zh' ? '你好！今天我们来跟着儿歌拍手！' : 'Hi! Today we will clap along with songs!' },
+                { emoji: '🎵', text: currentLanguage === 'zh' ? '仔细听，在每一下稳定的节拍上拍手。' : 'Listen closely, and clap on every steady beat.' },
+                { emoji: '🌟', text: currentLanguage === 'zh' ? '当星星闪烁时，就是拍手的时候！' : 'When the star flashes, it means it is time to clap!' }
             ];
 
-            btnStartTut.onclick = () => {
+            btnStartTut.onclick = async () => {
+                await initSynth();
                 btnStartTut.style.display = 'none';
-                tutStage.style.display = 'block';
-
+                tutStage.style.display = 'flex';
+                
                 let step = 0;
                 const runStep = () => {
+                    const tutText = document.getElementById('v5-tut-text');
+                    const birdie = document.getElementById('v5-tut-birdie');
                     if (step < tutSteps.length) {
                         const ts = tutSteps[step];
-                        tutImg.innerHTML = ts.emoji;
                         tutText.innerText = ts.text;
-                        
                         SoundService.playSuccess();
-                        
+                        birdie.style.transform = 'translateY(-20px)';
+                        setTimeout(() => birdie.style.transform = '', 300);
                         SpeechService.speak(ts.text, currentLanguage, () => {
-                            tutImg.style.transform = 'translateY(30px)';
-                            setTimeout(() => { if(tutImg) tutImg.style.transform = 'none'; }, 300);
                             step++;
                             setTimeout(runStep, 800);
                         });
-
                     } else {
                         btnPracticeBtn.style.display = 'inline-block';
-                        SpeechService.speak(currentLanguage==='zh'?'准备好了吗？开始打节拍！':'Ready? Start tapping!');
+                        document.getElementById('v5-tut-cards').style.display = 'flex';
+                        tutText.innerText = currentLanguage==='zh'?'准备好了吗？去试试吧！':'Ready? Practice Time!';
+                        SpeechService.speak(currentLanguage==='zh'?'准备好了吗？去试试吧！':'Ready? Practice Time!');
                     }
                 };
                 runStep();
             };
 
-            btnPracticeBtn.onclick = () => {
+            btnPracticeBtn.onclick = async () => {
+                await initSynth();
+                stopAllMusic();
                 tutArea.style.display = 'none';
                 pracArea.style.display = 'flex';
             };
 
-            const lane = document.getElementById('game-lane');
-            const pad = document.getElementById('star-tap-pad');
-            let score = 0;
-            let gameActive = false;
+            // PRACTICE
+            const playSong = async (songId, visualizerCallback, onEnd) => {
+                await initSynth();
+                stopAllMusic();
+                const song = SONGS[songId];
+                Tone.Transport.bpm.value = song.bpm;
+                
+                currentPart = new Tone.Part((time, value) => {
+                    synth.triggerAttackRelease(value.note, value.dur, time);
+                }, song.notes).start(0);
 
-            const spawnNote = () => {
-                if (!gameActive) return;
-                const note = document.createElement('div');
-                note.className = 'game-note-circle';
-                note.style.left = '100%';
-                lane.appendChild(note);
-
-                let pos = 100;
-                const move = setInterval(() => {
-                    pos -= 1;
-                    note.style.left = pos + '%';
-                    if (pos < -10) {
-                        clearInterval(move);
-                        note.remove();
-                    }
-                }, 20);
-
-                note.dataset.moveInterval = move;
-                window._sightTimeouts.push(setTimeout(spawnNote, 2000 + Math.random() * 2000));
-            };
-
-            document.getElementById('star-game-start').onclick = () => {
-                if (gameActive) return;
-                gameActive = true;
-                score = 0;
-                document.getElementById('game-score').innerText = score;
-                spawnNote();
-            };
-
-            pad.onclick = () => {
-                playNote(100, 0.1);
-                const notes = document.querySelectorAll('.game-note-circle');
-                let hit = false;
-                notes.forEach(n => {
-                    const pos = parseFloat(n.style.left);
-                    if (pos > 10 && pos < 30) {
-                        hit = true;
-                        score += 10;
-                        document.getElementById('game-score').innerText = score;
-                        n.classList.add('hit');
-                        clearInterval(parseInt(n.dataset.moveInterval));
-                        setTimeout(() => n.remove(), 200);
-                        
-                        const popup = document.getElementById('game-feedback');
-                        popup.innerText = "PERFECT! ⭐";
-                        popup.classList.add('show');
-                        setTimeout(() => popup.classList.remove('show'), 500);
-                    }
+                song.beats.forEach((bTime) => {
+                    let eid = Tone.Transport.schedule((time) => {
+                        Tone.Draw.schedule(() => {
+                            visualizerCallback(time, bTime);
+                        }, time);
+                    }, bTime);
+                    beatEvents.push(eid);
                 });
+
+                Tone.Transport.start();
+                
+                let lengthParts = song.beats[song.beats.length-1].split(':');
+                let durMs = (((parseInt(lengthParts[0]) * 4) + parseInt(lengthParts[1]) + 1) * (60/song.bpm) * 1000) + 1500;
+                setTimeout(() => {
+                    Tone.Transport.stop();
+                    if(onEnd) onEnd();
+                }, durMs);
             };
+
+            const fireworkEffect = (parent) => {
+                for(let i=0; i<8; i++){
+                    let f = document.createElement('div');
+                    f.style.position='absolute'; f.style.width='10px'; f.style.height='10px';
+                    f.style.background='#FCD34D'; f.style.borderRadius='50%';
+                    f.style.top='50%'; f.style.left='50%';
+                    parent.appendChild(f);
+                    let angle = (i/8)*Math.PI*2;
+                    let tx = Math.cos(angle)*60; let ty = Math.sin(angle)*60;
+                    f.animate([
+                        {transform:'translate(-50%,-50%) scale(1)', opacity:1},
+                        {transform:`translate(calc(-50% + ${tx}px),calc(-50% + ${ty}px)) scale(0)`, opacity:0}
+                    ], {duration:600, easing:'ease-out'});
+                    setTimeout(()=>f.remove(), 600);
+                }
+            };
+            
+            let lastBeatTime = 0;
+            let pracScore = 0;
+
+            const handlePracClap = () => {
+                SoundService.playNote(400, 0.1); 
+                const pracPad = document.getElementById('v5-prac-tap-pad');
+                pracPad.style.transform = 'scale(0.9)';
+                setTimeout(()=>pracPad.style.transform='', 100);
+
+                const nowSec = Tone.Transport.seconds;
+                const beatSec = Tone.Time(lastBeatTime).toSeconds();
+                
+                if(Math.abs(nowSec - beatSec) < 0.4) {
+                    const bBall = document.getElementById('v5-prac-ball');
+                    fireworkEffect(bBall.parentElement);
+                    bBall.style.background = '#4ADE80';
+                    bBall.style.boxShadow = '0 0 20px #4ADE80';
+                    document.getElementById('v5-prac-birdie').innerText = '🤩';
+                    
+                    const fb = document.getElementById('v5-prac-feedback');
+                    fb.innerText = 'PERFECT! 🎉';
+                    fb.style.color = '#4ADE80';
+                    fb.style.opacity = '1';
+                    pracScore++;
+                    setTimeout(()=>fb.style.opacity='0', 500);
+                }
+            };
+
+            document.getElementById('v5-prac-tap-pad').addEventListener('pointerdown', handlePracClap);
+            
+            document.querySelectorAll('.v5-prac-song-btn').forEach(btn => {
+                btn.onclick = () => {
+                    const sid = btn.dataset.song;
+                    const sd = SONGS[sid];
+                    document.getElementById('v5-prac-lyric').innerText = sd.name;
+                    document.getElementById('v5-prac-birdie').innerText = '🎶';
+                    const ra = document.getElementById('v5-prac-rhythm-area');
+                    
+                    ra.innerHTML = '<div id="v5-prac-ball" style="position:absolute; width:40px; height:40px; background:#FCD34D; border-radius:50%; box-shadow:0 0 15px #FCD34D; z-index:20; bottom:0; transition:left 0.1s linear;"></div>';
+                    const ball = document.getElementById('v5-prac-ball');
+                    
+                    for(let i=0; i<sd.beats.length; i++){
+                        let s = document.createElement('div');
+                        s.innerText = '⭐'; s.style.fontSize='30px'; 
+                        s.style.opacity='0.3'; s.style.transition='all 0.2s';
+                        s.style.position = 'absolute';
+                        s.style.left = (i/(sd.beats.length-1)*100) + '%';
+                        s.style.transform = 'translateX(-50%)';
+                        s.style.bottom = '30px';
+                        s.id = 'prac-star-'+i;
+                        ra.appendChild(s);
+                    }
+                    
+                    startMic(handlePracClap);
+                    
+                    let beatIdx = 0;
+                    playSong(sid, (time, bTime) => {
+                        lastBeatTime = bTime;
+                        const st = document.getElementById('prac-star-'+beatIdx);
+                        if(st){
+                            st.style.opacity = '1';
+                            st.style.transform = 'translateX(-50%) scale(1.5)';
+                            setTimeout(()=> {
+                                if(st) { st.style.opacity='0.5'; st.style.transform='translateX(-50%) scale(1)'; }
+                            }, 300);
+                        }
+                        
+                        ball.style.background = '#FCD34D'; 
+                        ball.style.boxShadow = '0 0 15px #FCD34D';
+                        ball.style.left = (beatIdx/(sd.beats.length-1)*100) + '%';
+                        ball.animate([ {bottom:'0px'}, {bottom:'40px'}, {bottom:'0px'} ], {duration: 60000/sd.bpm, easing:'ease-in-out'});
+                        
+                        beatIdx++;
+                    }, () => {
+                        stopMic();
+                        btnMinigame.style.display = 'inline-block';
+                        const fb = document.getElementById('v5-prac-feedback');
+                        fb.innerText = currentLanguage==='zh'?`你拍中了 ${pracScore} 次！`:`You scored ${pracScore} claps!`;
+                        fb.style.opacity = '1';
+                        pracScore = 0;
+                    });
+                }
+            });
+
+            // MINI GAME
+            btnMinigame.onclick = () => {
+                stopAllMusic(); stopMic();
+                pracArea.style.display = 'none';
+                mgArea.style.display = 'flex';
+            };
+
+            let mgScore = 0;
+            const handleMgClap = () => {
+                SoundService.playNote(500, 0.1); 
+                const pad = document.getElementById('v5-mg-tap-pad');
+                pad.style.transform = 'scale(0.9)'; setTimeout(()=>pad.style.transform='', 100);
+
+                const nowSec = Tone.Transport.seconds;
+                const beatSec = Tone.Time(lastBeatTime).toSeconds();
+                
+                if(Math.abs(nowSec - beatSec) < 0.4) {
+                    mgScore++;
+                    const cond = document.getElementById('v5-mg-conductor');
+                    cond.innerText = '🦁👍'; setTimeout(()=>cond.innerText='🦁', 400);
+                    cond.style.transform = 'translateY(-20px)'; setTimeout(()=>cond.style.transform='', 200);
+                    
+                    const bar = document.getElementById('v5-mg-progress-bar');
+                    let targetSc = 10;
+                    let pct = Math.min((mgScore/targetSc)*100, 100);
+                    bar.style.width = pct + '%';
+                    
+                    if(pct >= 100) {
+                        createConfetti();
+                        document.getElementById('v5-mg-bubble').innerText = currentLanguage==='zh'?'太棒了！你是节奏大师！':'Amazing! You are a Rhythm Master!';
+                        SoundService.playSuccess();
+                        stopAllMusic();
+                    }
+                } else {
+                    const cond = document.getElementById('v5-mg-conductor');
+                    cond.innerText = '🦁❌'; setTimeout(()=>cond.innerText='🦁', 400);
+                }
+            };
+            
+            document.getElementById('v5-mg-tap-pad').addEventListener('pointerdown', handleMgClap);
+
+            document.querySelectorAll('.v5-mg-song-btn').forEach(btn => {
+                btn.onclick = () => {
+                    const sid = btn.dataset.song;
+                    const sd = SONGS[sid];
+                    document.getElementById('v5-mg-lyric').innerText = sd.name;
+                    mgScore = 0;
+                    document.getElementById('v5-mg-progress-bar').style.width = '0%';
+                    document.getElementById('v5-mg-bubble').innerText = currentLanguage==='zh'?'准备...拍！':'Ready... CLAP!';
+                    
+                    startMic(handleMgClap);
+                    
+                    const actionsBox = document.getElementById('v5-mg-action-icons');
+                    actionsBox.innerHTML = '';
+                    
+                    playSong(sid, (time, bTime) => {
+                        lastBeatTime = bTime;
+                        const cond = document.getElementById('v5-mg-conductor');
+                        cond.style.transform = 'scale(1.1)'; setTimeout(()=>cond.style.transform='', 200);
+                        
+                        if(sd.actions && sd.actions[bTime]){
+                            cond.innerText = '🦁👏';
+                            let ai = document.createElement('div');
+                            ai.innerText = '👏 CLAP!'; ai.style.fontSize='30px'; ai.style.fontWeight='bold'; ai.style.color='#FF5722';
+                            actionsBox.innerHTML = ''; actionsBox.appendChild(ai);
+                            ai.animate([{transform:'scale(0)'},{transform:'scale(1.2)'},{transform:'scale(1)'}], {duration:300});
+                        } else {
+                            cond.innerText = '🦁';
+                            actionsBox.innerHTML = '';
+                        }
+                    }, () => { stopMic(); });
+                }
+            });
         }
     }
 
@@ -5790,6 +6133,7 @@ function createConfetti() {
 // GLOBALS EXPORT
 // ==========================================
 window.setLanguage = setLanguage;
+window.toggleFullScreen = toggleFullScreen;
 window.openLesson = openLesson;
 window.navigateTo = navigateTo;
 window.startMiniGame = startMiniGame;
@@ -5803,3 +6147,15 @@ window.playCardSound = () => {
     playNote(523.25, 0.1); 
     setTimeout(() => playNote(659.25, 0.2), 80); 
 };
+
+// Listen for fullscreen changes (like pressing Esc)
+document.addEventListener('fullscreenchange', () => {
+    const fsBtn = document.getElementById('fs-btn');
+    if (!document.fullscreenElement) {
+        if (fsBtn) fsBtn.innerText = '⛶';
+        if (fsBtn) fsBtn.title = 'Toggle Fullscreen';
+    } else {
+        if (fsBtn) fsBtn.innerText = '⤓';
+        if (fsBtn) fsBtn.title = 'Exit Fullscreen';
+    }
+});
