@@ -2,7 +2,6 @@
  * Little Maestro - Music for Kids
  * Vanilla JavaScript Logic
  */
-import * as Tone from 'tone';
 
 // --- STATE MANAGEMENT & PROGRESS ---
 let currentLanguage = 'en';
@@ -447,26 +446,6 @@ function setLanguage(lang) {
 
     // Refresh current page if needed
     updateDynamicLocalization();
-}
-
-function toggleFullScreen() {
-    const fsBtn = document.getElementById('fs-btn');
-    if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().then(() => {
-            if (fsBtn) fsBtn.innerText = '⤓';
-            if (fsBtn) fsBtn.title = 'Exit Fullscreen';
-        }).catch((err) => {
-            console.log(`Error attempting to enable fullscreen: ${err.message} (${err.name})`);
-            alert(currentLanguage === 'zh' ? '全屏模式在该浏览器中不可用，可能需要点击在新标签页打开应用。' : 'Fullscreen not available here. You may need to open the app in a new tab.');
-        });
-    } else {
-        if (document.exitFullscreen) {
-            document.exitFullscreen().then(() => {
-                if (fsBtn) fsBtn.innerText = '⛶';
-                if (fsBtn) fsBtn.title = 'Toggle Fullscreen';
-            });
-        }
-    }
 }
 
 function updateDynamicLocalization() {
@@ -5768,25 +5747,52 @@ function attachLessonListeners(type, level) {
                 }
             };
             
-            let synth = null;
-            let currentPart = null;
-            let beatEvents = [];
+            // Vanilla JS replacement for Tone.js Playback
+            let currentTimeouts = [];
+            let currentOscillators = [];
+            let musicStartTime = 0;
+            let lastBeatTimeStr = "";
+            let currentBpm = 100;
             
             const stopAllMusic = () => {
-                if(currentPart) currentPart.dispose();
-                beatEvents.forEach(e => Tone.Transport.clear(e));
-                beatEvents = [];
-                Tone.Transport.stop();
-                Tone.Transport.cancel(0);
+                currentTimeouts.forEach(id => window.clearTimeout(id));
+                currentTimeouts = [];
+                currentOscillators.forEach(osc => {
+                    try { osc.stop(); } catch(e) {}
+                    try { osc.disconnect(); } catch(e) {}
+                });
+                currentOscillators = [];
             };
 
+            const noteFreqs = {
+                "C4": 261.63, "C#4": 277.18, "D4": 293.66, "D#4": 311.13, "E4": 329.63, "F4": 349.23, "F#4": 369.99, "G4": 392.00, "G#4": 415.30, "A4": 440.00, "A#4": 466.16, "B4": 493.88,
+                "C5": 523.25, "C#5": 554.37, "D5": 587.33, "D#5": 622.25, "E5": 659.25, "F5": 698.46, "F#5": 739.99, "G5": 783.99, "G#5": 830.61, "A5": 880.00, "A#5": 932.33, "B5": 987.77
+            };
+            function noteToFreq(note) { return noteFreqs[note] || 440; }
+            
+            function timeToSeconds(timeStr, bpm) {
+                if(!timeStr) return 0;
+                const parts = timeStr.split(':');
+                const bars = parseInt(parts[0]) || 0;
+                const quarters = parseInt(parts[1]) || 0;
+                const sixteenths = parseInt(parts[2]) || 0;
+                const totalQuarters = (bars * 4) + quarters + (sixteenths / 4);
+                return totalQuarters * (60 / bpm);
+            }
+            
+            function durToSeconds(durStr, bpm) {
+                let quarters = 1;
+                if (durStr === "8n") quarters = 0.5;
+                if (durStr === "4n") quarters = 1;
+                if (durStr === "2n") quarters = 2;
+                if (durStr === "16n") quarters = 0.25;
+                if (durStr === "1m") quarters = 4;
+                return quarters * (60 / bpm);
+            }
+
             const initSynth = async () => {
-                if(!synth) {
-                    await Tone.start();
-                    synth = new Tone.Synth({
-                        oscillator: { type: "sine" },
-                        envelope: { attack: 0.05, decay: 0.2, sustain: 0.2, release: 1.5 }
-                    }).toDestination();
+                if(audioCtx && audioCtx.state === 'suspended') {
+                    await audioCtx.resume();
                 }
             };
 
@@ -5796,7 +5802,6 @@ function attachLessonListeners(type, level) {
                 if (isMicListening) return;
                 try {
                     micStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-                    const audioCtx = Tone.getContext().rawContext;
                     const source = audioCtx.createMediaStreamSource(micStream);
                     const analyser = audioCtx.createAnalyser();
                     analyser.fftSize = 512;
@@ -5878,29 +5883,52 @@ function attachLessonListeners(type, level) {
                 await initSynth();
                 stopAllMusic();
                 const song = SONGS[songId];
-                Tone.Transport.bpm.value = song.bpm;
+                currentBpm = song.bpm;
+                const bpm = song.bpm;
                 
-                currentPart = new Tone.Part((time, value) => {
-                    synth.triggerAttackRelease(value.note, value.dur, time);
-                }, song.notes).start(0);
-
-                song.beats.forEach((bTime) => {
-                    let eid = Tone.Transport.schedule((time) => {
-                        Tone.Draw.schedule(() => {
-                            visualizerCallback(time, bTime);
-                        }, time);
-                    }, bTime);
-                    beatEvents.push(eid);
+                const startTimeOffset = 0.2;
+                musicStartTime = audioCtx.currentTime + startTimeOffset;
+                
+                song.notes.forEach((noteData) => {
+                    const sec = timeToSeconds(noteData.time, bpm);
+                    const durSec = durToSeconds(noteData.dur, bpm);
+                    const freq = noteToFreq(noteData.note);
+                    
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    
+                    osc.type = "sine";
+                    osc.frequency.value = freq;
+                    
+                    const t = musicStartTime + sec;
+                    gain.gain.setValueAtTime(0, t);
+                    gain.gain.linearRampToValueAtTime(0.5, t + Math.min(0.05, durSec * 0.1));
+                    gain.gain.setValueAtTime(0.5, t + durSec - Math.min(0.1, durSec * 0.1));
+                    gain.gain.linearRampToValueAtTime(0, t + durSec);
+                    
+                    osc.start(t);
+                    osc.stop(t + durSec);
+                    currentOscillators.push(osc);
                 });
 
-                Tone.Transport.start();
+                song.beats.forEach((bTime) => {
+                    const sec = timeToSeconds(bTime, bpm);
+                    const delayMs = (startTimeOffset + sec) * 1000;
+                    
+                    let tid = setTimeout(() => {
+                        visualizerCallback(sec, bTime);
+                    }, delayMs);
+                    currentTimeouts.push(tid);
+                });
                 
                 let lengthParts = song.beats[song.beats.length-1].split(':');
                 let durMs = (((parseInt(lengthParts[0]) * 4) + parseInt(lengthParts[1]) + 1) * (60/song.bpm) * 1000) + 1500;
-                setTimeout(() => {
-                    Tone.Transport.stop();
+                let endTid = setTimeout(() => {
                     if(onEnd) onEnd();
-                }, durMs);
+                }, durMs + startTimeOffset * 1000);
+                currentTimeouts.push(endTid);
             };
 
             const fireworkEffect = (parent) => {
@@ -5920,7 +5948,6 @@ function attachLessonListeners(type, level) {
                 }
             };
             
-            let lastBeatTime = 0;
             let pracScore = 0;
 
             const handlePracClap = () => {
@@ -5929,10 +5956,10 @@ function attachLessonListeners(type, level) {
                 pracPad.style.transform = 'scale(0.9)';
                 setTimeout(()=>pracPad.style.transform='', 100);
 
-                const nowSec = Tone.Transport.seconds;
-                const beatSec = Tone.Time(lastBeatTime).toSeconds();
+                const nowSec = audioCtx.currentTime - musicStartTime;
+                const beatSec = timeToSeconds(lastBeatTimeStr, currentBpm);
                 
-                if(Math.abs(nowSec - beatSec) < 0.4) {
+                if(musicStartTime > 0 && Math.abs(nowSec - beatSec) < 0.4) {
                     const bBall = document.getElementById('v5-prac-ball');
                     fireworkEffect(bBall.parentElement);
                     bBall.style.background = '#4ADE80';
@@ -5977,7 +6004,7 @@ function attachLessonListeners(type, level) {
                     
                     let beatIdx = 0;
                     playSong(sid, (time, bTime) => {
-                        lastBeatTime = bTime;
+                        lastBeatTimeStr = bTime;
                         const st = document.getElementById('prac-star-'+beatIdx);
                         if(st){
                             st.style.opacity = '1';
@@ -6017,10 +6044,10 @@ function attachLessonListeners(type, level) {
                 const pad = document.getElementById('v5-mg-tap-pad');
                 pad.style.transform = 'scale(0.9)'; setTimeout(()=>pad.style.transform='', 100);
 
-                const nowSec = Tone.Transport.seconds;
-                const beatSec = Tone.Time(lastBeatTime).toSeconds();
+                const nowSec = audioCtx.currentTime - musicStartTime;
+                const beatSec = timeToSeconds(lastBeatTimeStr, currentBpm);
                 
-                if(Math.abs(nowSec - beatSec) < 0.4) {
+                if(musicStartTime > 0 && Math.abs(nowSec - beatSec) < 0.4) {
                     mgScore++;
                     const cond = document.getElementById('v5-mg-conductor');
                     cond.innerText = '🦁👍'; setTimeout(()=>cond.innerText='🦁', 400);
@@ -6060,7 +6087,7 @@ function attachLessonListeners(type, level) {
                     actionsBox.innerHTML = '';
                     
                     playSong(sid, (time, bTime) => {
-                        lastBeatTime = bTime;
+                        lastBeatTimeStr = bTime;
                         const cond = document.getElementById('v5-mg-conductor');
                         cond.style.transform = 'scale(1.1)'; setTimeout(()=>cond.style.transform='', 200);
                         
@@ -6133,7 +6160,6 @@ function createConfetti() {
 // GLOBALS EXPORT
 // ==========================================
 window.setLanguage = setLanguage;
-window.toggleFullScreen = toggleFullScreen;
 window.openLesson = openLesson;
 window.navigateTo = navigateTo;
 window.startMiniGame = startMiniGame;
@@ -6147,15 +6173,3 @@ window.playCardSound = () => {
     playNote(523.25, 0.1); 
     setTimeout(() => playNote(659.25, 0.2), 80); 
 };
-
-// Listen for fullscreen changes (like pressing Esc)
-document.addEventListener('fullscreenchange', () => {
-    const fsBtn = document.getElementById('fs-btn');
-    if (!document.fullscreenElement) {
-        if (fsBtn) fsBtn.innerText = '⛶';
-        if (fsBtn) fsBtn.title = 'Toggle Fullscreen';
-    } else {
-        if (fsBtn) fsBtn.innerText = '⤓';
-        if (fsBtn) fsBtn.title = 'Exit Fullscreen';
-    }
-});
