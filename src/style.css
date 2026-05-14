@@ -34,7 +34,7 @@ body {
     width: 100%;
     max-width: 1400px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 5px 10px;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -1888,7 +1888,6 @@ body {
 /* Specific Section Themes Refinements */
 #landing-page {
     background: linear-gradient(135deg, #FF9A9E 0%, #FAD0C4 100%);
-    padding-top: 50px;
     justify-content: center;
 }
 
@@ -3132,15 +3131,15 @@ body {
     background: transparent !important;
     position: relative;
     width: 100%;
-    height: 100vh;
-    max-height: 100vh;
+    min-height: calc(100vh - 20px);
     overflow: hidden;
     margin: 0;
     padding: 0;
     display: none;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    padding-top: max(2vh, 10px);
     animation: pageFadeIn 0.5s ease-out forwards;
 }
 
@@ -3481,9 +3480,9 @@ body {
 /* Responsive adjustments */
 @media (max-width: 900px) {
     .premium-glass {
-        padding: 40px 20px !important;
-        margin: 20px !important;
-        width: 95% !important;
+        padding: 20px 15px !important;
+        margin: 5px auto !important;
+        width: 98% !important;
     }
     .landing-premium-page .landing-grid {
         flex-direction: column;
@@ -3528,7 +3527,7 @@ body {
 #app-container {
     width: 100% !important;
     max-width: min(96vw, 1400px) !important;
-    padding: 10px !important;
+    padding: 0px 5px !important;
     margin: 0 auto !important;
 }
 
