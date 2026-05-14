@@ -55,7 +55,7 @@ body {
 }
 
 /* Split Layout */
-.l1-section, .l2-section, .l3-section, .l4-section, .l5-section, .vision-section {
+.l1-section, .l2-section, .l3-section, .l4-section, .l5-section, .sight-section {
     width: 100%;
     animation: fadeIn 0.4s ease;
     display: flex;
@@ -98,7 +98,7 @@ body {
 }
 
 @media (max-width: 768px) and (orientation: portrait) {
-    .l1-section, .l2-section, .l3-section, .l4-section, .l5-section, .vision-section {
+    .l1-section, .l2-section, .l3-section, .l4-section, .l5-section, .sight-section {
         flex-direction: column;
     }
     .l-left, .l-right {
@@ -479,6 +479,7 @@ header {
     background: white;
     border-radius: 4px;
     overflow: hidden;
+    width: 100%;
 }
 
 .key {
@@ -1117,7 +1118,7 @@ header {
     background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%); 
     color: white; 
 }
-.vision-path { 
+.sight-path { 
     background: linear-gradient(135deg, #9C27B0 0%, #6A1B9A 100%); 
     color: white; 
 }
@@ -1547,7 +1548,7 @@ header {
     .landing-grid { flex-direction: column; align-items: center; }
     .main-title { font-size: 2.5rem; }
     .menu-grid { grid-template-columns: repeat(2, 1fr); }
-    .piano-keyboard { height: 150px; }
+    .piano-keyboard { height: 200px; }
     .drum-pad { width: 150px; height: 150px; }
 }
 
@@ -1858,7 +1859,7 @@ body {
 }
 
 .theory-hub-path { border: 4px solid #4CAF50; }
-.vision-path { border: 4px solid #9C27B0; }
+.sight-path { border: 4px solid #9C27B0; }
 
 .arcade-cta-btn {
     background: linear-gradient(135deg, var(--accent-purple) 0%, #673AB7 100%);
@@ -1913,7 +1914,7 @@ body {
     background: linear-gradient(135deg, #FFEB3B 0%, #FBC02D 100%) !important; 
     border: 4px solid #F57F17 !important;
 }
-.vision-path { 
+.sight-path { 
     background: linear-gradient(135deg, #E1BEE7 0%, #BA68C8 100%) !important; 
     border: 4px solid #7B1FA2 !important;
 }
@@ -2692,7 +2693,7 @@ body {
 
 .tip-bubble.show { opacity: 1; }
 
-/* Vision Singing Pitches */
+/* Sight Singing Pitches */
 .pitch-cards {
     display: flex;
     flex-wrap: wrap;
@@ -2772,7 +2773,7 @@ body {
 }
 
 
-/* Vision Singing Enhancements */
+/* Sight Singing Enhancements */
 .pitch-container {
     display: flex;
     flex-direction: column;
@@ -3321,7 +3322,7 @@ body {
     animation-delay: 0.1s;
 }
 
-.landing-premium-page .vision-path {
+.landing-premium-page .sight-path {
     background: linear-gradient(135deg, #CE93D8 0%, #8E24AA 100%) !important;
     animation-delay: 0.2s;
 }
@@ -3730,7 +3731,7 @@ h2 {
     }
     
     .piano-keyboard {
-        height: 120px !important;
+        height: 180px !important;
     }
     .white-key {
         border-width: 1px !important;
@@ -3839,5 +3840,25 @@ h2 {
     #app-container {
         display: none !important;
     }
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.5); opacity: 0; }
+  80% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes floatCloud {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(400px); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes fishSwim {
+  0% { transform: translateX(0) translateY(0); }
+  25% { transform: translateX(20px) translateY(-10px); }
+  50% { transform: translateX(40px) translateY(0); }
+  75% { transform: translateX(20px) translateY(10px); }
+  100% { transform: translateX(0) translateY(0); }
 }
 
