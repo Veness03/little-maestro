@@ -284,7 +284,7 @@ const translations = {
         "theory-lv3": "Level 3: Names and Values",
         "theory-lv4": "Level 4: Musical Symbols",
         "theory-lv5": "Level 5: Bars and Bar Lines",
-        "sight-lv1": "Level 1: Sound of Music (Do Re Mi)",
+        "sight-lv1": "Level 1: The Rainbow Note Kingdom",
         "sight-lv2": "Level 2: Simple Melody",
         "sight-lv3": "Level 3: Beat",
         "sight-lv4": "Level 4: Sing the Rhythm",
@@ -382,7 +382,7 @@ const translations = {
         "theory-lv3": "第三关: 音符的名称与时值",
         "theory-lv4": "第四关: 音乐中的符号",
         "theory-lv5": "第五关: 小节与小节线",
-        "sight-lv1": "第一关: 音乐之声 (Do Re Mi)",
+        "sight-lv1": "第一关: 彩虹音符王国",
         "sight-lv2": "第二关: 简单旋律",
         "sight-lv3": "第三关: 拍子",
         "sight-lv4": "第四关: 唱节奏",
@@ -1565,8 +1565,8 @@ const lessonData = {
             zh: { title: "第三关: 音乐的心跳", content: "音乐也有心跳！点击鼓面来感受稳定的节拍。" }
         },
         4: { 
-            en: { title: "Level 4: Sing the Rhythm", content: "Look at the stars and tap along. Can you follow the moving star?" },
-            zh: { title: "第四关: 唱节奏", content: "看着星星跟着点击。你能跟着移动的星星吗？" }
+            en: { title: "Level 4: Little Footprints", content: "Learn about the different lengths of notes!" },
+            zh: { title: "第四关: 小小足迹", content: "认识各种长短不同的音符！" }
         },
         5: { 
             en: { title: "Level 5: Rhythm Challenge", content: "Ready for the big test? Tap the rhythm as accurately as you can!" },
@@ -2096,153 +2096,405 @@ function renderInteractiveLesson(type, level) {
                                         <button id="mg-train-retry" class="action-btn" style="background:var(--accent-blue); margin-top:20px;">↺ ${currentLanguage==='zh'?'再试一次':'Retry'}</button>
                                     </div>
                                 </div>
-                                <div style="display:flex; justify-content:center; margin-top:20px; gap:20px;">
-                                     <div class="drag-item mg-bar-line-drag" draggable="true" id="mg-bar-line-drag-1" data-type="barline" style="width: 25px; height: 100px; background: repeating-linear-gradient(#A0522D, #A0522D 10px, #8B4513 10px, #8B4513 20px); border-radius: 5px; cursor:grab; border: 2px solid #5C3A21; position:relative; box-shadow: 0 5px 10px rgba(0,0,0,0.2);">
-                                        <div style="position:absolute; top: 40px; left: -4px; font-size: 20px; transform: rotate(90deg);">🔗</div>
-                                     </div>
-                                     <div class="drag-item mg-bar-line-drag" draggable="true" id="mg-bar-line-drag-2" data-type="barline" style="width: 25px; height: 100px; background: repeating-linear-gradient(#A0522D, #A0522D 10px, #8B4513 10px, #8B4513 20px); border-radius: 5px; cursor:grab; border: 2px solid #5C3A21; position:relative; box-shadow: 0 5px 10px rgba(0,0,0,0.2);">
-                                        <div style="position:absolute; top: 40px; left: -4px; font-size: 20px; transform: rotate(90deg);">🔗</div>
-                                     </div>
-                                </div>
-                            </div>
-                            <div class="l-right">
-                                <h3 id="note-game-title" style="font-size:2rem; color:var(--accent-orange); display:flex; align-items:center; gap: 10px;">
-                                    <div style="transform: scaleX(-1)">${getTrainEngineSVG(50, 50)}</div>
-                                    ${currentLanguage === 'zh' ? '小火车找轨道' : 'Train Track Builder'}
-                                </h3>
-                                <p style="font-weight:800; font-size:1.2rem; margin-bottom:10px;">${currentLanguage==='zh'?'把连接器放在正确的位置上（每4拍一节车厢），让小火车通过！注意：蓝色的空心二分音符算2拍哦！':'Place the couplers in the correct spot (4 beats per car) so the train can pass! Note: Blue half notes are 2 beats!'}</p>
-                                <button id="mg-train-start" class="action-btn" style="background:var(--accent-green);">▶️ ${currentLanguage==='zh'?'开动火车':'Start Train'}</button>
-                                <div id="l5-mg-feedback" style="height:40px; font-weight:800; font-size: 1.5rem; color:var(--accent-green); margin-top:10px;"></div>
                             </div>
                         </div>
-
                     </div>
                 `;
         }
     } else {
-        // Sight Singing
         switch(parseInt(level)) {
             case 1:
                 return `
                     <div id="sight1-container" class="level-split-container">
-                        
                         <!-- TUTORIAL SECTION -->
-                        <div id="v1-tutorial" class="sight-section active l-split">
-                            <div class="l-left">
-                                <div id="v1-tut-stage" style="display:none; text-align:center; padding: 20px;">
-                                    <div id="v1-tut-img" style="font-size:120px; transition: transform 0.3s; margin-bottom: 20px;"></div>
-                                    <div id="v1-tut-text" style="font-weight:bold; font-size:1.5rem; color:var(--accent-blue);"></div>
+                        <div id="v1-tutorial" class="sight-section active l-split" style="flex-direction: column; background: linear-gradient(180deg, #87CEEB 0%, #E0F7FA 100%); position: relative; overflow: hidden; padding: 10px; border-radius: 20px;">
+                            <!-- Clouds backdrop -->
+                            <div style="position:absolute; top:5%; left:10%; font-size:40px; opacity:0.8; animation: floatCloud 20s infinite linear;">☁️</div>
+                            <div style="position:absolute; top:15%; right:5%; font-size:50px; opacity:0.6; animation: floatCloud 25s infinite linear reverse;">☁️</div>
+                            <div style="position:absolute; top:40%; left:2%; font-size:30px; opacity:0.7; animation: floatCloud 15s infinite linear;">☁️</div>
+                            
+                            <div style="display: flex; flex-direction: row; align-items: center; justify-content: center; flex-wrap: wrap; z-index: 2; margin-bottom: 5px; gap: 10px;">
+                                <div class="mascot" style="font-size: 40px; animation: bounce 2s infinite;">🐦</div>
+                                <h1 style="font-size: clamp(1.2rem, 3vw, 1.8rem); margin: 0; color: #ffeb3b; text-shadow: 2px 2px 0px #ff9800, -2px -2px 0px #ff9800, 2px -2px 0px #ff9800, -2px 2px 0px #ff9800; font-family: 'Comic Sans MS', cursive, sans-serif;">🌈 ${currentLanguage==='zh'?'彩虹音符王国':'The Rainbow Note Kingdom'} ✨</h1>
+                                <div class="bubble" style="font-size: clamp(1rem, 2vw, 1.2rem); padding: 5px 10px; border-width: 3px; border-color: #ff9800; background: white; color: #333; margin: 0;" id="v1-tut-bubble">
+                                    ${currentLanguage==='zh'?'欢迎来到彩虹王国！':'Welcome to the Rainbow Note Kingdom!'}
                                 </div>
                             </div>
-                            <div class="l-right">
-                                <h3 style="color:var(--accent-purple); font-size:2rem;">${currentLanguage==='zh'?'发出声音':'Make a Sound'}</h3>
-                                <p style="font-size:1.2rem; margin-bottom:20px;">${currentLanguage==='zh'?'你能唱出相同的声音吗？':'Can you match the pitch?'}</p>
-                                <button id="v1-btn-start-tut" class="action-btn">▶️ ${currentLanguage==='zh'?'开始讲解':'Start Tutorial'}</button>
-                                <button id="v1-btn-skip" class="action-btn skip-btn-dynamic" style="display:none; background:var(--accent-orange); margin-right: 10px;">⏭ ${currentLanguage==='zh'?'跳过讲解':'Skip'}</button>
-                                <button id="v1-btn-practice" class="action-btn" style="display:none; background:var(--accent-orange);">🎯 ${currentLanguage==='zh'?'去尝试':'Try it!'}</button>
+                            
+                            <div id="v1-tut-action-area" style="text-align:center; padding: 5px; width: 100%; z-index: 2; flex: 1; display: flex; flex-direction: column; justify-content: center;">
+                                <div id="v1-tut-creature-stage" style="min-height: 60px; display:flex; justify-content:center; align-items:center; font-size: 60px; margin-bottom: 5px; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform: translateY(20px) scale(0); opacity: 0; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2));"></div>
+                                
+                                <div id="v1-tut-lyrics" style="font-size: clamp(1.2rem, 3vw, 1.8rem); font-weight: 900; color: #E91E63; height: 30px; margin-bottom: 10px; text-shadow: 2px 2px 0px white, -2px -2px 0px white, 2px -2px 0px white, -2px 2px 0px white, 0 4px 10px rgba(0,0,0,0.2);"></div>
+
+                                <!-- GIANT PIANO BRIDGE -->
+                                <div class="piano-container" style="max-width: 800px; width: 100%; margin: 0 auto; padding: 10px; background: transparent; box-shadow: none;">
+                                    <div class="piano-keyboard" id="v1-tut-piano" style="height: 20vh; min-height: 150px; max-height: 250px; border-radius: 20px 20px 0 0; border: 4px solid #FF9800; box-shadow: 0 10px 30px rgba(0,0,0,0.3); background: linear-gradient(180deg, #fff 0%, #f5f5f5 100%);">
+                                        <div class="key white" data-note="C4" style="border-radius: 0 0 15px 15px;"><span style="position:absolute; bottom:15px; width:100%; left:0; text-align:center; font-weight:900; font-size: clamp(0.7rem, 2vw, 1.4rem); color: #F44336; text-shadow: 1px 1px 0px #fff; white-space: nowrap;">Do</span></div>
+                                        <div class="key black" style="left: 11.28%; height: 60%; width: 6%; border-radius: 0 0 8px 8px;"></div>
+                                        <div class="key white" data-note="D4" style="border-radius: 0 0 15px 15px;"><span style="position:absolute; bottom:15px; width:100%; left:0; text-align:center; font-weight:900; font-size: clamp(0.7rem, 2vw, 1.4rem); color: #FF9800; text-shadow: 1px 1px 0px #fff; white-space: nowrap;">Re</span></div>
+                                        <div class="key black" style="left: 25.57%; height: 60%; width: 6%; border-radius: 0 0 8px 8px;"></div>
+                                        <div class="key white" data-note="E4" style="border-radius: 0 0 15px 15px;"><span style="position:absolute; bottom:15px; width:100%; left:0; text-align:center; font-weight:900; font-size: clamp(0.7rem, 2vw, 1.4rem); color: #FFEB3B; -webkit-text-stroke: 1px #F57F17; text-shadow: 1px 1px 0px #fff; white-space: nowrap;">Mi</span></div>
+                                        <div class="key white" data-note="F4" style="border-radius: 0 0 15px 15px;"><span style="position:absolute; bottom:15px; width:100%; left:0; text-align:center; font-weight:900; font-size: clamp(0.7rem, 2vw, 1.4rem); color: #4CAF50; text-shadow: 1px 1px 0px #fff; white-space: nowrap;">Fa</span></div>
+                                        <div class="key black" style="left: 54.14%; height: 60%; width: 6%; border-radius: 0 0 8px 8px;"></div>
+                                        <div class="key white" data-note="G4" style="border-radius: 0 0 15px 15px;"><span style="position:absolute; bottom:15px; width:100%; left:0; text-align:center; font-weight:900; font-size: clamp(0.7rem, 2vw, 1.4rem); color: #2196F3; text-shadow: 1px 1px 0px #fff; white-space: nowrap;">Sol</span></div>
+                                        <div class="key black" style="left: 68.42%; height: 60%; width: 6%; border-radius: 0 0 8px 8px;"></div>
+                                        <div class="key white" data-note="A4" style="border-radius: 0 0 15px 15px;"><span style="position:absolute; bottom:15px; width:100%; left:0; text-align:center; font-weight:900; font-size: clamp(0.7rem, 2vw, 1.4rem); color: #9C27B0; text-shadow: 1px 1px 0px #fff; white-space: nowrap;">La</span></div>
+                                        <div class="key black" style="left: 82.71%; height: 60%; width: 6%; border-radius: 0 0 8px 8px;"></div>
+                                        <div class="key white" data-note="B4" style="border-radius: 0 0 15px 15px;"><span style="position:absolute; bottom:15px; width:100%; left:0; text-align:center; font-weight:900; font-size: clamp(0.7rem, 2vw, 1.4rem); color: #E91E63; text-shadow: 1px 1px 0px #fff; white-space: nowrap;">Ti</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div style="text-align:center; z-index: 2; margin-top: 10px;">
+                                <button id="v1-btn-start-tut" class="action-btn large" style="background:#4CAF50; font-size: 1.4rem; padding: 10px 30px; box-shadow: 0 5px 0 #2E7D32, 0 10px 15px rgba(0,0,0,0.2);">▶️ ${currentLanguage==='zh'?'开始冒险':'Start Adventure'}</button>
+                                <button id="v1-btn-skip" class="action-btn skip-btn-dynamic" style="display:none; background:#9E9E9E; margin-right: 15px; font-size: 1rem; padding: 10px 15px;">⏭ ${currentLanguage==='zh'?'跳过':'Skip'}</button>
+                                <button id="v1-btn-practice" class="action-btn large" style="display:none; margin-left: 10px; background:#FF9800; font-size: 1.4rem; box-shadow: 0 5px 0 #E65100, 0 10px 15px rgba(0,0,0,0.2); padding: 10px 30px;">🎯 ${currentLanguage==='zh'?'去练习':'Practice Time'}</button>
                             </div>
                         </div>
 
-                        <!-- PRACTICE/GAME SECTION -->
-                        <div id="v1-practice" class="sight-section l-split" style="display:none;">
-                            <div class="l-left" style="gap:20px; align-items:center;">
-                                <div class="pitch-cards">
-                                    <div class="pitch-card color-1" data-note="C">Do</div>
-                                    <div class="pitch-card color-2" data-note="D">Re</div>
-                                    <div class="pitch-card color-3" data-note="E">Mi</div>
-                                    <div class="pitch-card color-4" data-note="F">Fa</div>
-                                    <div class="pitch-card color-5" data-note="G">So</div>
+                        <!-- PRACTICE SECTION (Singing) -->
+                        <div id="v1-practice" class="sight-section" style="display:none; flex-direction: column; align-items: center; width:100%; background: linear-gradient(180deg, #B3E5FC 0%, #E1BEE7 100%); position: relative; overflow: hidden; padding: 10px 20px; border-radius: 20px;">
+                            <div style="position:absolute; top:10%; right:10%; font-size:70px; opacity:0.8; animation: floatCloud 22s infinite linear alternate;">☁️</div>
+                            <div style="position:absolute; top:30%; left:5%; font-size:60px; opacity:0.9; animation: floatCloud 18s infinite linear alternate-reverse;">☁️</div>
+
+                            <h2 style="color:#6A1B9A; text-shadow: 2px 2px 0px #fff; margin-bottom:5px; font-size: clamp(1.5rem, 3vw, 2.5rem); font-family: 'Comic Sans MS', cursive, sans-serif; z-index: 2;">☁️ ${currentLanguage==='zh'?'寻找唱歌的音符！':'Find the Singing Note!'}</h2>
+                            <p style="font-weight:900; margin-bottom:5px; font-size: clamp(1rem, 2vw, 1.3rem); color: #4A148C; text-shadow: 1px 1px 0px #fff; z-index: 2;">${currentLanguage==='zh'?'云朵后面藏着谁？唱出正确的音高！':'Who is hiding? Sing the correct pitch!'}</p>
+                            
+                            <div id="v1-prac-stars" style="font-size: 30px; margin-bottom: 5px; color: #FFD54F; letter-spacing: 5px; text-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 2;">☆☆☆</div>
+                            <div id="v1-prac-unlock-hint" style="font-size: clamp(0.9rem, 1.5vw, 1.2rem); color: #fff; font-weight: bold; background: rgba(0,0,0,0.3); padding: 2px 10px; border-radius: 10px; margin-bottom: 10px; z-index: 2;">${currentLanguage==='zh'?'集齐3颗星星解锁小游戏！':'Get 3 stars to unlock Mini Game!'}</div>
+
+                            <!-- Cloud hiding area -->
+                            <div id="prac-cloud-area" style="position: relative; width: 100%; height: 120px; display: flex; justify-content: center; align-items: center; z-index: 2;">
+                                <div id="prac-cloud" style="font-size: 80px; filter: drop-shadow(0 15px 20px rgba(0,0,0,0.2)); cursor: pointer; transition: transform 0.3s; z-index: 3;">☁️</div>
+                                <div id="prac-hidden-note" style="position: absolute; font-size: 70px; opacity: 0; transform: scale(0); transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 2;"></div>
+                            </div>
+
+                            <div class="piano-container" style="max-width: 900px; width: 100%; margin: 0 auto; z-index: 2; padding: 5px; background: transparent; box-shadow: none;">
+                                <div class="piano-keyboard" id="v1-prac-piano" style="height: 15vh; min-height: 100px; max-height: 180px; width: 100%; border-radius: 20px; border: 6px solid #BA68C8; box-shadow: 0 15px 40px rgba(0,0,0,0.2);">
+                                    <div class="key white" data-note="C4"><span style="position:absolute; bottom:15px; left:0; width:100%; text-align:center; font-weight:900; font-size: clamp(0.7rem, 2vw, 1.4rem); color: #F44336; white-space: nowrap;">Do</span></div>
+                                    <div class="key black" style="left: 11.28%; height: 65%; width: 6%;"></div>
+                                    <div class="key white" data-note="D4"><span style="position:absolute; bottom:15px; left:0; width:100%; text-align:center; font-weight:900; font-size: clamp(0.7rem, 2vw, 1.4rem); color: #FF9800; white-space: nowrap;">Re</span></div>
+                                    <div class="key black" style="left: 25.57%; height: 65%; width: 6%;"></div>
+                                    <div class="key white" data-note="E4"><span style="position:absolute; bottom:15px; left:0; width:100%; text-align:center; font-weight:900; font-size: clamp(0.7rem, 2vw, 1.4rem); color: #FFC107; white-space: nowrap;">Mi</span></div>
+                                    <div class="key white" data-note="F4"><span style="position:absolute; bottom:15px; left:0; width:100%; text-align:center; font-weight:900; font-size: clamp(0.7rem, 2vw, 1.4rem); color: #4CAF50; white-space: nowrap;">Fa</span></div>
+                                    <div class="key black" style="left: 54.14%; height: 65%; width: 6%;"></div>
+                                    <div class="key white" data-note="G4"><span style="position:absolute; bottom:15px; left:0; width:100%; text-align:center; font-weight:900; font-size: clamp(0.7rem, 2vw, 1.4rem); color: #2196F3; white-space: nowrap;">Sol</span></div>
+                                    <div class="key black" style="left: 68.42%; height: 65%; width: 6%;"></div>
+                                    <div class="key white" data-note="A4"><span style="position:absolute; bottom:15px; left:0; width:100%; text-align:center; font-weight:900; font-size: clamp(0.7rem, 2vw, 1.4rem); color: #9C27B0; white-space: nowrap;">La</span></div>
+                                    <div class="key black" style="left: 82.71%; height: 65%; width: 6%;"></div>
+                                    <div class="key white" data-note="B4"><span style="position:absolute; bottom:15px; left:0; width:100%; text-align:center; font-weight:900; font-size: clamp(0.7rem, 2vw, 1.4rem); color: #E91E63; white-space: nowrap;">Ti</span></div>
                                 </div>
                             </div>
-                            <div class="l-right">
-                                <div id="sight-feedback" class="feedback-msg" style="height: 40px; font-size:1.5rem;"></div>
-                                <div id="sight-target-note" style="font-size: 2rem; font-weight: 800; color: var(--accent-purple); margin-bottom: 20px;"></div>
-                                <button id="sight-start-game" class="action-btn">🎮 ${currentLanguage === 'zh' ? '听音辩位' : 'Match Pitch'}</button>
-                                
-                                <div class="mic-controls" style="margin-top:20px;">
-                                    <button id="sight-record-start" class="action-btn" style="background:var(--accent-red);">🎤 ${currentLanguage === 'zh' ? '开始录音' : 'Start Recording'}</button>
-                                    <button id="sight-record-stop" class="action-btn" style="display:none; background:var(--accent-orange);">🛑 ${currentLanguage === 'zh' ? '停止' : 'Stop'}</button>
-                                    <div id="record-status" style="margin-top:10px; font-size:1.2rem; min-height:24px;"></div>
-                                </div>
-                                <div id="mic-visualizer" style="display:none; width: 100%; height: 20px; background: #ddd; border-radius: 10px; margin-top: 10px; position: relative; overflow: hidden;">
-                                    <div id="mic-bar" style="position: absolute; bottom: 0; left: 0; width: 0%; height: 100%; background: var(--accent-green); transition: width 0.1s;"></div>
+                            
+                            <div id="sight-feedback" class="feedback-msg" style="min-height: 40px; font-size: clamp(1.2rem, 3vw, 1.8rem); margin-bottom: 10px; font-weight: 900; text-shadow: 2px 2px 0px white, -2px -2px 0px white, 2px -2px 0px white, -2px 2px 0px white; z-index: 2;"></div>
+                            
+                            <button id="sight-start-game" class="action-btn large" style="margin-bottom: 10px; font-size: clamp(1rem, 2vw, 1.4rem); padding: 10px 30px; background: #E91E63; box-shadow: 0 5px 0 #AD1457; z-index: 2;">▶️ ${currentLanguage === 'zh' ? '播放躲藏的音符' : 'Play Hidden Note'}</button>
+                            
+                            <div class="mic-controls" style="width: 100%; max-width: 600px; text-align: center; z-index: 2;">
+                                <button id="sight-record-start" class="action-btn" style="background:#4CAF50; width:100%; margin-bottom:5px; display:inline-block; font-size: clamp(1rem, 2vw, 1.4rem); padding: 10px; box-shadow: 0 5px 0 #2E7D32;">🎤 ${currentLanguage === 'zh' ? '开启麦克风' : 'Enable Mic'}</button>
+                                <button id="sight-record-stop" class="action-btn" style="display:none; background:#FF9800; width:100%; margin-bottom:5px; font-size: clamp(1rem, 2vw, 1.4rem); padding: 10px; box-shadow: 0 5px 0 #E65100;">🛑 ${currentLanguage === 'zh' ? '停止麦克风' : 'Stop Mic'}</button>
+                                <div id="record-status" style="margin-top:5px; font-size: clamp(1rem, 2vw, 1.4rem); min-height: 30px; font-weight: 900; color: #1565C0; text-shadow: 1px 1px 0px #fff;"></div>
+                                <div id="mic-visualizer" style="display:none; width: 100%; height: 20px; background: rgba(255,255,255,0.8); border-radius: 10px; margin-top: 5px; position: relative; overflow: hidden; border: 3px solid #1E88E5;">
+                                    <div id="mic-bar" style="position: absolute; bottom: 0; left: 0; width: 0%; height: 100%; background: linear-gradient(90deg, #4CAF50, #2196F3); transition: width 0.1s;"></div>
                                 </div>
                             </div>
+                            
+                            <div style="text-align:center; z-index: 2; margin-top: 15px;">
+                                <button id="v1-btn-game" class="action-btn large" style="display:none; background:#2196F3; font-size: clamp(1rem, 2vw, 1.4rem); box-shadow: 0 5px 0 #0D47A1; padding: 10px 30px;">🎮 ${currentLanguage==='zh'?'小游戏':'Mini Game'}</button>
+                            </div>
+                        </div>
+                        
+                        <!-- MINIGAME SECTION (Rescue the Lost Notes) -->
+                        <div id="v1-minigame" class="sight-section" style="display:none; flex-direction: column; align-items: center; width: 100%; background: linear-gradient(180deg, #FFF9C4 0%, #FFCC80 100%); padding: 20px; border-radius: 20px; position: relative; overflow: hidden;">
+                            <h2 style="color:#E65100; margin-bottom:10px; font-size: 3rem; font-family: 'Comic Sans MS', cursive, sans-serif; text-shadow: 2px 2px 0px #fff; z-index: 2;">🏠 ${currentLanguage==='zh'?'拯救迷路的音符':'Rescue the Lost Notes'}</h2>
+                            <p style="font-weight:900; margin-bottom:20px; font-size: 1.8rem; color: #BF360C; text-shadow: 1px 1px 0px #fff; z-index: 2;">${currentLanguage==='zh'?'音符们找不到家了！把它们拖进正确颜色的房子里！':'The notes are lost! Drag them to their correct musical homes!'}</p>
+                            
+                            <div id="v1-game-birdie" class="mascot-bubble" style="margin-bottom: 20px; z-index: 2;">
+                                <div class="mascot" style="font-size: 70px;">🐦</div>
+                                <div class="bubble" style="font-size: 1.5rem; font-weight: bold; border-color: #FF5722;" id="v1-game-bubble">
+                                    ${currentLanguage==='zh'?'你能帮它们找到家吗？':'Can you help them go home?'}
+                                </div>
+                            </div>
+                            
+                            <div id="mg-floating-area" style="position: relative; width: 100%; max-width: 900px; height: 200px; display: flex; justify-content: center; align-items: center; gap: 20px; margin-bottom: 30px; z-index: 2;">
+                                <!-- Draggable notes -->
+                            </div>
+
+                            <div id="mg-houses-area" style="width: 100%; max-width: 1000px; display: flex; justify-content: space-around; align-items: flex-end; padding-bottom: 20px; z-index: 2;">
+                                <!-- Dropzone houses -->
+                            </div>
+                            
+                            <button id="v1-btn-finish" class="action-btn large" style="display:none; margin-top:30px; background:#4CAF50; font-size: 2rem; padding: 20px 60px; box-shadow: 0 8px 0 #2E7D32; z-index: 2;">🌟 ${currentLanguage==='zh'?'完成彩虹关卡':'Complete Rainbow Level'} 🌟</button>
+                        </div>
+                        
+                        <!-- Hidden confetti particles container -->
+                            <div id="v1-confetti" style="position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:9999;"></div>
                         </div>
                     </div>
                 `;
             case 2:
                 return `
-                    <div id="sight2-container" class="level-split-container">
+                    <div id="v2-container" style="position:relative; width:100%; min-height:500px; display:flex; flex-direction:column; align-items:center; overflow:hidden;">
                         
-                        <!-- TUTORIAL SECTION -->
-                        <div id="v2-tutorial" class="sight-section active l-split">
-                            <div class="l-left">
-                                <div id="v2-tut-stage" style="display:none; text-align:center; padding: 20px;">
-                                    <div id="v2-tut-img" style="font-size:100px; display:flex; justify-content:center; gap:10px; margin-bottom: 20px;"></div>
-                                    <div id="v2-tut-text" style="font-weight:bold; font-size:1.5rem; color:var(--accent-blue);"></div>
+                        <!-- TUTORIAL START SCREEN -->
+                        <div id="v2-tutorial-start" class="sight-section active" style="display:flex; flex-direction:column; align-items:center; width:100%; padding:20px;">
+                            <h2 style="font-size:3rem; color:var(--accent-purple); margin-bottom:10px;">🎹 ${currentLanguage==='zh'?'简单旋律':'Simple Melody'}</h2>
+                            <div class="mascot-bubble" style="margin-bottom: 30px; z-index: 2;">
+                                <div class="mascot" style="font-size: 80px;">🐦</div>
+                                <div class="bubble" style="font-size: 1.5rem; font-weight: bold; border-color: #FF5722;" id="v2-intro-bubble">
+                                    ${currentLanguage==='zh'?'请选择一首歌来唱！':'Choose a song to sing!'}
                                 </div>
                             </div>
-                            <div class="l-right">
-                                <h3 style="color:var(--accent-purple); font-size:2rem;">${currentLanguage==='zh'?'音乐记忆':'Melody Memory'}</h3>
-                                <p style="font-size:1.2rem; margin-bottom:20px;">${currentLanguage==='zh'?'像音乐鹦鹉一样模仿！':'Repeat like a musical parrot!'}</p>
-                                <button id="v2-btn-start-tut" class="action-btn">▶️ ${currentLanguage==='zh'?'开始讲解':'Start Tutorial'}</button>
-                                <button id="v2-btn-skip" class="action-btn skip-btn-dynamic" style="display:none; background:var(--accent-orange); margin-right: 10px;">⏭ ${currentLanguage==='zh'?'跳过讲解':'Skip'}</button>
-                                <button id="v2-btn-practice" class="action-btn" style="display:none; background:var(--accent-orange);">🎯 ${currentLanguage==='zh'?'去尝试':'Try it!'}</button>
+                            
+                            <div style="display:flex; justify-content:center; gap:30px; flex-wrap:wrap; margin-top:20px; z-index:2;">
+                                <div class="v2-song-card" data-song="twinkle" style="background:white; border-radius:20px; padding:30px 20px; font-size:1.5rem; font-weight:bold; color:var(--accent-blue); box-shadow:0 10px 20px rgba(0,0,0,0.1); cursor:pointer; transition:transform 0.2s; text-align:center; width:220px; border:4px solid var(--accent-blue);">
+                                    <div style="font-size:4rem; margin-bottom:10px;">🌟</div>
+                                    ${currentLanguage==='zh'?'小星星':'Twinkle Star'}
+                                </div>
+                                <div class="v2-song-card" data-song="boat" style="background:white; border-radius:20px; padding:30px 20px; font-size:1.5rem; font-weight:bold; color:#4CAF50; box-shadow:0 10px 20px rgba(0,0,0,0.1); cursor:pointer; transition:transform 0.2s; text-align:center; width:220px; border:4px solid #4CAF50;">
+                                    <div style="font-size:4rem; margin-bottom:10px;">🚣</div>
+                                    ${currentLanguage==='zh'?'划小船':'Row Your Boat'}
+                                </div>
+                                <div class="v2-song-card" data-song="jingle" style="background:white; border-radius:20px; padding:30px 20px; font-size:1.5rem; font-weight:bold; color:#E91E63; box-shadow:0 10px 20px rgba(0,0,0,0.1); cursor:pointer; transition:transform 0.2s; text-align:center; width:220px; border:4px solid #E91E63;">
+                                    <div style="font-size:4rem; margin-bottom:10px;">🎄</div>
+                                    ${currentLanguage==='zh'?'铃儿响叮当':'Jingle Bells'}
+                                </div>
                             </div>
                         </div>
 
-                        <!-- PRACTICE/GAME SECTION -->
-                        <div id="v2-practice" class="sight-section l-split" style="display:none;">
-                            <div class="l-left" style="flex-direction:column; gap:20px;">
-                                <div class="sequence-display" id="sequence-bars" style="height: 60px;"></div>
-                                <div class="pitch-cards mini" style="justify-content:center;">
-                                    <div class="pitch-card mini color-1" data-note="C">Do</div>
-                                    <div class="pitch-card mini color-2" data-note="D">Re</div>
-                                    <div class="pitch-card mini color-3" data-note="E">Mi</div>
-                                    <div class="pitch-card mini color-4" data-note="F">Fa</div>
-                                    <div class="pitch-card mini color-5" data-note="G">So</div>
+                        <!-- PIANO TUTORIAL -->
+                        <div id="v2-piano-tutorial" class="sight-section" style="display:none; flex-direction:column; align-items:center; width:100%; padding:20px; background:linear-gradient(to bottom, #e0f7fa, #b2ebf2); border-radius:20px;">
+                            <h2 id="v2-tut-song-title" style="font-size:2.5rem; color:#0277bd; margin-bottom:10px;"></h2>
+                            <div class="mascot-bubble" style="margin-bottom: 20px;">
+                                <div class="mascot" style="font-size: 60px;">🐦</div>
+                                <div class="bubble" id="v2-tut-bubble" style="font-size:1.5rem; border-color:#0277bd;">${currentLanguage==='zh'?'跟着颜色一起看！':'Follow the colors and listen!'}</div>
+                            </div>
+                            <div id="v2-tut-lyrics" style="font-size: 2rem; font-weight: 900; color: #E91E63; height: 50px; margin-bottom: 20px; letter-spacing: 5px;"></div>
+                            
+                            <div id="v2-tut-piano" class="piano-container" style="max-width: 600px; width: 100%; margin-bottom: 20px; background: transparent; box-shadow: none;">
+                                <div class="piano-keyboard" style="height: 15vh; min-height: 120px; border-radius: 15px; border: 4px solid #0277bd;">
+                                    <div class="key white v2-k" data-n="C" style="background:#ffcdd2; border-radius: 0 0 10px 10px;"><span style="position:absolute; bottom:10px; left:0; width:100%; text-align:center; font-weight:bold; font-size:1.5rem; color:#c62828;">Do</span></div>
+                                    <div class="key black" style="left: 11.28%; height: 60%; width: 6%; border-radius: 0 0 8px 8px;"></div>
+                                    <div class="key white v2-k" data-n="D" style="background:#ffe0b2; border-radius: 0 0 10px 10px;"><span style="position:absolute; bottom:10px; left:0; width:100%; text-align:center; font-weight:bold; font-size:1.5rem; color:#ef6c00;">Re</span></div>
+                                    <div class="key black" style="left: 25.57%; height: 60%; width: 6%; border-radius: 0 0 8px 8px;"></div>
+                                    <div class="key white v2-k" data-n="E" style="background:#fff9c4; border-radius: 0 0 10px 10px;"><span style="position:absolute; bottom:10px; left:0; width:100%; text-align:center; font-weight:bold; font-size:1.5rem; color:#f9a825;">Mi</span></div>
+                                    <div class="key white v2-k" data-n="F" style="background:#c8e6c9; border-radius: 0 0 10px 10px;"><span style="position:absolute; bottom:10px; left:0; width:100%; text-align:center; font-weight:bold; font-size:1.5rem; color:#2e7d32;">Fa</span></div>
+                                    <div class="key black" style="left: 54.14%; height: 60%; width: 6%; border-radius: 0 0 8px 8px;"></div>
+                                    <div class="key white v2-k" data-n="G" style="background:#bbdefb; border-radius: 0 0 10px 10px;"><span style="position:absolute; bottom:10px; left:0; width:100%; text-align:center; font-weight:bold; font-size:1.5rem; color:#1565c0;">Sol</span></div>
+                                    <div class="key black" style="left: 68.43%; height: 60%; width: 6%; border-radius: 0 0 8px 8px;"></div>
+                                    <div class="key white v2-k" data-n="A" style="background:#e1bee7; border-radius: 0 0 10px 10px;"><span style="position:absolute; bottom:10px; left:0; width:100%; text-align:center; font-weight:bold; font-size:1.5rem; color:#6a1b9a;">La</span></div>
+                                    <div class="key black" style="left: 82.72%; height: 60%; width: 6%; border-radius: 0 0 8px 8px;"></div>
+                                    <div class="key white v2-k" data-n="B" style="background:#f8bbd0; border-radius: 0 0 10px 10px;"><span style="position:absolute; bottom:10px; left:0; width:100%; text-align:center; font-weight:bold; font-size:1.5rem; color:#ad1457;">Ti</span></div>
                                 </div>
                             </div>
-                            <div class="l-right">
-                                <div id="melody-feedback" class="feedback-msg" style="height: 40px; font-size:1.5rem;"></div>
-                                <button id="melody-play-btn" class="action-btn">🎵 ${currentLanguage === 'zh' ? '播放旋律' : 'Play Melody'}</button>
+                            
+                            <div style="margin-top:20px;">
+                                <button id="v2-tut-practice-btn" class="action-btn" style="display:none; background:#FF9800; font-size:1.5rem; padding:10px 30px;">🎯 ${currentLanguage==='zh'?'开始练习':'Practice Time'}</button>
+                                <button id="v2-tut-skip-btn" class="action-btn skip-btn-dynamic" style="background:#9e9e9e; margin-left:10px;">⏭ ${currentLanguage==='zh'?'跳过':'Skip'}</button>
+                            </div>
+                        </div>
+
+                        <!-- PRACTICE SECTION -->
+                        <div id="v2-practice" class="sight-section" style="display:none; flex-direction:column; align-items:center; width:100%; padding:20px; background:linear-gradient(to bottom, #fff3e0, #ffe0b2); border-radius:20px;">
+                            <h2 style="font-size:2.5rem; color:#e65100; margin-bottom:10px;">🎯 ${currentLanguage==='zh'?'开始练习':'Practice Time'}</h2>
+                            <div id="v2-prac-stars" style="font-size: 30px; margin-bottom: 10px; color: #FFD54F;">☆☆☆</div>
+                            
+                            <div class="mascot-bubble" style="margin-bottom: 20px;">
+                                <div class="mascot" style="font-size: 60px;">🐦</div>
+                                <div class="bubble" id="v2-prac-bubble" style="font-size:1.5rem; border-color:#e65100;">${currentLanguage==='zh'?'准备好了吗？':'Are you ready?'}</div>
+                            </div>
+                            
+                            <div id="v2-prac-lyrics" style="font-size: 2rem; font-weight: 900; color: #E91E63; height: 50px; margin-bottom: 20px; letter-spacing: 5px;"></div>
+
+                            <div id="v2-prac-piano" class="piano-container" style="max-width: 600px; width: 100%; opacity:0.9; background: transparent; box-shadow: none;">
+                                <div class="piano-keyboard" style="height: 15vh; min-height: 120px; border-radius: 15px; border: 4px solid #e65100;">
+                                    <div class="key white v2-pk" data-n="C" style="background:#ffcdd2; border-radius: 0 0 10px 10px;"><span style="position:absolute; bottom:10px; left:0; width:100%; text-align:center; font-weight:bold; font-size:1.5rem; color:#c62828;">Do</span></div>
+                                    <div class="key black" style="left: 11.28%; height: 60%; width: 6%; border-radius: 0 0 8px 8px;"></div>
+                                    <div class="key white v2-pk" data-n="D" style="background:#ffe0b2; border-radius: 0 0 10px 10px;"><span style="position:absolute; bottom:10px; left:0; width:100%; text-align:center; font-weight:bold; font-size:1.5rem; color:#ef6c00;">Re</span></div>
+                                    <div class="key black" style="left: 25.57%; height: 60%; width: 6%; border-radius: 0 0 8px 8px;"></div>
+                                    <div class="key white v2-pk" data-n="E" style="background:#fff9c4; border-radius: 0 0 10px 10px;"><span style="position:absolute; bottom:10px; left:0; width:100%; text-align:center; font-weight:bold; font-size:1.5rem; color:#f9a825;">Mi</span></div>
+                                    <div class="key white v2-pk" data-n="F" style="background:#c8e6c9; border-radius: 0 0 10px 10px;"><span style="position:absolute; bottom:10px; left:0; width:100%; text-align:center; font-weight:bold; font-size:1.5rem; color:#2e7d32;">Fa</span></div>
+                                    <div class="key black" style="left: 54.14%; height: 60%; width: 6%; border-radius: 0 0 8px 8px;"></div>
+                                    <div class="key white v2-pk" data-n="G" style="background:#bbdefb; border-radius: 0 0 10px 10px;"><span style="position:absolute; bottom:10px; left:0; width:100%; text-align:center; font-weight:bold; font-size:1.5rem; color:#1565c0;">Sol</span></div>
+                                    <div class="key black" style="left: 68.43%; height: 60%; width: 6%; border-radius: 0 0 8px 8px;"></div>
+                                    <div class="key white v2-pk" data-n="A" style="background:#e1bee7; border-radius: 0 0 10px 10px;"><span style="position:absolute; bottom:10px; left:0; width:100%; text-align:center; font-weight:bold; font-size:1.5rem; color:#6a1b9a;">La</span></div>
+                                    <div class="key black" style="left: 82.72%; height: 60%; width: 6%; border-radius: 0 0 8px 8px;"></div>
+                                    <div class="key white v2-pk" data-n="B" style="background:#f8bbd0; border-radius: 0 0 10px 10px;"><span style="position:absolute; bottom:10px; left:0; width:100%; text-align:center; font-weight:bold; font-size:1.5rem; color:#ad1457;">Ti</span></div>
+                                </div>
+                            </div>
+                            
+                            <div id="v2-prac-action-area" style="text-align:center; margin-top:20px; width:100%; max-width:500px;">
+                                <button id="v2-btn-start-prac" class="action-btn" style="background:#4CAF50; width:100%; font-size:1.5rem; padding:15px;">▶️ ${currentLanguage==='zh'?'开始练习':'Start Practice'}</button>
+                                <div id="v2-prac-status" style="margin-top:10px; font-weight:bold; font-size:1.2rem; color:#e65100; min-height:30px;"></div>
+                            </div>
+                            <div style="margin-top:20px; display:flex; gap:10px; justify-content:center;">
+                                <button id="v2-btn-game" class="action-btn" style="display:none; background:#2196F3; font-size:1.5rem; padding: 10px 30px;">🎮 ${currentLanguage==='zh'?'玩小游戏':'Mini Game'}</button>
+                                <button id="v2-btn-skip-prac" class="action-btn" style="background:#9e9e9e; font-size:1.5rem; padding: 10px 30px;">⏭ ${currentLanguage==='zh'?'跳过练习':'Skip Practice'}</button>
+                            </div>
+                        </div>
+
+                        <!-- MINIGAME SECTION -->
+                        <div id="v2-minigame" class="sight-section" style="display:none; flex-direction:column; align-items:center; width:100%; padding:20px; background:linear-gradient(180deg, #e1f5fe, #81d4fa); border-radius:20px;">
+                            <h2 style="font-size:3rem; color:#01579b; margin-bottom:10px; text-shadow: 2px 2px 0px #fff;">🌸 ${currentLanguage==='zh'?'荷叶旋律':'Lily Pad Melody'}</h2>
+                            <div class="mascot-bubble" style="margin-bottom: 20px;">
+                                    <div class="mascot" style="font-size: 60px;">🐦</div>
+                                    <div class="bubble" id="v2-mg-bubble" style="font-size:1.5rem; border-color:#01579b;">
+                                        ${currentLanguage==='zh'?'点击荷叶填满空位，按顺序拼出旋律！':'Click the lily pads to fill the spots and build the melody!'}
+                                    </div>
+                            </div>
+                            
+                            <!-- MELODY SLOTS -->
+                            <div id="v2-mg-slots" style="display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-bottom:30px; min-height:100px; width:100%; max-width:800px; background:rgba(255,255,255,0.4); border: 2px dashed #0288d1; padding:20px; border-radius:20px;">
+                                <!-- dynamically inject slots here -->
+                            </div>
+                            
+                            <div style="display:flex; gap:20px;">
+                                <button id="v2-mg-play" class="action-btn" style="background:#4CAF50; font-size: 1.2rem; padding: 10px 20px;">▶️ ${currentLanguage==='zh'?'播放验证':'Play & Check'}</button>
+                                <button id="v2-mg-clear" class="action-btn" style="background:#FF9800; font-size: 1.2rem; padding: 10px 20px;">🗑️ ${currentLanguage==='zh'?'清空':'Clear'}</button>
+                            </div>
+
+                            <!-- POND WITH DRAGGABLE LILY PADS -->
+                            <div style="margin-top:30px; width:100%; max-width:800px; background:#0288d1; border-radius:40px; padding:30px; position:relative; overflow:hidden; box-shadow: inset 0 10px 20px rgba(0,0,0,0.2);">
+                                <div style="position:absolute; top:10px; right:20px; font-size:40px; opacity:0.6;">🐟</div>
+                                <div style="position:absolute; bottom:10px; left:20px; font-size:40px; opacity:0.5;">🐸</div>
+                                <div id="v2-mg-pool" style="display:flex; justify-content:center; gap:15px; flex-wrap:wrap; z-index:2; position:relative;">
+                                    <!-- draggable notes -->
+                                </div>
                             </div>
                         </div>
                     </div>
                 `;
             case 3:
                 return `
-                    <div id="sight3-container" class="level-split-container">
+                    <div id="sight3-container" class="level-split-container" style="flex-direction:column; gap:20px;">
                         
                         <!-- TUTORIAL SECTION -->
-                        <div id="v3-tutorial" class="sight-section active l-split">
-                            <div class="l-left">
-                                <div id="v3-tut-stage" style="display:none; text-align:center; padding: 20px;">
-                                    <div id="v3-tut-img" style="font-size:120px; transition: transform 0.1s; margin-bottom: 20px;"></div>
-                                    <div id="v3-tut-text" style="font-weight:bold; font-size:1.5rem; color:var(--accent-red);"></div>
+                        <div id="v3-tutorial" class="sight-section active" style="flex-direction:column; padding:20px; align-items:center;">
+                            <h2 style="font-size:clamp(2rem, 5vw, 3rem); color:var(--accent-purple); margin-bottom:10px; text-shadow: 2px 2px 0px #fff; text-align:center;">🎹 ${currentLanguage==='zh'?'拍拍点点':'Clap with the Dot'}</h2>
+                            <div class="mascot-bubble" style="margin-bottom: 20px;">
+                                <div class="mascot" style="font-size: 60px;">🐦</div>
+                                <div class="bubble" id="v3-tut-bubble" style="font-size:1.5rem; border-color:var(--accent-purple);">
+                                    ${currentLanguage==='zh'?'音乐有个小秘密——它也有心跳哦！':'Music has a secret — it has a heartbeat!'}
                                 </div>
                             </div>
-                            <div class="l-right">
-                                <h3 style="color:var(--accent-red); font-size:2rem;">❤️ ${currentLanguage === 'zh' ? '稳定的心跳' : 'Steady Heartbeat'}</h3>
-                                <p style="font-size:1.2rem; margin-bottom:20px;">${currentLanguage === 'zh' ? '音乐和心跳一样，有稳定的节奏哦！' : 'Music has a steady beat, just like your heart!'}</p>
-                                <button id="v3-btn-start-tut" class="action-btn">▶️ ${currentLanguage==='zh'?'开始讲解':'Start Tutorial'}</button>
-                                <button id="v3-btn-skip" class="action-btn skip-btn-dynamic" style="display:none; background:var(--accent-orange); margin-right: 10px;">⏭ ${currentLanguage==='zh'?'跳过讲解':'Skip'}</button>
-                                <button id="v3-btn-practice" class="action-btn" style="display:none; background:var(--accent-orange);">🎯 ${currentLanguage==='zh'?'去尝试':'Try it!'}</button>
+
+                            <div id="v3-tut-stage" style="display:none; text-align:center; min-height: 250px; position:relative; width:100%; max-width:600px; background:rgba(255,255,255,0.6); border-radius:30px; box-shadow:0 10px 30px rgba(0,0,0,0.1); padding:20px; overflow:hidden;">
+                                <div id="v3-tut-visuals" style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); display:flex; justify-content:center; align-items:center; gap:20px; width:100%; padding:20px;">
+                                    <!-- visual elements dynamically injected -->
+                                </div>
+                            </div>
+                            
+                            <div style="margin-top:20px;">
+                                <button id="v3-btn-start-tut" class="action-btn" style="background:var(--accent-blue); font-size:1.5rem;">▶️ ${currentLanguage==='zh'?'开始讲解':'Start Tutorial'}</button>
+                                <button id="v3-btn-skip" class="action-btn" style="display:none; background:#9e9e9e; font-size:1.5rem; margin-right:10px;">⏭ ${currentLanguage==='zh'?'跳过讲解':'Skip'}</button>
+                                <button id="v3-btn-practice" class="action-btn" style="display:none; background:var(--accent-green); font-size:1.5rem;">🎯 ${currentLanguage==='zh'?'去尝试':'Try it!'}</button>
                             </div>
                         </div>
 
-                        <!-- PRACTICE/GAME SECTION -->
-                        <div id="v3-practice" class="sight-section l-split" style="display:none;">
-                            <div class="l-left">
-                                <div id="beat-ripple-pad" class="ripple-container" style="margin: 0 auto;">
-                                    <span id="heart-beat" class="heart-icon">❤️</span>
+                        <!-- PRACTICE SECTION -->
+                        <div id="v3-practice" class="sight-section" style="display:none; flex-direction:column; align-items:center; width:100%; padding:20px;">
+                            <h2 style="font-size:2.5rem; color:#f57c00; margin-bottom:10px; text-shadow: 2px 2px 0px #fff; text-align:center;">🥁 ${currentLanguage==='zh'?'跟着节奏点一点':'Tap to the Beat'}</h2>
+                            
+                            <div style="display:flex; justify-content:center; gap:10px; margin-bottom:20px; width:100%; max-width:600px; flex-wrap:wrap;">
+                                <div style="background:rgba(255,255,255,0.8); padding:10px; border-radius:20px; box-shadow:0 5px 15px rgba(0,0,0,0.1); flex:1; min-width:150px; text-align:center;">
+                                    <h4 style="color:#666; margin-bottom:5px; font-size:1rem;">${currentLanguage==='zh'?'拍号':'Time Signature'}</h4>
+                                    <div style="display:flex; justify-content:center; gap:5px;">
+                                        <button id="v3-ts-2" class="action-btn" style="background:#2196F3; padding:5px 15px; font-size:1.2rem;">2/4</button>
+                                        <button id="v3-ts-4" class="action-btn" style="background:#e0e0e0; color:#333; padding:5px 15px; font-size:1.2rem;">4/4</button>
+                                    </div>
+                                </div>
+                                <div style="background:rgba(255,255,255,0.8); padding:10px; border-radius:20px; box-shadow:0 5px 15px rgba(0,0,0,0.1); flex:1; min-width:200px; text-align:center;">
+                                    <h4 style="color:#666; margin-bottom:5px; font-size:1rem;">${currentLanguage==='zh'?'速度':'Speed'}</h4>
+                                    <div style="display:flex; justify-content:center; gap:5px;">
+                                        <button id="v3-sp-slow" class="action-btn" style="background:#4CAF50; padding:5px 15px; font-size:1rem;">🐢 ${currentLanguage==='zh'?'慢':'Slow'}</button>
+                                        <button id="v3-sp-fast" class="action-btn" style="background:#e0e0e0; color:#333; padding:5px 15px; font-size:1rem;">🐰 ${currentLanguage==='zh'?'快':'Fast'}</button>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="l-right">
-                                <div id="timing-feedback" class="timing-feedback" style="height:40px; font-size:1.5rem; font-weight:bold;"></div>
-                                <p style="margin-top:10px; font-weight:800; font-size:1.5rem; color:var(--accent-blue);">${currentLanguage === 'zh' ? '跟着心跳点点看！' : 'Tap along with the beat!'}</p>
-                                <button id="beat-start-btn" class="action-btn" style="background:var(--accent-red); margin-top:20px;">🥁 ${currentLanguage === 'zh' ? '开始同步' : 'Start Sync'}</button>
+
+                            <div class="mascot-bubble" style="margin-bottom: 10px;">
+                                <div class="mascot" style="font-size: 50px;">🐦</div>
+                                <div class="bubble" id="v3-prac-bubble" style="font-size:1.2rem; border-color:#f57c00;">
+                                    ${currentLanguage==='zh'?'准备好了吗？当圆点亮起时，点击它！':'Ready? When the dot lights up, tap it!'}
+                                </div>
+                            </div>
+
+                            <div style="position:relative; width:100%; max-width:400px; height:250px; background:#fff3e0; border-radius:30px; border:4px dashed #ffb74d; display:flex; justify-content:center; align-items:center; overflow:hidden;">
+                                <div id="v3-prac-dot" style="width:120px; height:120px; background:#ff9800; border-radius:50%; box-shadow:0 10px 20px rgba(255,152,0,0.4); cursor:pointer; display:flex; justify-content:center; align-items:center; font-size:4rem; transition:transform 0.1s, background 0.1s; user-select:none;">
+                                    🖐️
+                                </div>
+                                <!-- Beat markers container -->
+                                <div id="v3-prac-markers" style="position:absolute; bottom:15px; left:0; width:100%; display:flex; justify-content:center; gap:10px;">
+                                </div>
+                            </div>
+
+                            <div style="margin-top:20px; display:flex; gap:10px; justify-content:center;">
+                                <button id="v3-btn-start-prac" class="action-btn" style="background:#4CAF50; font-size:1.5rem;">▶️ ${currentLanguage==='zh'?'开始':'Start'}</button>
+                                <button id="v3-btn-stop-prac" class="action-btn" style="display:none; background:#F44336; font-size:1.5rem;">⏹ ${currentLanguage==='zh'?'停止':'Stop'}</button>
+                                <button id="v3-btn-game" class="action-btn" style="display:none; background:#9C27B0; font-size:1.5rem;">🎮 ${currentLanguage==='zh'?'小游戏':'Mini Game'}</button>
+                            </div>
+                            <div id="v3-prac-stars" style="font-size:2rem; margin-top:10px; color:#ffc107; letter-spacing:5px;">☆☆☆</div>
+                        </div>
+
+                        <!-- MINIGAME SECTION -->
+                        <div id="v3-minigame" class="sight-section" style="display:none; flex-direction:column; align-items:center; width:100%; padding:20px;">
+                            <h2 style="font-size:3rem; color:#9C27B0; margin-bottom:10px; text-shadow: 2px 2px 0px #fff; text-align:center;">🚂 ${currentLanguage==='zh'?'节奏小火车':'Beat Train'}</h2>
+                            
+                            <div class="mascot-bubble" style="margin-bottom: 20px;">
+                                <div class="mascot" style="font-size: 50px;">🐦</div>
+                                <div class="bubble" id="v3-mg-bubble" style="font-size:1.2rem; border-color:#9C27B0;">
+                                    ${currentLanguage==='zh'?'看车厢上的拍号！小球闪烁时，准确按拍子点击！':'Look at the time signature! When the dot blinks, tap the beat!'}
+                                </div>
+                            </div>
+
+                            <div style="width:100%; max-width:800px; height:350px; background:linear-gradient(180deg, #81d4fa 0%, #e1f5fe 50%, #aed581 50%, #8bc34a 100%); border-radius:30px; position:relative; overflow:hidden; border:6px solid #4caf50;">
+                                
+                                <!-- sun/clouds -->
+                                <div style="position:absolute; top:20px; right:30px; font-size:4rem;">☀️</div>
+                                <div style="position:absolute; top:40px; left:50px; font-size:3rem; opacity:0.8; animation:floatCloud 20s linear infinite;">☁️</div>
+                                
+                                <!-- Indicator dot -->
+                                <div style="position:absolute; top:20px; width:100%; display:flex; justify-content:center;">
+                                    <div id="v3-mg-dot" style="width:40px; height:40px; background:#fff; border-radius:50%; box-shadow:0 0 10px rgba(0,0,0,0.2); transition:background 0.1s, transform 0.1s; display:none;"></div>
+                                </div>
+
+                                <!-- Tracks -->
+                                <div id="v3-mg-tracks" style="position:absolute; bottom:40px; width:200%; height:8px; background:#795548; display:flex; transition: transform 0.5s linear;">
+                                    ${Array(30).fill('<div style="width:15px; height:15px; background:#5d4037; transform:translateY(-3px);"></div>').join('<div style="width:25px;"></div>')}
+                                </div>
+                                
+                                <!-- Train -->
+                                <div id="v3-mg-train" style="position:absolute; bottom:48px; left:5vw; display:flex; align-items:flex-end; gap:5px; transition: transform 0.5s ease-out;">
+                                    
+                                    <!-- Engine -->
+                                    <div style="width:80px; height:100px; position:relative;">
+                                        <div style="position:absolute; bottom:0; width:80px; height:50px; background:#F44336; border-radius:10px 20px 0 0;"></div>
+                                        <div style="position:absolute; bottom:50px; left:10px; width:30px; height:40px; background:#333; border-radius:10px 10px 0 0;">
+                                            <div id="v3-mg-smoke" style="position:absolute; top:-30px; left:-5px; font-size:24px; opacity:0; transition:opacity 0.2s, transform 0.5s;">💨</div>
+                                        </div>
+                                        <div style="position:absolute; bottom:50px; right:10px; width:25px; height:25px; background:#81d4fa; border:3px solid #F44336; border-radius:50%;"></div>
+                                        <div style="position:absolute; bottom:-10px; left:5px; width:25px; height:25px; background:#333; border:3px solid #9e9e9e; border-radius:50%;"></div>
+                                        <div style="position:absolute; bottom:-10px; right:5px; width:25px; height:25px; background:#333; border:3px solid #9e9e9e; border-radius:50%;"></div>
+                                    </div>
+
+                                    <!-- Current Car -->
+                                    <div id="v3-mg-car" style="width:100px; height:70px; position:relative; background:#FFEB3B; border-radius:10px; border:4px solid #F57F17; display:flex; justify-content:center; align-items:center; flex-direction:column; box-shadow:0 3px 0 #F57F17; opacity:0; transform:translateX(50px); transition: all 0.5s;">
+                                        <div id="v3-mg-ts" style="font-size:2rem; font-weight:900; color:#E65100; line-height:1;">2/4</div>
+                                        <div style="position:absolute; bottom:-15px; left:10px; width:20px; height:20px; background:#333; border:2px solid #9e9e9e; border-radius:50%;"></div>
+                                        <div style="position:absolute; bottom:-15px; right:10px; width:20px; height:20px; background:#333; border:2px solid #9e9e9e; border-radius:50%;"></div>
+                                        
+                                        <div id="v3-mg-car-beats" style="position:absolute; top:-30px; width:100%; display:flex; justify-content:center; gap:5px;">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+
+                            <div style="margin-top:20px; display:flex; justify-content:center; width:100%;">
+                                <button id="v3-mg-btn-start" class="action-btn" style="background:#4CAF50; font-size:1.5rem; padding:15px 40px; margin:0;">🚂 ${currentLanguage==='zh'?'发车！':'Start!'}</button>
+                                <div id="v3-mg-tap-area" style="display:none; width:100%; max-width:300px; height:70px; background:#E91E63; border-radius:35px; box-shadow:0 10px 20px rgba(233,30,99,0.3); font-size:2rem; font-weight:bold; color:white; justify-content:center; align-items:center; cursor:pointer; user-select:none; transition:transform 0.1s; margin:0;">
+                                    👆 ${currentLanguage==='zh'?'跟着音乐点！':'TAP!'}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -2254,40 +2506,72 @@ function renderInteractiveLesson(type, level) {
                         <!-- TUTORIAL SECTION -->
                         <div id="v4-tutorial" class="sight-section active l-split">
                             <div class="l-left">
-                                <div id="v4-tut-stage" style="display:none; text-align:center; padding: 20px;">
-                                    <div id="v4-tut-img" style="font-size:120px; transition: transform 0.1s; margin-bottom: 20px;"></div>
-                                    <div id="v4-tut-text" style="font-weight:bold; font-size:1.5rem; color:var(--accent-blue);"></div>
+                                <div id="v4-tut-stage" style="display:none; text-align:center; padding: 20px; position:relative; min-height: 250px;">
+                                    <div id="v4-tut-birds" style="font-size:80px; position:absolute; top: -20px; left: 50%; transform: translateX(-50%);">🐦</div>
+                                    <div id="v4-tut-img-container" style="display: flex; justify-content: center; align-items: center; min-height: 150px; margin-top: 60px;">
+                                        <div id="v4-tut-img" style="font-size:100px; transition: transform 0.3s; margin: 0 10px;"></div>
+                                    </div>
+                                    <div id="v4-tut-pulses" style="display:flex; justify-content:center; gap:10px; margin-top: 20px; min-height: 30px;"></div>
                                 </div>
                             </div>
                             <div class="l-right">
-                                <h3 style="color:var(--accent-blue); font-size:2rem;">🎶 ${currentLanguage === 'zh' ? '多变的节奏' : 'Varied Rhythm'}</h3>
-                                <p style="font-size:1.2rem; margin-bottom:20px;">${currentLanguage === 'zh' ? '有时候快，有时候慢！' : 'Sometimes fast, sometimes slow!'}</p>
+                                <h3 style="color:var(--accent-blue); font-size:2rem;">👣 ${currentLanguage === 'zh' ? '小小足迹' : 'Little Footprints'}</h3>
+                                <p style="font-size:1.2rem; margin-bottom:20px;">${currentLanguage === 'zh' ? '认识长短不一的音符！' : 'Learn notes of different lengths!'}</p>
+                                <div id="v4-tut-text" style="font-weight:bold; font-size:1.5rem; color:var(--accent-purple); min-height:60px; margin-bottom: 20px;"></div>
                                 <button id="v4-btn-start-tut" class="action-btn">▶️ ${currentLanguage==='zh'?'开始讲解':'Start Tutorial'}</button>
                                 <button id="v4-btn-skip" class="action-btn skip-btn-dynamic" style="display:none; background:var(--accent-orange); margin-right: 10px;">⏭ ${currentLanguage==='zh'?'跳过讲解':'Skip'}</button>
-                                <button id="v4-btn-practice" class="action-btn" style="display:none; background:var(--accent-orange);">🎯 ${currentLanguage==='zh'?'去尝试':'Try it!'}</button>
+                                <button id="v4-btn-practice" class="action-btn" style="display:none; background:var(--accent-orange);">🎯 ${currentLanguage==='zh'?'去练习':'Practice Time!'}</button>
                             </div>
                         </div>
 
-                        <!-- PRACTICE/GAME SECTION -->
+                        <!-- PRACTICE SECTION -->
                         <div id="v4-practice" class="sight-section l-split" style="display:none;">
                             <div class="l-left" style="flex-direction:column; gap:20px;">
-                                <div class="rhythm-tray">
-                                    <div class="pattern-display" id="rhythm-pattern" style="justify-content: center; gap: 15px;">
+                                <div id="v4-prac-feedback" style="height: 40px; font-weight: bold; font-size: 1.5rem; color: var(--accent-orange); text-align: center;"></div>
+                                <div class="rhythm-tray" style="background:#fff; padding: 20px; border-radius: 20px; box-shadow: inset 0 0 10px rgba(0,0,0,0.05); position:relative; overflow:hidden;">
+                                    <div id="v4-prac-birdie" style="position:absolute; top: 10px; right: 10px; font-size:40px;">🐦</div>
+                                    <div class="pattern-display" id="v4-rhythm-pattern" style="justify-content: center; gap: 15px; min-height:80px; align-items:center;">
                                         <!-- Markers added by JS -->
+                                    </div>
+                                    <div id="v4-prac-prints" style="display:flex; justify-content:center; gap:20px; margin-top:20px; height: 40px;">
+                                        <!-- footprints -->
                                     </div>
                                 </div>
                                 <div class="drum-input-area" style="margin:20px 0; display:flex; justify-content:center;">
-                                    <div id="rhythm-tap-pad" class="drum-pad-large" style="background:var(--accent-blue); width: 100px; height: 100px; font-size: 50px;">🥁</div>
+                                    <div id="v4-rhythm-tap-pad" class="drum-pad-large" style="background:var(--accent-blue); width: 120px; height: 120px; font-size: 60px; border-radius:50%; box-shadow: 0 10px 0 #1565C0; display:flex; align-items:center; justify-content:center; cursor:pointer;-webkit-tap-highlight-color: transparent;">🫱</div>
                                 </div>
                             </div>
                             <div class="l-right">
-                                <div id="rhythm-feedback" class="feedback-msg" style="height: 40px; font-size: 1.5rem;"></div>
-                                <div class="game-control-panel">
-                                    <button id="rhythm-lesson-play" class="action-btn" style="background:var(--accent-orange); margin-bottom:10px;">👂 ${currentLanguage === 'zh' ? '先听听看' : 'Listen First'}</button>
-                                    <button id="rhythm-start-btn" class="action-btn" style="background:var(--accent-green); margin-bottom:10px;">🚀 ${currentLanguage === 'zh' ? '我来挑战' : 'My Turn'}</button>
+                                <h3 style="color:var(--accent-green); font-size:1.8rem; margin-bottom: 20px;">${currentLanguage === 'zh' ? '跟着音符敲击' : 'Tap the Notes'}</h3>
+                                <div class="game-control-panel" style="display:flex; flex-direction:column; gap:15px; width: 100%;">
+                                    <button id="v4-prac-btn-listen" class="action-btn" style="background:var(--accent-orange);">👂 ${currentLanguage === 'zh' ? '先听听看' : 'Listen First'}</button>
+                                    <button id="v4-prac-btn-play" class="action-btn" style="background:var(--accent-green);">🚀 ${currentLanguage === 'zh' ? '我来挑战' : 'My Turn'}</button>
+                                    <button id="v4-btn-game" class="action-btn" style="display:inline-block; background:var(--accent-purple); margin-top:20px;">🎮 ${currentLanguage==='zh'?'玩小游戏':'Mini Game'}</button>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- MINI GAME SECTION -->
+                        <div id="v4-minigame" class="sight-section l-split" style="display:none;">
+                            <div class="l-left" style="flex-direction:column; gap:20px; background:#e0f7fa; border-radius:20px; padding: 20px; position:relative; overflow:hidden;">
+                                <div style="position:absolute; top:-10px; left:-10px; font-size:60px; opacity:0.3;">🐟</div>
+                                <div style="position:absolute; bottom:10px; right:10px; font-size:40px; opacity:0.3;">🫧</div>
+                                <h3 style="text-align:center; color:#006064;">🎣 ${currentLanguage === 'zh' ? '音符钓鱼' : 'Note Fishing'}</h3>
+                                <div id="v4-mg-pond" style="width: 100%; background:rgba(255,255,255,0.7); border-radius:15px; flex:1; min-height:220px; position:relative; display:flex; justify-content:space-around; align-items:center; flex-wrap:wrap; padding: 10px;">
+                                    <!-- Fish container -->
+                                </div>
+                            </div>
+                            <div class="l-right" style="justify-content: flex-start; padding-top:20px;">
+                                <div id="v4-mg-bubble" style="background:var(--bg-card); padding:15px; border-radius:15px; box-shadow:0 4px 10px rgba(0,0,0,0.1); margin-bottom:20px; font-size:1.2rem; font-weight:bold; color:var(--text-main);">
+                                    ${currentLanguage === 'zh' ? '帮鸟儿把鱼钩拖到对应拍数的鱼身上！' : 'Drag the hooks to the fish with the matching beats!'}
+                                </div>
+                                <div id="v4-mg-hooks" style="display:flex; flex-wrap:wrap; gap:15px; justify-content:center;">
+                                    <!-- Hooks container -->
+                                </div>
+                                <button id="v4-mg-reset" class="action-btn" style="margin-top:auto; background:#ccc;">🔄 ${currentLanguage==='zh'?'重置':'Reset'}</button>
+                            </div>
+                        </div>
+
                     </div>
                 `;
             case 5:
@@ -3427,7 +3711,7 @@ function attachLessonListeners(type, level) {
 
     }
     if (type === 'sight') {
-        const resetAll = () => {
+        let resetAll = () => {
              // Stop any intervals or timeouts from previous games
              if (window._sightInterval) clearInterval(window._sightInterval);
              if (window._sightTimeouts) window._sightTimeouts.forEach(clearTimeout);
@@ -3445,348 +3729,990 @@ function attachLessonListeners(type, level) {
         };
 
         if (level == 1) {
-
-            const btnStartTut = document.getElementById('v1-btn-start-tut');
+            const btnSkipTut = document.getElementById('v1-btn-skip');
             const btnPracticeBtn = document.getElementById('v1-btn-practice');
+            const btnGame = document.getElementById('v1-btn-game');
             const tutArea = document.getElementById('v1-tutorial');
             const pracArea = document.getElementById('v1-practice');
-            const tutStage = document.getElementById('v1-tut-stage');
-            const tutImg = document.getElementById('v1-tut-img');
-            const tutText = document.getElementById('v1-tut-text');
+            const gameArea = document.getElementById('v1-minigame');
+            
+            const tutBubble = document.getElementById('v1-tut-bubble');
+            const tutPiano = document.getElementById('v1-tut-piano');
+            const tutLyrics = document.getElementById('v1-tut-lyrics');
+            const creatureStage = document.getElementById('v1-tut-creature-stage');
 
-            const tutSteps = [
-                { emoji: '🎼', freq: null, name: currentLanguage === 'zh' ? '每个音符都有名字和固定的声音。' : 'Every note has a name and a specific pitch.' },
-                { emoji: 'Do', freq: frequencies['C'], name: currentLanguage === 'zh' ? '这是 Do (C)。' : 'This is Do (C).' },
-                { emoji: 'Re', freq: frequencies['D'], name: currentLanguage === 'zh' ? '这是 Re (D)。' : 'This is Re (D).' },
-                { emoji: 'Mi', freq: frequencies['E'], name: currentLanguage === 'zh' ? '这是 Mi (E)。' : 'This is Mi (E).' },
-                { emoji: 'Fa', freq: frequencies['F'], name: currentLanguage === 'zh' ? '这是 Fa (F)。' : 'This is Fa (F).' },
-                { emoji: 'So', freq: frequencies['G'], name: currentLanguage === 'zh' ? '这是 So (G)。' : 'This is So (G).' },
-                { emoji: '🧑‍🎤', freq: null, name: currentLanguage === 'zh' ? '你能唱出一样的声音吗？' : 'Can you sing the same pitch?' },
-                { emoji: '🗣️🎵', freq: null, name: currentLanguage === 'zh' ? '听声音，模仿它！' : 'Listen, then repeat!' }
+            const notesList = [
+                { note: 'C', name: 'Do', freq: frequencies['C'], object: "🦌" },
+                { note: 'D', name: 'Re', freq: frequencies['D'], object: "☀️" },
+                { note: 'E', name: 'Mi', freq: frequencies['E'], object: "👧" },
+                { note: 'F', name: 'Fa', freq: frequencies['F'], object: "🛣️" },
+                { note: 'G', name: 'Sol', freq: frequencies['G'], object: "🪡" },
+                { note: 'A', name: 'La', freq: frequencies['A'], object: "🎵" },
+                { note: 'B', name: 'Ti', freq: frequencies['B'], object: "🍞" }
             ];
 
-            btnStartTut.onclick = () => {
-                btnStartTut.style.display = 'none';
-                tutStage.style.display = 'block';
+            let isRecording = false;
+            let audioStream = null;
+            let checkPitchAnim = null;
+            window._v1Stars = 0;
+            
+            const cleanupMic = () => {
+                isRecording = false;
+                if (checkPitchAnim) cancelAnimationFrame(checkPitchAnim);
+                if (audioStream) audioStream.getTracks().forEach(t => t.stop());
+                audioStream = null;
+            };
+            
+            const baseResetAll = resetAll;
+            resetAll = () => {
+                baseResetAll();
+                cleanupMic();
+                const btnRecord = document.getElementById('sight-record-start');
+                const btnStop = document.getElementById('sight-record-stop');
+                if (btnRecord && btnStop) {
+                    btnRecord.style.display = 'inline-block';
+                    btnStop.style.display = 'none';
+                }
+            };
+
+            const cleanupTut = () => {
+                const keys = tutPiano.querySelectorAll('.key');
+                keys.forEach(k => k.classList.remove('guide'));
+                keys.forEach(k => k.onclick = null);
+                tutLyrics.innerText = "";
+                if (creatureStage) {
+                    creatureStage.innerHTML = "";
+                    creatureStage.style.transform = "translateY(20px) scale(0)";
+                    creatureStage.style.opacity = "0";
+                }
+                cleanupMic();
+            };
+
+            btnSkipTut.onclick = () => {
+                resetAll();
+                cleanupTut();
+                btnPracticeBtn.style.display = 'inline-block';
+                btnSkipTut.style.display = 'none';
+                tutBubble.innerHTML = currentLanguage === 'zh' ? '准备好了吗？去试试看吧！' : "Ready? Try the practice!";
+            };
+
+            // TUTORIAL LOGIC
+            const initInteractiveTutorial_v1 = () => {
+                resetAll();
+                cleanupTut();
+                
+                const btnStartTut = document.getElementById('v1-btn-start-tut');
+                btnStartTut.style.display = 'inline-block';
+                btnSkipTut.style.display = 'inline-block';
+                btnPracticeBtn.style.display = 'none';
+                btnGame.style.display = 'none';
 
                 let step = 0;
-                const runStep = () => {
-                    if (step < tutSteps.length) {
-                        const ts = tutSteps[step];
-                        tutImg.innerHTML = ts.emoji;
-                        tutText.innerText = ts.name;
-                        
-                        if (ts.freq) {
-                            playNote(ts.freq, 0.4);
-                        } else {
-                            SoundService.playSuccess();
-                        }
-                        tutImg.style.transform = 'scale(1.1)';
-                        setTimeout(() => { if(tutImg) tutImg.style.transform = 'none'; }, 400);
+                let currentTargetFreq = 0;
+                const keys = tutPiano.querySelectorAll('.key');
+                const creatureStage = document.getElementById('v1-tut-creature-stage');
 
-                        SpeechService.speak(ts.name, currentLanguage, () => {
-                            step++;
-                            setTimeout(runStep, 800);
-                        });
-                    } else {
-                        btnPracticeBtn.style.display = 'inline-block';
-                        SpeechService.speak(currentLanguage==='zh'?'准备好了吗？试试看！':'Ready? Try it out!');
+                const promptNextKey = () => {
+                    if (step >= notesList.length) {
+                        // Finished waking notes, do the parade and song
+                        creatureStage.style.transform = "translateY(20px) scale(0)";
+                        creatureStage.style.opacity = "0";
+                        tutBubble.innerHTML = currentLanguage === 'zh' ? '音符朋友们排队走过！' : "Note Friend Parade!";
+                        SpeechService.speak(tutBubble.innerHTML, currentLanguage, startNoteParade);
+                        return;
+                    }
+                    keys.forEach(k => { k.classList.remove('guide'); k.onclick = null; });
+                    const n = notesList[step];
+                    const key = tutPiano.querySelector(`.key[data-note="${n.note}4"]`);
+                    const msg = (currentLanguage === 'zh' ? `点击 ` : `Listen to `) + n.name;
+                    tutBubble.innerHTML = msg;
+                    SpeechService.speak(msg, currentLanguage);
+                    
+                    if (key) {
+                        key.classList.add('guide');
+                        key.onclick = () => {
+                            key.classList.remove('guide');
+                            key.onclick = null;
+                            handleKeyTapped(n, key);
+                        };
+                        // Auto-tap after 2 seconds if not tapped yet to keep flow
+                        window._sightTimeouts.push(setTimeout(() => { if (key.onclick) key.onclick(); }, 2500));
                     }
                 };
-                runStep();
+
+                const startNoteParade = () => {
+                    let paradeHtml = '';
+                    notesList.forEach((n, i) => {
+                        paradeHtml += `<span style="display:inline-block; transition:transform 0.3s; animation: bounce 1s infinite ${i*0.1}s;">${n.object}</span>`;
+                    });
+                    creatureStage.innerHTML = paradeHtml;
+                    creatureStage.style.transform = "translateY(0) scale(1)";
+                    creatureStage.style.opacity = "1";
+                    
+                    tutBubble.innerHTML = "Do Re Mi Fa Sol La Ti!";
+                    playNote(frequencies['C'], 0.5);
+                    setTimeout(() => playNote(frequencies['D'], 0.5), 300);
+                    setTimeout(() => playNote(frequencies['E'], 0.5), 600);
+                    setTimeout(() => playNote(frequencies['F'], 0.5), 900);
+                    setTimeout(() => playNote(frequencies['G'], 0.5), 1200);
+                    setTimeout(() => playNote(frequencies['A'], 0.5), 1500);
+                    setTimeout(() => playNote(frequencies['B'], 0.5), 1800);
+                    
+                    SpeechService.speak("Do Re Mi Fa Sol La Ti", currentLanguage, () => {
+                        setTimeout(startMemorySong, 1500);
+                    });
+                };
+
+                const startMemorySong = () => {
+                    const lyrics = currentLanguage === 'zh' ? [
+                        { text: "Do 是一只小鹿！", note: 'C' },
+                        { text: "Re 是金色的太阳！", note: 'D' },
+                        { text: "Mi 是唱歌的小孩！", note: 'E' },
+                        { text: "Fa 是一条长长的路！", note: 'F' },
+                        { text: "Sol 是一根缝衣针！", note: 'G' },
+                        { text: "La 是开心的笑声！", note: 'A' },
+                        { text: "Ti 是一杯香甜的茶！", note: 'B' }
+                    ] : [
+                        { text: "Do is a deer!", note: 'C' },
+                        { text: "Re is the sun!", note: 'D' },
+                        { text: "Mi sings with everyone!", note: 'E' },
+                        { text: "Fa runs far away!", note: 'F' },
+                        { text: "Sol sews all day!", note: 'G' },
+                        { text: "La laughs loud!", note: 'A' },
+                        { text: "Ti drinks tea in the clouds!", note: 'B' }
+                    ];
+
+                    let s = 0;
+                    const singNext = () => {
+                        if (s >= lyrics.length) {
+                            tutBubble.innerHTML = currentLanguage === 'zh' ? '太棒了！你学会了彩虹歌！' : "Great job! You learned the Rainbow Song!";
+                            SpeechService.speak(tutBubble.innerHTML, currentLanguage);
+                            createConfetti();
+                            btnPracticeBtn.style.display = 'inline-block';
+                            btnSkipTut.style.display = 'none';
+                            return;
+                        }
+                        const l = lyrics[s];
+                        tutLyrics.innerText = l.text;
+                        const key = tutPiano.querySelector(`.key[data-note="${l.note}4"]`);
+                        if(key) {
+                            key.classList.add('guide');
+                            setTimeout(() => key.classList.remove('guide'), 800);
+                        }
+                        playNote(frequencies[l.note], 0.6);
+                        
+                        const objSpan = creatureStage.children[s];
+                        if (objSpan) {
+                            objSpan.style.transform = "scale(2) translateY(-20px)";
+                            setTimeout(() => objSpan.style.transform = "none", 1000);
+                        }
+
+                        SpeechService.speak(l.text, currentLanguage, () => {
+                            s++;
+                            setTimeout(singNext, 500);
+                        });
+                    };
+                    singNext();
+                };
+
+                const handleKeyTapped = (n, keyElement) => {
+                    playNote(n.freq, 0.8);
+                    creatureStage.innerHTML = n.object;
+                    creatureStage.style.transform = "translateY(0) scale(1.5)";
+                    creatureStage.style.opacity = "1";
+                    
+                    const singWord = "Doooo! Reeee! Miiii! Faaaa! Soool! Laaaa! Tiiii!".split(' ')[step];
+                    tutBubble.innerHTML = `🎵 ` + singWord;
+                    createConfetti();
+                    currentTargetFreq = n.freq;
+
+                    window._sightTimeouts.push(setTimeout(() => {
+                        tutBubble.innerHTML = currentLanguage === 'zh' ? `${n.name} 的声音真好听！` : `${n.name} sounds nice!`;
+                        SpeechService.speak(tutBubble.innerHTML, currentLanguage, () => {
+                            setTimeout(() => {
+                                creatureStage.style.transform = "translateY(20px) scale(0)";
+                                creatureStage.style.opacity = "0";
+                                step++;
+                                promptNextKey();
+                            }, 1000);
+                        });
+                    }, 1000));
+                };
+
+                btnStartTut.onclick = () => {
+                    btnStartTut.style.display = 'none';
+                    promptNextKey();
+                };
             };
 
             btnPracticeBtn.onclick = () => {
+                resetAll();
                 tutArea.style.display = 'none';
+                gameArea.style.display = 'none';
                 pracArea.style.display = 'flex';
+                initSingingPractice_v1();
             };
-
-            let sequence = []; // Deprecated but kept for compatibility if needed
-            let userStep = 0;
-            let isPlaying = false;
-            let currentTargetFreq = 0;
-            let targetNote = "";
-            let isRecording = false;
-            let audioStream = null;
-
-            const cards = document.querySelectorAll('.pitch-card');
-            const startBtn = document.getElementById('sight-record-start');
-            const stopBtn = document.getElementById('sight-record-stop');
-            const status = document.getElementById('record-status');
-            const targetDisplay = document.getElementById('sight-target-note');
-            const micVisualizer = document.getElementById('mic-visualizer');
-            const micBar = document.getElementById('mic-bar');
-
-            cards.forEach(card => {
-                card.onclick = () => {
-                    if (isPlaying || isRecording) return;
-                    const note = card.dataset.note;
-                    playNote(frequencies[note], 0.4);
-                    card.classList.add('playing');
-                    setTimeout(() => card.classList.remove('playing'), 500);
-                };
-            });
-
-            const pickNewNote = () => {
-                const notes = ['C', 'D', 'E', 'F', 'G'];
-                targetNote = notes[Math.floor(Math.random()*5)];
-                currentTargetFreq = frequencies[targetNote];
-                targetDisplay.innerText = (currentLanguage === 'zh' ? '目标音符' : 'Target Note') + `: ${targetNote}`;
-                playNote(currentTargetFreq, 0.8);
-                const card = document.querySelector(`.pitch-card[data-note="${targetNote}"]`);
-                if (card) {
-                    card.classList.add('playing');
-                    setTimeout(() => card.classList.remove('playing'), 800);
+            
+            btnGame.onclick = () => {
+                resetAll();
+                tutArea.style.display = 'none';
+                pracArea.style.display = 'none';
+                gameArea.style.display = 'flex';
+                initMiniGame_v1();
+            };
+            
+            const updateStarsDisplay = (num) => {
+                const el = document.getElementById('v1-prac-stars');
+                if (el) {
+                    let s = '';
+                    for(let i=0; i<3; i++) {
+                        s += i < num ? '⭐' : '☆';
+                    }
+                    el.innerText = s;
                 }
             };
 
-            const sightStartGame = document.getElementById('sight-start-game');
-            if (sightStartGame) {
-                sightStartGame.onclick = () => {
-                    isPlaying = true;
-                    pickNewNote();
-                    setTimeout(() => isPlaying = false, 1000);
-                };
-            }
+            const initSingingPractice_v1 = () => {
+                let currentTargetFreq = 0;
+                let targetNoteObj = null;
+                window._v1Stars = 0;
+                updateStarsDisplay(0);
+                
+                if (btnGame) btnGame.style.display = 'none';
 
-            if (startBtn) {
-                startBtn.onclick = async () => {
-                if (!currentTargetFreq) {
-                    showFeedback('sight-feedback', currentLanguage === 'zh' ? '先点开始游戏哦！' : 'Start the game first!', 'var(--accent-orange)');
-                    return;
-                }
-                try {
-                    audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    const source = audioCtx.createMediaStreamSource(audioStream);
-                    const analyser = audioCtx.createAnalyser();
-                    analyser.fftSize = 2048;
-                    source.connect(analyser);
-                    
-                    isRecording = true;
-                    startBtn.style.display = 'none';
-                    stopBtn.style.display = 'block';
-                    micVisualizer.style.display = 'block';
-                    status.innerText = currentLanguage === 'zh' ? '🎤 正在倾听...' : '🎤 Listening...';
-                    status.classList.add('recording-active');
-                    
-                    let detectedFreqs = [];
-                    const checkPitch = () => {
-                        if (!isRecording) return;
-                        const buffer = new Float32Array(analyser.fftSize);
-                        analyser.getFloatTimeDomainData(buffer);
+                const pracPiano = document.getElementById('v1-prac-piano');
+                const startBtn = document.getElementById('sight-start-game');
+                const micStartBtn = document.getElementById('sight-record-start');
+                const micStopBtn = document.getElementById('sight-record-stop');
+                const status = document.getElementById('record-status');
+                const micVisualizer = document.getElementById('mic-visualizer');
+                const micBar = document.getElementById('mic-bar');
+                
+                const cloud = document.getElementById('prac-cloud');
+                const hiddenNote = document.getElementById('prac-hidden-note');
+                
+                const keys = pracPiano.querySelectorAll('.key');
+                keys.forEach(k => {
+                    k.onclick = () => {
+                        const noteLetter = k.dataset.note.charAt(0);
+                        playNote(frequencies[noteLetter], 0.4);
+                        k.classList.add('guide');
+                        setTimeout(() => k.classList.remove('guide'), 300);
                         
-                        // Volume visualizer
-                        let sum = 0;
-                        for(let i=0; i<buffer.length; i++) sum += buffer[i]*buffer[i];
-                        const volume = Math.sqrt(sum/buffer.length);
-                        micBar.style.width = Math.min(100, volume * 500) + '%';
-
-                        const pitch = getPitchSample(buffer, audioCtx.sampleRate);
-                        if (pitch > 50 && pitch < 1000) {
-                            detectedFreqs.push(pitch);
+                        // Practice mode allows finding it by clicking the piano OR singing
+                        if (targetNoteObj && noteLetter === targetNoteObj.note) {
+                            successFind();
+                        } else if (targetNoteObj) {
+                            wrongFind();
                         }
-                        requestAnimationFrame(checkPitch);
                     };
-                    checkPitch();
+                });
+                
+                const pickNewNote = () => {
+                    targetNoteObj = notesList[Math.floor(Math.random() * 7)];
+                    currentTargetFreq = targetNoteObj.freq;
+                    status.innerText = (currentLanguage === 'zh' ? '请唱出或点击：' : 'Sing or Play: ') + targetNoteObj.name;
+                    playNote(currentTargetFreq, 0.8);
+                    
+                    cloud.style.transform = 'scale(1)';
+                    cloud.style.opacity = '1';
+                    hiddenNote.style.transform = 'scale(0)';
+                    hiddenNote.style.opacity = '0';
+                    hiddenNote.innerText = targetNoteObj.object;
+                    
+                    keys.forEach(k => k.classList.remove('guide'));
+                    const targetKey = pracPiano.querySelector(`.key[data-note="${targetNoteObj.note}4"]`);
+                    if (targetKey) {
+                        targetKey.classList.add('guide');
+                        setTimeout(() => targetKey.classList.remove('guide'), 500);
+                    }
+                };
+                
+                startBtn.onclick = () => {
+                    pickNewNote();
+                    if (isRecording) {
+                        evalPitch();
+                    } else {
+                        showFeedback('sight-feedback', currentLanguage === 'zh' ? '请先开启麦克风！(或用下方琴键)' : 'Enable mic! (or use keys)', '#E65100');
+                    }
+                };
+                
+                const successFind = () => {
+                    showFeedback('sight-feedback', '⭐ ' + (currentLanguage === 'zh' ? '你找到 '+targetNoteObj.name+' 啦！' : 'You found '+targetNoteObj.name+'!'), '#4CAF50');
+                    createConfetti();
+                    SoundService.playSuccess();
+                    
+                    cloud.style.transform = 'scale(0)';
+                    cloud.style.opacity = '0';
+                    hiddenNote.style.transform = 'scale(1.5) translateY(-20px)';
+                    hiddenNote.style.opacity = '1';
+                    
+                    window._v1Stars++;
+                    updateStarsDisplay(window._v1Stars);
 
-                    window._sightTimeouts.push(setTimeout(() => { 
-                        if(isRecording && stopBtn.onclick) stopBtn.onclick(); 
-                    }, 4000));
-
-                    if (stopBtn) {
-                        stopBtn.onclick = () => {
-                            if(!isRecording) return;
-                            isRecording = false;
-                            startBtn.style.display = 'block';
-                            stopBtn.style.display = 'none';
-                            if (micVisualizer) micVisualizer.style.display = 'none';
-                            if (status) {
-                                status.classList.remove('recording-active');
-                                status.innerText = currentLanguage === 'zh' ? '⌛ 正在处理...' : '⌛ Processing...';
+                    if (window._v1Stars >= 3) {
+                        setTimeout(() => {
+                            showFeedback('sight-feedback', currentLanguage === 'zh' ? '恭喜过关！去拯救迷路的音符！' : 'Finished! Rescue the Lost Notes!', '#6A1B9A');
+                            btnGame.style.display = 'inline-block';
+                            targetNoteObj = null;
+                            keys.forEach(k => k.classList.remove('guide'));
+                        }, 2000);
+                    } else {
+                        setTimeout(() => {
+                            if (pracArea.style.display !== 'none') pickNewNote();
+                        }, 2500);
+                    }
+                };
+                
+                const wrongFind = () => {
+                    showFeedback('sight-feedback', '❌ ' + (currentLanguage === 'zh' ? '仔细听再试一次！' : 'Listen carefully & try again!'), '#D32F2F');
+                    SoundService.playWrong();
+                    playNote(currentTargetFreq, 0.8);
+                    
+                    cloud.style.transform = 'translateX(10px)';
+                    setTimeout(() => cloud.style.transform = 'translateX(-10px)', 100);
+                    setTimeout(() => cloud.style.transform = 'translateX(10px)', 200);
+                    setTimeout(() => cloud.style.transform = 'translateX(0)', 300);
+                };
+                
+                const evalPitch = () => {
+                    if (!isRecording || !targetNoteObj) return;
+                    let detectedFreqs = [];
+                    let evalCount = 0;
+                    status.innerText = currentLanguage === 'zh' ? `请唱： ${targetNoteObj.name}` : `Sing: ${targetNoteObj.name}`;
+                    
+                    const collect = () => {
+                        window._sightTimeouts.push(setTimeout(() => {
+                            if (!isRecording || !targetNoteObj) return;
+                            evalCount++;
+                            if (window._latestPitch > 50 && window._latestPitch < 2000) {
+                                detectedFreqs.push(window._latestPitch);
                             }
-                            
-                            if (audioStream) {
-                                audioStream.getTracks().forEach(t => t.stop());
-                            }
-                            
-                            setTimeout(() => {
-                                if (detectedFreqs.length < 5) {
-                                    showFeedback('sight-feedback', currentLanguage === 'zh' ? '没听清楚，唱响一点？' : "Didn't hear clearly, sing louder?", 'var(--accent-red)');
-                                    if (status) status.innerText = "";
+                            if (evalCount < 10) {
+                                collect();
+                            } else {
+                                if (detectedFreqs.length < 3) {
+                                    evalCount = 0; detectedFreqs = []; collect();
                                     return;
                                 }
-
                                 detectedFreqs.sort((a,b) => a-b);
                                 const medianPitch = detectedFreqs[Math.floor(detectedFreqs.length/2)];
-                                
                                 const diff = Math.abs(medianPitch - currentTargetFreq);
-                                if (diff < 45) { // 45Hz tolerance is generous for kids
-                                    showFeedback('sight-feedback', currentLanguage === 'zh' ? '⭐ 太棒了！唱得很准' : '⭐ Great job! Perfect pitch', 'var(--accent-green)');
-                                    createConfetti();
-                                    setTimeout(pickNewNote, 2000);
+                                
+                                if (diff < 80) { // Forgiving
+                                    successFind();
                                 } else {
-                                    showFeedback('sight-feedback', currentLanguage === 'zh' ? '有点可惜，再试一次？' : 'Not quite, try again!', 'var(--accent-red)');
+                                    wrongFind();
+                                    evalCount = 0; detectedFreqs = [];
+                                    if (isRecording) collect();
                                 }
-                                if (status) status.innerText = "";
-                            }, 500);
-                        };
-                    }
+                            }
+                        }, 300));
+                    };
+                    collect();
+                };
 
-                } catch (err) {
-                    console.error(err);
-                    showFeedback('sight-feedback', currentLanguage === 'zh' ? '需要麦克风权限哦' : 'Microphone access denied', 'var(--accent-red)');
-                }
+                micStartBtn.onclick = async () => {
+                    try {
+                        audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                        const source = audioCtx.createMediaStreamSource(audioStream);
+                        const analyser = audioCtx.createAnalyser();
+                        analyser.fftSize = 2048;
+                        source.connect(analyser);
+                        
+                        isRecording = true;
+                        micStartBtn.style.display = 'none';
+                        micStopBtn.style.display = 'inline-block';
+                        micVisualizer.style.display = 'block';
+                        status.innerText = currentLanguage === 'zh' ? '🎤 麦克风已开启。点击"随机播放"！' : '🎤 Mic on. Click "Play a Random Note"!';
+                        
+                        const trackVolume = () => {
+                            if (!isRecording) return;
+                            const buffer = new Float32Array(analyser.fftSize);
+                            analyser.getFloatTimeDomainData(buffer);
+                            let sum = 0;
+                            for(let i=0; i<buffer.length; i++) sum += buffer[i]*buffer[i];
+                            const volume = Math.sqrt(sum/buffer.length);
+                            micBar.style.width = Math.min(100, volume * 500) + '%';
+                            window._latestPitch = getPitchSample(buffer, audioCtx.sampleRate);
+                            checkPitchAnim = requestAnimationFrame(trackVolume);
+                        };
+                        trackVolume();
+
+                        if (targetNoteObj) evalPitch();
+                    } catch (err) {
+                        console.error(err);
+                        showFeedback('sight-feedback', currentLanguage === 'zh' ? '需要麦克风权限哦' : 'Microphone access denied', 'var(--accent-red)');
+                    }
+                };
+
+                micStopBtn.onclick = () => {
+                    cleanupMic();
+                    micStartBtn.style.display = 'inline-block';
+                    micStopBtn.style.display = 'none';
+                    micVisualizer.style.display = 'none';
+                    status.innerText = "";
+                    keys.forEach(k => k.classList.remove('guide'));
+                    targetNoteObj = null;
+                };
             };
-            }
+            
+            const initMiniGame_v1 = () => {
+                const finishBtn = document.getElementById('v1-btn-finish');
+                const floatingArea = document.getElementById('mg-floating-area');
+                const housesArea = document.getElementById('mg-houses-area');
+                floatingArea.innerHTML = "";
+                housesArea.innerHTML = "";
+                
+                let matchesLeft = 7;
+                
+                // Colors dict
+                const noteColors = { C: '#F44336', D: '#FF9800', E: '#FFC107', F: '#4CAF50', G: '#2196F3', A: '#9C27B0', B: '#E91E63' };
+
+                // Create houses
+                notesList.forEach(n => {
+                    const house = document.createElement('div');
+                    house.dataset.note = n.note;
+                    house.style.cssText = `width: 100px; height: 120px; background: rgba(255,255,255,0.5); border: 4px dashed ${noteColors[n.note]}; border-radius: 10px 10px 0 0; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; padding-bottom:10px; position:relative; transition:all 0.3s;`;
+                    house.innerHTML = `<div style="font-size:2rem; font-weight:bold; color:${noteColors[n.note]}; text-shadow:1px 1px white;">${n.name}</div>`;
+                    
+                    // Allow dropping
+                    house.ondragover = (e) => {
+                        e.preventDefault();
+                        if (house.dataset.filled) return;
+                        house.style.background = 'rgba(255,255,255,0.9)';
+                        house.style.transform = 'scale(1.1)';
+                    };
+                    house.ondragleave = () => {
+                        house.style.background = 'rgba(255,255,255,0.5)';
+                        house.style.transform = 'scale(1)';
+                    };
+                    house.ondrop = (e) => {
+                        e.preventDefault();
+                        if (house.dataset.filled) return;
+                        const draggedNote = e.dataTransfer.getData('note');
+                        if (draggedNote === n.note) {
+                            // Correct
+                            house.dataset.filled = 'true';
+                            house.style.background = noteColors[n.note];
+                            house.style.borderStyle = 'solid';
+                            house.style.transform = 'scale(1)';
+                            house.innerHTML = `<div style="font-size:50px;">${n.object}</div><div style="font-size:2rem; font-weight:bold; color:white;">${n.name}</div>`;
+                            playNote(n.freq, 0.8);
+                            SoundService.playSuccess();
+                            
+                            const draggedEl = document.getElementById('drag-'+draggedNote);
+                            if (draggedEl) draggedEl.remove();
+                            
+                            SpeechService.speak(currentLanguage === 'zh' ? n.name + ' 回家啦！' : n.name + ' is home!', currentLanguage);
+                            
+                            matchesLeft--;
+                            if (matchesLeft <= 0) {
+                                setTimeout(() => {
+                                    createConfetti();
+                                    createConfetti();
+                                    finishBtn.style.display = 'inline-block';
+                                    document.getElementById('v1-game-bubble').innerText = currentLanguage === 'zh' ? '太棒了！所有音符都回家了！' : 'You saved the Rainbow Notes!';
+                                    
+                                    // Play full scale
+                                    notesList.forEach((nl, i) => {
+                                        setTimeout(() => playNote(nl.freq, 0.8), i*300);
+                                    });
+                                }, 1000);
+                            }
+                        } else {
+                            // Wrong
+                            house.style.background = 'rgba(255,255,255,0.5)';
+                            house.style.transform = 'scale(1)';
+                            house.style.animation = 'shake 0.5s';
+                            setTimeout(() => house.style.animation = '', 500);
+                            SoundService.playWrong();
+                            document.getElementById('v1-game-bubble').innerText = currentLanguage === 'zh' ? '哎呀！换个房子试试！' : 'Oops! Try another home!';
+                        }
+                    };
+                    
+                    housesArea.appendChild(house);
+                });
+                
+                // Create draggable creatures
+                const shuffled = [...notesList].sort(() => Math.random() - 0.5);
+                shuffled.forEach((n, idx) => {
+                    const creature = document.createElement('div');
+                    creature.id = 'drag-' + n.note;
+                    creature.draggable = true;
+                    creature.style.cssText = `font-size: 60px; cursor: grab; animation: floatCloud ${3+Math.random()*2}s infinite alternate; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.2));`;
+                    creature.innerHTML = n.object;
+                    
+                    creature.ondragstart = (e) => {
+                        e.dataTransfer.setData('note', n.note);
+                        creature.style.opacity = '0.5';
+                    };
+                    creature.ondragend = () => {
+                        creature.style.opacity = '1';
+                    };
+                    
+                    floatingArea.appendChild(creature);
+                });
+
+                finishBtn.onclick = () => {
+                    ProgressService.updateStars('sight', 1, 3);
+                    navigateTo('sight-hub');
+                };
+            };
+            
+            // start tutorial immediately
+            initInteractiveTutorial_v1();
         }
 
         if (level == 2) {
             
-            const btnStartTut = document.getElementById('v2-btn-start-tut');
-            const btnPracticeBtn = document.getElementById('v2-btn-practice');
-            const tutArea = document.getElementById('v2-tutorial');
-            const pracArea = document.getElementById('v2-practice');
-            const tutStage = document.getElementById('v2-tut-stage');
-            const tutImg = document.getElementById('v2-tut-img');
-            const tutText = document.getElementById('v2-tut-text');
+            const songsInfo = {
+                twinkle: {
+                    title: currentLanguage === 'zh' ? '小星星' : 'Twinkle Star',
+                    melody: ['C','C','G','G','A','A','G', 'F','F','E','E','D','D','C'],
+                    practice: [
+                        { diff: 'easy', seq: ['C','C','G','G'] },
+                        { diff: 'easy', seq: ['E','E','D','D','C'] },
+                        { diff: 'med', seq: ['G','G','A','A','G'] },
+                        { diff: 'full', seq: ['C','C','G','G','A','A','G'] }
+                    ]
+                },
+                boat: {
+                    title: currentLanguage === 'zh' ? '划小船' : 'Row Your Boat',
+                    melody: ['C','C','C','D','E', 'E','D','E','F','G'],
+                    practice: [
+                        { diff: 'easy', seq: ['C','C','C'] },
+                        { diff: 'med', seq: ['D','E','E'] },
+                        { diff: 'full', seq: ['C','C','C','D','E'] }
+                    ]
+                },
+                jingle: {
+                    title: currentLanguage === 'zh' ? '铃儿响叮当' : 'Jingle Bells',
+                    melody: ['E','E','E', 'E','E','E', 'E','G','C','D','E'],
+                    practice: [
+                        { diff: 'easy', seq: ['E','E','E'] },
+                        { diff: 'med', seq: ['E','G','C'] },
+                        { diff: 'full', seq: ['E','G','C','D','E'] }
+                    ]
+                }
+            };
+            
+            const noteData = {
+                'C': {n:'Do', f:frequencies['C'], o:'🔴'},
+                'D': {n:'Re', f:frequencies['D'], o:'🟠'},
+                'E': {n:'Mi', f:frequencies['E'], o:'🟡'},
+                'F': {n:'Fa', f:frequencies['F'], o:'🟢'},
+                'G': {n:'Sol',f:frequencies['G'], o:'🔵'},
+                'A': {n:'La', f:frequencies['A'], o:'🟣'},
+                'B': {n:'Ti', f:frequencies['B'], o:'💖'}
+            };
 
-            const tutSteps = [
-                { notes: [], text: currentLanguage === 'zh' ? '当音符组合在一起时，就变成了旋律。' : 'When notes are put together, they create a melody.' },
-                { notes: ['C'], text: currentLanguage === 'zh' ? '仔细听小鸟唱歌...' : 'Listen to the bird sing...' },
-                { notes: ['C', 'D', 'E'], text: currentLanguage === 'zh' ? '这三个音符组成的旋律是往上走的。' : 'This melody goes up.' },
-                { notes: ['E', 'D', 'C'], text: currentLanguage === 'zh' ? '这三个音符组成的旋律是往下走的。' : 'This melody goes down.' },
-                { notes: [], text: currentLanguage === 'zh' ? '你能记住它们的顺序吗？' : 'Can you remember their order?' }
-            ];
+            let selectedSong = null;
+            let pracStep = 0;
+            let currentPracSeq = [];
 
-            btnStartTut.onclick = () => {
-                btnStartTut.style.display = 'none';
-                tutStage.style.display = 'block';
+            // DOM Elements
+            const sStart = document.getElementById('v2-tutorial-start');
+            const sTut = document.getElementById('v2-piano-tutorial');
+            const sPrac = document.getElementById('v2-practice');
+            const sMini = document.getElementById('v2-minigame');
+            
+            document.querySelectorAll('.v2-song-card').forEach(card => {
+                card.onclick = () => {
+                    const songId = card.dataset.song;
+                    selectedSong = songsInfo[songId];
+                    
+                    sStart.style.display = 'none';
+                    sTut.style.display = 'flex';
+                    startPianoTutorial();
+                };
+            });
 
-                let step = 0;
-                const runStep = () => {
-                    if (step < tutSteps.length) {
-                        const ts = tutSteps[step];
-                        tutImg.innerHTML = ts.notes && ts.notes.length > 0 ? ts.notes.map(n => `<div style="color:var(--accent-green);">🎵</div>`).join('') : '🎼';
-                        tutText.innerText = ts.text;
-                        
-                        let idx = 0;
-                        const playN = () => {
-                            if(ts.notes && idx < ts.notes.length) {
-                                playNote(frequencies[ts.notes[idx]], 0.4);
-                                if (tutImg.children[idx]) {
-                                    tutImg.children[idx].style.transform = 'translateY(-20px)';
-                                    setTimeout(() => {
-                                        if(tutImg.children[idx]) tutImg.children[idx].style.transform = 'none';
-                                    }, 300);
-                                }
-                                idx++;
-                                setTimeout(playN, 600);
-                            } else {
-                                if (!ts.notes || ts.notes.length === 0) SoundService.playSuccess();
-                                SpeechService.speak(ts.text, currentLanguage, () => {
-                                    step++;
-                                    setTimeout(runStep, 1000);
-                                });
+            const startPianoTutorial = () => {
+                document.getElementById('v2-tut-song-title').innerText = selectedSong.title;
+                const bubble = document.getElementById('v2-tut-bubble');
+                const lyrics = document.getElementById('v2-tut-lyrics');
+                const pKeys = document.querySelectorAll('.v2-k');
+                
+                let tutIndex = 0;
+                let melody = selectedSong.melody;
+
+                const playMelody = () => {
+                    if (tutIndex >= melody.length) {
+                        document.getElementById('v2-tut-practice-btn').style.display = 'inline-block';
+                        bubble.innerText = currentLanguage === 'zh' ? '太棒了！去练习吧！' : 'Great! Lets Practice!';
+                        return;
+                    }
+                    
+                    const noteStr = melody[tutIndex];
+                    const nd = noteData[noteStr];
+                    
+                    pKeys.forEach(k => k.style.transform = 'scale(1)');
+                    const targetKey = Array.from(pKeys).find(k => k.dataset.n === noteStr);
+                    if (targetKey) {
+                        targetKey.style.transform = 'scale(1.05)';
+                        targetKey.style.boxShadow = '0 0 20px ' + targetKey.style.backgroundColor;
+                        setTimeout(() => {
+                            targetKey.style.transform = 'scale(1)';
+                            targetKey.style.boxShadow = 'none';
+                        }, 500);
+                    }
+                    
+                    lyrics.innerText = `${nd.o} ${nd.n}`;
+                    playNote(nd.f, 0.8);
+                    
+                    tutIndex++;
+                    setTimeout(playMelody, 800);
+                };
+                
+                setTimeout(playMelody, 1000);
+            };
+
+            document.getElementById('v2-tut-skip-btn').onclick = () => {
+                sTut.style.display = 'none';
+                sPrac.style.display = 'flex';
+                initPracticeSequence();
+            };
+            document.getElementById('v2-tut-practice-btn').onclick = () => {
+                sTut.style.display = 'none';
+                sPrac.style.display = 'flex';
+                initPracticeSequence();
+            };
+            
+            let micActive = false;
+            let pitchDetectedInterval;
+            let audioStream = null;
+            let analyser = null;
+
+            const initPitchDetection = async () => {
+                if (audioCtx.state === 'suspended') await audioCtx.resume();
+                audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                const source = audioCtx.createMediaStreamSource(audioStream);
+                analyser = audioCtx.createAnalyser();
+                analyser.fftSize = 2048;
+                source.connect(analyser);
+            };
+
+            const getPitch = () => {
+                if (!analyser) return null;
+                const buffer = new Float32Array(analyser.fftSize);
+                analyser.getFloatTimeDomainData(buffer);
+                
+                let sum = 0;
+                for(let i=0; i<buffer.length; i++) sum += buffer[i]*buffer[i];
+                const volume = Math.sqrt(sum/buffer.length);
+                if (volume < 0.05) return { freq: 0, volume: volume };
+
+                const freq = getPitchSample(buffer, audioCtx.sampleRate);
+                if (freq > 50 && freq < 2000) {
+                     let closestNote = null;
+                     let minDiff = Infinity;
+                     for (const k in noteData) {
+                         const diff = Math.abs(noteData[k].f - freq);
+                         if (diff < minDiff) {
+                             minDiff = diff;
+                             closestNote = k;
+                         }
+                     }
+                     if (minDiff < 40) {
+                        return { note: closestNote, freq: freq, volume: volume };
+                     }
+                     return { freq: freq, volume: volume };
+                }
+                return { freq: 0, volume: volume };
+            };
+
+            const btnStartPrac = document.getElementById('v2-btn-start-prac');
+            const pracStatus = document.getElementById('v2-prac-status');
+            const btnGame = document.getElementById('v2-btn-game');
+            let pracActive = false;
+            let currTargetIdx = 0;
+
+            const initPracticeSequence = () => {
+                if (pracStep >= selectedSong.practice.length) {
+                    document.getElementById('v2-prac-bubble').innerText = currentLanguage==='zh'?'你完成了所有练习！':'You finished all practice!';
+                    btnGame.style.display = 'inline-block';
+                    btnStartPrac.style.display = 'none';
+                    return;
+                }
+                
+                const seq = selectedSong.practice[pracStep].seq;
+                currentPracSeq = seq;
+                
+                const texts = seq.map(n => noteData[n].n).join(' - ');
+                document.getElementById('v2-prac-lyrics').innerText = texts;
+                
+                btnStartPrac.style.display = 'inline-block';
+                btnStartPrac.innerText = currentLanguage==='zh'?'▶️ 开始听示范':'▶️ Listen Demo';
+            };
+            
+            btnStartPrac.onclick = async () => {
+                pracActive = false;
+                currTargetIdx = 0;
+                btnStartPrac.style.display = 'none';
+                
+                pracStatus.innerText = currentLanguage==='zh'?'准备...':'Ready...';
+                await new Promise(r => setTimeout(r, 1000));
+                
+                // Demo first
+                const seq = currentPracSeq;
+                let i = 0;
+                const demo = () => {
+                    if (i < seq.length) {
+                        const noteStr = seq[i];
+                        const key = Array.from(document.querySelectorAll('.v2-pk')).find(k => k.dataset.n === noteStr);
+                        if (key) {
+                            key.style.transform = 'scale(0.95)';
+                            key.style.boxShadow = '0 0 20px ' + key.style.backgroundColor;
+                        }
+                        playNote(noteData[noteStr].f, 0.5);
+                        setTimeout(() => {
+                            if (key) {
+                                key.style.transform = 'scale(1)';
+                                key.style.boxShadow = 'none';
                             }
-                        };
-                        playN();
-
+                            i++;
+                            setTimeout(demo, 600);
+                        }, 400);
                     } else {
-                        btnPracticeBtn.style.display = 'inline-block';
-                        SpeechService.speak(currentLanguage==='zh'?'现在轮到你了！':'Now it is your turn!');
+                        pracStatus.innerText = currentLanguage==='zh'?'现在换你弹刚才的旋律！':'Now you play the melody!';
+                        pracActive = true;
                     }
                 };
-                runStep();
+                demo();
             };
 
-            btnPracticeBtn.onclick = () => {
-                tutArea.style.display = 'none';
-                pracArea.style.display = 'flex';
-            };
+            document.querySelectorAll('.v2-pk').forEach(k => {
+                k.onclick = () => {
+                    const noteStr = k.dataset.n;
+                    playNote(noteData[noteStr].f, 0.3);
+                    k.style.transform = 'scale(0.95)';
+                    k.style.boxShadow = '0 0 20px ' + k.style.backgroundColor;
+                    setTimeout(() => {
+                        k.style.transform = 'scale(1)';
+                        k.style.boxShadow = 'none';
+                    }, 200);
 
-            const generateMelody = () => {
-                const notes = ['C', 'D', 'E', 'F', 'G'];
-                const seq = [];
-                for(let i=0; i<4; i++) {
-                    seq.push(notes[Math.floor(Math.random() * notes.length)]);
-                }
-                return seq;
-            };
+                    if (!pracActive) return;
 
-            let sequenceData = generateMelody();
-            
-            const renderMelody = () => {
-                const display = document.getElementById('sequence-bars');
-                if (display) display.innerHTML = sequenceData.map((n, i) => `<div class="seq-bar" data-index="${i}">${n}</div>`).join('');
-            };
-            renderMelody();
-            
-            let userStep = 0;
-            let isPlaying = false;
-
-            const playBtn = document.getElementById('melody-play-btn');
-            playBtn.onclick = async () => {
-                if (isPlaying) return;
-                isPlaying = true;
-                userStep = 0;
-                const bars = document.querySelectorAll('.seq-bar');
-                bars.forEach(b => b.classList.remove('active', 'correct'));
-
-                for(let i=0; i<sequenceData.length; i++) {
-                    const note = sequenceData[i];
-                    const bar = bars[i];
-                    if (bar) bar.classList.add('active');
-                    playNote(frequencies[note], 0.4);
-                    await new Promise(r => setTimeout(r, 600));
-                    if (bar) bar.classList.remove('active');
-                }
-                isPlaying = false;
-            };
-
-            document.querySelectorAll('.pitch-card.mini').forEach(card => {
-                card.onclick = () => {
-                    if (isPlaying) return;
-                    const note = card.dataset.note;
-                    playNote(frequencies[note], 0.3);
-                    card.classList.add('playing');
-                    setTimeout(() => card.classList.remove('playing'), 300);
-
-                    if (note === sequenceData[userStep]) {
-                        const bar = document.querySelector(`.seq-bar[data-index="${userStep}"]`);
-                        if (bar) bar.classList.add('correct');
-                        userStep++;
-                        if (userStep === sequenceData.length) {
-                             showFeedback('melody-feedback', currentLanguage === 'zh' ? '🌈 你是小小作曲家！' : '🌈 You are a little composer!', 'var(--accent-purple)');
-                             createConfetti();
-                             setTimeout(() => {
-                                 sequenceData = generateMelody();
-                                 renderMelody();
-                             }, 2000);
+                    const targetNote = currentPracSeq[currTargetIdx];
+                    if (noteStr === targetNote) {
+                        currTargetIdx++;
+                        createConfetti();
+                        
+                        if (currTargetIdx >= currentPracSeq.length) {
+                            pracActive = false;
+                            SoundService.playSuccess();
+                            pracStatus.innerText = currentLanguage==='zh'?'太棒了！':'Amazing playing!';
+                            let stars = document.getElementById('v2-prac-stars').innerText;
+                            document.getElementById('v2-prac-stars').innerText = stars.replace('☆', '⭐');
+                            
+                            setTimeout(() => {
+                                pracStep++;
+                                pracStatus.innerText = '';
+                                initPracticeSequence();
+                            }, 2000);
                         }
                     } else {
-                        document.querySelectorAll('.seq-bar').forEach(b => b.classList.remove('correct'));
-                        userStep = 0;
-                        showFeedback('melody-feedback', currentLanguage === 'zh' ? '从头再来试试？' : 'Try from the start?', 'var(--accent-red)');
+                        pracActive = false;
+                        SoundService.playWrong();
+                        pracStatus.style.color = '#F44336';
+                        pracStatus.innerText = currentLanguage==='zh'?'哎呀不对，重新听示范吧！':'Oops, listen to demo again!';
+                        setTimeout(() => {
+                            pracStatus.style.color = '#e65100';
+                            pracStatus.innerText = '';
+                            btnStartPrac.style.display = 'inline-block';
+                        }, 2000);
                     }
                 };
             });
+            
+            document.getElementById('v2-btn-skip-prac').onclick = () => {
+                sPrac.style.display = 'none';
+                pracActive = false;
+                sMini.style.display = 'flex';
+                initMiniGame();
+            };
+
+            // Minigame
+            document.getElementById('v2-btn-game').onclick = () => {
+                sPrac.style.display = 'none';
+                pracActive = false;
+                sMini.style.display = 'flex';
+                initMiniGame();
+            };
+
+            let mgSlots = [];
+            let activeSlotIdx = 0;
+            
+            const initMiniGame = () => {
+                const targetMelody = selectedSong.melody;
+                const slotsArea = document.getElementById('v2-mg-slots');
+                const poolArea = document.getElementById('v2-mg-pool');
+                
+                slotsArea.innerHTML = '';
+                poolArea.innerHTML = '';
+                mgSlots = [];
+                activeSlotIdx = 0;
+                
+                // Create slots
+                targetMelody.forEach((expectedNote, idx) => {
+                    const slot = document.createElement('div');
+                    slot.style.cssText = 'width: 50px; height: 50px; border-radius: 50%; background: rgba(255,255,255,0.8); border: 2px dashed #01579b; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; transition: background 0.3s, border 0.3s, transform 0.2s; cursor:pointer;';
+                    if (idx === 0) slot.style.border = '4px solid #F44336';
+                    slot.dataset.expected = expectedNote;
+                    slot.dataset.idx = idx;
+                    slot.onclick = () => {
+                        mgSlots.forEach(s => {
+                            if (s.dataset.filled) s.style.border = '2px solid #01579b';
+                            else s.style.border = '2px dashed #01579b';
+                        });
+                        slot.style.border = '4px solid #F44336';
+                        activeSlotIdx = idx;
+                    };
+                    slotsArea.appendChild(slot);
+                    mgSlots.push(slot);
+                });
+                
+                // Create pool (4 of each)
+                const baseNotes = ['C','D','E','F','G','A','B'];
+                const padNotes = [];
+                for(let i=0; i<4; i++) {
+                    padNotes.push(...baseNotes);
+                }
+                const shuffled = padNotes.sort(() => Math.random() - 0.5);
+                
+                shuffled.forEach(n => {
+                    const lpad = document.createElement('div');
+                    lpad.style.cssText = 'width:60px; height:60px; background:#4CAF50; border-radius:50%; display:flex; flex-direction:column; justify-content:center; align-items:center; cursor:pointer; box-shadow: 0 5px 10px rgba(0,0,0,0.3); border: 4px solid #81C784; transition:transform 0.1s;';
+                    lpad.innerHTML = `<span style="font-size:24px;">${noteData[n].o}</span><span style="font-size:12px; color:white; font-weight:bold;">${noteData[n].n}</span>`;
+                    lpad.onclick = () => {
+                        lpad.style.transform = 'scale(0.9)';
+                        setTimeout(() => lpad.style.transform='scale(1)', 100);
+                        
+                        const slot = mgSlots[activeSlotIdx];
+                        if (slot) {
+                            slot.innerHTML = noteData[n].o;
+                            slot.dataset.filled = n;
+                            slot.style.background = 'white';
+                            slot.style.borderStyle = 'solid';
+                            slot.style.borderWidth = '2px';
+                            slot.style.borderColor = '#01579b';
+                            playNote(noteData[n].f, 0.4);
+                            
+                            // Advance active slot to the next empty one
+                            let nextIdle = -1;
+                            for(let i=activeSlotIdx+1; i<mgSlots.length; i++){
+                                if (!mgSlots[i].dataset.filled) { nextIdle = i; break; }
+                            }
+                            if (nextIdle === -1) {
+                                for(let i=0; i<activeSlotIdx; i++) {
+                                    if (!mgSlots[i].dataset.filled) { nextIdle = i; break; }
+                                }
+                            }
+                            
+                            if (nextIdle !== -1) {
+                                mgSlots[nextIdle].click();
+                            }
+                        }
+                    };
+                    poolArea.appendChild(lpad);
+                });
+            };
+            
+            document.getElementById('v2-mg-play').onclick = async () => {
+                const bubble = document.getElementById('v2-mg-bubble');
+                let allCorrect = true;
+                
+                for(let i=0; i<mgSlots.length; i++) {
+                    const slot = mgSlots[i];
+                    if (!slot.dataset.filled) {
+                        bubble.innerText = currentLanguage==='zh'?'还有空位哦！':'Fill all the lily pads!';
+                        return;
+                    }
+                    
+                    if (slot.dataset.filled === slot.dataset.expected) {
+                        slot.style.boxShadow = '0 0 15px #4CAF50';
+                        playNote(noteData[slot.dataset.filled].f, 0.4);
+                        await new Promise(r => setTimeout(r, 600));
+                        slot.style.boxShadow = 'none';
+                    } else {
+                        slot.style.background = '#EF5350';
+                        slot.style.animation = 'shake 0.5s';
+                        SoundService.playWrong();
+                        allCorrect = false;
+                        bubble.innerText = currentLanguage==='zh'?'有音符迷路了，再检查一下！':'Something is not right here, check again.';
+                        setTimeout(() => {
+                            slot.style.animation = '';
+                            slot.style.background = 'white';
+                        }, 500);
+                        break;
+                    }
+                }
+                
+                if (allCorrect) {
+                    createConfetti();
+                    createConfetti();
+                    bubble.innerText = currentLanguage==='zh'?'太棒了！旋律完全正确！':'Great job! You made the melody!';
+                    setTimeout(() => {
+                        ProgressService.updateStars('sight', 2, 3);
+                        navigateTo('sight-hub');
+                    }, 3000);
+                }
+            };
+            
+            document.getElementById('v2-mg-clear').onclick = () => {
+                activeSlotIdx = 0;
+                mgSlots.forEach((slot, idx) => {
+                    slot.dataset.filled = '';
+                    slot.innerHTML = '';
+                    slot.style.background = 'rgba(255,255,255,0.8)';
+                    slot.style.borderStyle = 'dashed';
+                    slot.style.borderWidth = '2px';
+                    slot.style.borderColor = '#01579b';
+                    if (idx === 0) slot.style.border = '4px solid #F44336';
+                });
+            };
         }
 
         if (level == 3) {
             
             const btnStartTut = document.getElementById('v3-btn-start-tut');
             const btnPracticeBtn = document.getElementById('v3-btn-practice');
+            const btnSkipTut = document.getElementById('v3-btn-skip');
             const tutArea = document.getElementById('v3-tutorial');
             const pracArea = document.getElementById('v3-practice');
+            const miniArea = document.getElementById('v3-minigame');
             const tutStage = document.getElementById('v3-tut-stage');
-            const tutImg = document.getElementById('v3-tut-img');
-            const tutText = document.getElementById('v3-tut-text');
+            const tutVisuals = document.getElementById('v3-tut-visuals');
 
             const tutSteps = [
-                { emoji: '❤️', text: currentLanguage === 'zh' ? '音乐和我们一样，有稳定的心跳！' : 'Music has a steady heartbeat, just like us!' },
-                { emoji: '🎵 ❤️🎵', action: 'simulate', text: currentLanguage === 'zh' ? '这就是拍子，它很稳定，不快也不慢！' : 'This is the beat. It is steady, not fast, not slow!' },
-                { emoji: '🥁', text: currentLanguage === 'zh' ? '我们要跟着拍子一起均匀地敲击！' : 'We need to tap along with the beat evenly!' }
+                { type: 'text', ts: '2/4', text: currentLanguage === 'zh' ? '小知识：节拍有一个稳定的循环，就像钟表一样！' : 'Fun fact: Beats have a steady loop, like a clock!' },
+                { type: 'ts-2', ts: '2/4', text: currentLanguage === 'zh' ? '2/4 拍的意思是：每个小节有 2 拍！' : '2/4 means 2 beats in each bar!' },
+                { type: 'ts-4', ts: '4/4', text: currentLanguage === 'zh' ? '如果是 4/4 拍，每个小节就有 4 拍！' : 'If it is 4/4, there are 4 beats in each bar!' },
+                { type: 'pulse-2', ts: '2/4', text: currentLanguage === 'zh' ? '现在我们感受 2 拍：大... 大... 停！' : 'Now lets feel 2 beats: Da... Da... pause!' },
+                { type: 'pulse-4', ts: '4/4', text: currentLanguage === 'zh' ? '感受 4 拍：大... 大... 大... 大... 停！' : 'Now feel 4 beats: Da... Da... Da... Da... pause!' }
             ];
+
+            let tutTimeout = null;
+            const cleanupTut = () => {
+                if(tutTimeout) clearTimeout(tutTimeout);
+                window._sightTimeouts.forEach(clearTimeout);
+                tutVisuals.innerHTML = '';
+            };
+
+            btnSkipTut.style.display = 'inline-block';
+            btnSkipTut.onclick = () => {
+                cleanupTut();
+                tutArea.style.display = 'none';
+                pracArea.style.display = 'flex';
+            };
+
+            btnPracticeBtn.onclick = () => {
+                cleanupTut();
+                tutArea.style.display = 'none';
+                pracArea.style.display = 'flex';
+            };
 
             btnStartTut.onclick = () => {
                 btnStartTut.style.display = 'none';
@@ -3794,245 +4720,914 @@ function attachLessonListeners(type, level) {
 
                 let step = 0;
                 const runStep = () => {
+                    tutVisuals.innerHTML = '';
                     if (step < tutSteps.length) {
-                        const ts = tutSteps[step];
-                        tutImg.innerHTML = ts.emoji;
-                        tutText.innerText = ts.text;
-                        
-                        if (ts.action === 'simulate') {
-                            playNote(150, 0.1);
-                            tutImg.style.transform = 'scale(1.2)';
-                            setTimeout(() => { if(tutImg) tutImg.style.transform = 'none'; }, 200);
+                        const s = tutSteps[step];
+                        const bubble = document.getElementById('v3-tut-bubble');
+                        bubble.innerText = s.text;
 
-                            setTimeout(() => {
-                                playNote(150, 0.1);
-                                tutImg.style.transform = 'scale(1.2)';
-                                setTimeout(() => { if(tutImg) tutImg.style.transform = 'none'; }, 200);
-                            }, 500);
-                        } else {
-                            SoundService.playSuccess();
+                        if (s.type === 'ts-2' || s.type === 'ts-4') {
+                            const tsEl = document.createElement('div');
+                            tsEl.style.fontSize = '8rem';
+                            tsEl.style.fontWeight = '900';
+                            tsEl.style.color = 'var(--accent-purple)';
+                            tsEl.innerText = s.ts;
+                            tutVisuals.appendChild(tsEl);
+                            tsEl.style.animation = 'popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                            playNote(400, 0.5);
+                        } else if (s.type === 'pulse-2' || s.type === 'pulse-4') {
+                            const num = s.type === 'pulse-2' ? 2 : 4;
+                            for(let i=0; i<num; i++) {
+                                const d = document.createElement('div');
+                                d.style.width = '60px';
+                                d.style.height = '60px';
+                                d.style.background = '#ccc';
+                                d.style.borderRadius = '50%';
+                                d.id = 'tut-dot-' + i;
+                                tutVisuals.appendChild(d);
+                            }
+                            
+                            let beat = 0;
+                            const playBeat = () => {
+                                if (beat < num) {
+                                    const dot = document.getElementById('tut-dot-' + beat);
+                                    if(dot) {
+                                        dot.style.background = '#ff9800';
+                                        dot.style.transform = 'scale(1.2)';
+                                        dot.style.boxShadow = '0 0 20px #ff9800';
+                                        setTimeout(() => {
+                                            dot.style.background = '#ccc';
+                                            dot.style.transform = 'scale(1)';
+                                            dot.style.boxShadow = 'none';
+                                        }, 400);
+                                    }
+                                    playNote(261.63, 0.1); // C4 tick
+                                    beat++;
+                                    tutTimeout = setTimeout(playBeat, 800);
+                                    window._sightTimeouts.push(tutTimeout);
+                                } else {
+                                    SpeechService.speak(s.text, currentLanguage, () => {
+                                        step++;
+                                        tutTimeout = setTimeout(runStep, 800);
+                                        window._sightTimeouts.push(tutTimeout);
+                                    });
+                                }
+                            };
+                            if (num > 0) playBeat();
+                            return; // Wait for beats to finish before speech
                         }
-                        
-                        SpeechService.speak(ts.text, currentLanguage, () => {
+
+                        SpeechService.speak(s.text, currentLanguage, () => {
                             step++;
-                            setTimeout(runStep, 800);
+                            tutTimeout = setTimeout(runStep, 800);
+                            window._sightTimeouts.push(tutTimeout);
                         });
 
                     } else {
                         btnPracticeBtn.style.display = 'inline-block';
-                        SpeechService.speak(currentLanguage==='zh'?'准备好了吗？试试看！':'Ready? Try it out!');
+                        btnSkipTut.style.display = 'none';
+                        const bubble = document.getElementById('v3-tut-bubble');
+                        bubble.innerText = currentLanguage==='zh'?'太棒了！现在我们去练习！':'Awesome! Let\'s go practice!';
                     }
                 };
                 runStep();
             };
 
-            btnPracticeBtn.onclick = () => {
-                tutArea.style.display = 'none';
-                pracArea.style.display = 'flex';
+            // Practice Section
+            const btnPracStart = document.getElementById('v3-btn-start-prac');
+            const btnPracStop = document.getElementById('v3-btn-stop-prac');
+            const btnGame = document.getElementById('v3-btn-game');
+            const pracDot = document.getElementById('v3-prac-dot');
+            const pracMarkers = document.getElementById('v3-prac-markers');
+            const pracBubble = document.getElementById('v3-prac-bubble');
+
+            let timeSig = 4;
+            let tempoBPM = 60; 
+            let currentBarBeat = 0;
+            let isPracActive = false;
+
+            const updatePracVisuals = () => {
+                document.getElementById('v3-ts-2').style.background = timeSig === 2 ? '#2196F3' : '#e0e0e0';
+                document.getElementById('v3-ts-2').style.color = timeSig === 2 ? '#fff' : '#333';
+                document.getElementById('v3-ts-4').style.background = timeSig === 4 ? '#2196F3' : '#e0e0e0';
+                document.getElementById('v3-ts-4').style.color = timeSig === 4 ? '#fff' : '#333';
+                
+                document.getElementById('v3-sp-slow').style.background = tempoBPM === 60 ? '#4CAF50' : '#e0e0e0';
+                document.getElementById('v3-sp-slow').style.color = tempoBPM === 60 ? '#fff' : '#333';
+                document.getElementById('v3-sp-fast').style.background = tempoBPM === 100 ? '#4CAF50' : '#e0e0e0';
+                document.getElementById('v3-sp-fast').style.color = tempoBPM === 100 ? '#fff' : '#333';
+
+                pracBubble.innerText = currentLanguage==='zh'?`每个小节有 ${timeSig} 拍哦！圆点亮起时点击！` : `Each bar has ${timeSig} beats! Tap when lit!`;
+                
+                // create markers
+                pracMarkers.innerHTML = '';
+                for(let i=0; i<timeSig; i++) {
+                    const m = document.createElement('div');
+                    m.style.width = '15px';
+                    m.style.height = '15px';
+                    m.style.background = '#ccc';
+                    m.style.borderRadius = '50%';
+                    m.id = 'prac-m-' + i;
+                    pracMarkers.appendChild(m);
+                }
+            };
+            
+            document.getElementById('v3-ts-2').onclick = () => { if(isPracActive)return; timeSig=2; updatePracVisuals(); };
+            document.getElementById('v3-ts-4').onclick = () => { if(isPracActive)return; timeSig=4; updatePracVisuals(); };
+            document.getElementById('v3-sp-slow').onclick = () => { if(isPracActive)return; tempoBPM=60; updatePracVisuals(); };
+            document.getElementById('v3-sp-fast').onclick = () => { if(isPracActive)return; tempoBPM=100; updatePracVisuals(); };
+
+            updatePracVisuals();
+
+            let lastPracBeatTime = 0;
+            let tapsInBar = 0;
+
+            const stopPrac = () => {
+                isPracActive = false;
+                if(window._sightInterval) clearInterval(window._sightInterval);
+                btnPracStart.style.display = 'inline-block';
+                btnPracStop.style.display = 'none';
+                btnGame.style.display = 'inline-block';
+                pracDot.style.background = '#ff9800';
+                pracDot.style.boxShadow = '0 10px 20px rgba(255,152,0,0.4)';
             };
 
-            const heart = document.getElementById('heart-beat');
-            const pad = document.getElementById('beat-ripple-pad');
-            const feedback = document.getElementById('timing-feedback');
-            let isTapping = false;
-            let lastBeatTime = 0;
-            const tempo = 1000; // 1 second beat
+            btnPracStop.onclick = stopPrac;
 
-            document.getElementById('beat-start-btn').onclick = () => {
-                if (isTapping) return;
-                isTapping = true;
-                lastBeatTime = Date.now();
+            btnPracStart.onclick = () => {
+                isPracActive = true;
+                btnPracStart.style.display = 'none';
+                btnPracStop.style.display = 'inline-block';
+                btnGame.style.display = 'none';
                 
-                window._sightInterval = setInterval(() => {
-                    lastBeatTime = Date.now();
-                    heart.classList.add('pulse');
+                currentBarBeat = 0;
+                tapsInBar = 0;
+                
+                const msPerBeat = 60000 / tempoBPM;
+                
+                const tick = () => {
+                    if(!isPracActive) return;
+                    lastPracBeatTime = Date.now();
+                    
+                    // Reset markers at bar start
+                    if (currentBarBeat === 0) {
+                        tapsInBar = 0;
+                        for(let i=0; i<timeSig; i++) {
+                            const m = document.getElementById('prac-m-' + i);
+                            if(m) m.style.background = '#ccc';
+                        }
+                    }
+
+                    // highlight marker
+                    const m = document.getElementById('prac-m-' + currentBarBeat);
+                    if(m) m.style.background = '#ff9800';
+                    
+                    pracDot.style.transform = 'scale(1.1)';
+                    pracDot.innerText = '✨';
+                    setTimeout(() => {
+                        pracDot.style.transform = 'scale(1)';
+                        pracDot.innerText = '🖐️';
+                    }, 200);
+
                     playNote(150, 0.1);
-                    setTimeout(() => heart.classList.remove('pulse'), 600);
-                }, tempo);
+
+                    currentBarBeat = (currentBarBeat + 1) % timeSig;
+                };
+
+                tick();
+                window._sightInterval = setInterval(tick, msPerBeat);
             };
 
-            pad.onclick = (e) => {
-                if (!isTapping) return;
+            pracDot.onclick = () => {
+                if(!isPracActive) return;
                 
-                // Create ripple
-                const ripple = document.createElement('div');
-                ripple.className = 'ripple-circle';
-                pad.appendChild(ripple);
-                setTimeout(() => ripple.remove(), 600);
-
-                // Timing calculation
+                pracDot.style.background = '#4CAF50';
+                pracDot.style.boxShadow = '0 0 30px #4CAF50';
+                setTimeout(() => {
+                    pracDot.style.background = '#ff9800';
+                    pracDot.style.boxShadow = '0 10px 20px rgba(255,152,0,0.4)';
+                }, 200);
+                
                 const now = Date.now();
-                const diff = Math.abs(now - lastBeatTime);
-                const halfTempo = tempo / 2;
-                const distanceToClosestBeat = diff > halfTempo ? Math.abs(diff - tempo) : diff;
+                const msPerBeat = 60000 / tempoBPM;
+                const diff = Math.abs(now - lastPracBeatTime);
+                const halfTempo = msPerBeat / 2;
+                const dist = diff > halfTempo ? Math.abs(diff - msPerBeat) : diff;
 
-                if (distanceToClosestBeat < 100) {
-                    feedback.innerText = "PERFECT! ⭐";
-                    feedback.className = "timing-feedback timing-perfect";
-                    playNote(400, 0.05);
-                } else if (distanceToClosestBeat < 250) {
-                    feedback.innerText = "GOOD! 👍";
-                    feedback.className = "timing-feedback timing-good";
+                if (dist < 200) {
+                    tapsInBar++;
+                    playNote(400, 0.1);
+                    createConfetti();
+                    if(tapsInBar >= timeSig) {
+                        pracBubble.innerText = currentLanguage==='zh'?'干得漂亮！太准啦！':'Great job! Very accurate!';
+                    }
                 } else {
-                    feedback.innerText = "OFF BEAT ❌";
-                    feedback.className = "timing-feedback timing-off";
+                    playNote(100, 0.1); 
+                    pracBubble.innerText = currentLanguage==='zh'?'哎呀偏了一点，注意节奏哦！':'Oops a bit off, watch the beat!';
+                }
+            };
+
+            btnGame.onclick = () => {
+                stopPrac();
+                pracArea.style.display = 'none';
+                miniArea.style.display = 'flex';
+                initBeatTrain();
+            };
+
+            // MINI GAME BEAT TRAIN
+            let mgTempo = 80;
+            let mgTimeSig = 2; // current car's TS
+            let mgBarBeat = 0;
+            let mgActive = false;
+            let mgLastBeatTime = 0;
+            let mgTaps = 0;
+            let carIdx = 0;
+            const trainCars = [2, 4, 3, 4]; // time signatures for cars
+
+            const initBeatTrain = () => {
+                carIdx = 0;
+                mgActive = false;
+                document.getElementById('v3-mg-btn-start').style.display = 'inline-block';
+                document.getElementById('v3-mg-tap-area').style.display = 'none';
+                resetTrainCar();
+            };
+
+            const resetTrainCar = () => {
+                const car = document.getElementById('v3-mg-car');
+                car.style.opacity = '0';
+                car.style.transform = 'translateX(50px)';
+                
+                if (carIdx >= trainCars.length) {
+                    document.getElementById('v3-mg-bubble').innerText = currentLanguage==='zh'?'太棒了！火车到站啦！':'Amazing! Train reached the station!';
+                    createConfetti();
+                    createConfetti();
+                    document.getElementById('v3-mg-tap-area').style.display = 'none';
+                    setTimeout(() => {
+                        ProgressService.updateStars('sight', 3, 3);
+                        navigateTo('sight-hub');
+                    }, 3000);
+                    return;
+                }
+
+                mgTimeSig = trainCars[carIdx];
+                document.getElementById('v3-mg-ts').innerText = mgTimeSig + '/4';
+                
+                const beatsContainer = document.getElementById('v3-mg-car-beats');
+                beatsContainer.innerHTML = '';
+                for(let i=0; i<mgTimeSig; i++) {
+                    const b = document.createElement('div');
+                    b.style.width = '12px';
+                    b.style.height = '12px';
+                    b.style.background = '#ccc';
+                    b.style.borderRadius = '50%';
+                    b.id = 'mg-car-b-' + i;
+                    beatsContainer.appendChild(b);
+                }
+
+                setTimeout(() => {
+                    car.style.opacity = '1';
+                    car.style.transform = 'translateX(0)';
+                }, 100);
+            };
+
+            document.getElementById('v3-mg-btn-start').onclick = () => {
+                document.getElementById('v3-mg-btn-start').style.display = 'none';
+                document.getElementById('v3-mg-tap-area').style.display = 'flex';
+                document.getElementById('v3-mg-dot').style.display = 'block';
+                startCarSequence();
+            };
+
+            const startCarSequence = () => {
+                mgActive = true;
+                mgBarBeat = 0;
+                mgTaps = 0;
+                const msPerBeat = 60000 / mgTempo;
+                
+                const mgDot = document.getElementById('v3-mg-dot');
+                
+                const mgTick = () => {
+                    if(!mgActive) return;
+                    mgLastBeatTime = Date.now();
+                    
+                    mgDot.style.background = '#ffeb3b';
+                    mgDot.style.transform = 'scale(1.5)';
+                    setTimeout(() => {
+                        mgDot.style.background = '#fff';
+                        mgDot.style.transform = 'scale(1)';
+                    }, 200);
+                    
+                    playNote(150, 0.1);
+                    
+                    mgBarBeat++;
+                    if(mgBarBeat >= mgTimeSig) {
+                        mgActive = false; // End of bar reading
+                        if(window._sightInterval) clearInterval(window._sightInterval);
+                        
+                        window._sightTimeouts.push(setTimeout(() => checkCarResult(), msPerBeat)); 
+                    }
+                };
+                
+                mgTick();
+                window._sightInterval = setInterval(mgTick, msPerBeat);
+            };
+
+            document.getElementById('v3-mg-tap-area').onclick = () => {
+                if(!mgActive && mgTaps >= mgTimeSig) return;
+                
+                const area = document.getElementById('v3-mg-tap-area');
+                area.style.transform = 'scale(0.95)';
+                setTimeout(() => area.style.transform = 'scale(1)', 100);
+                
+                const msPerBeat = 60000 / mgTempo;
+                const diff = Date.now() - mgLastBeatTime;
+                
+                if (diff < 250 || diff > msPerBeat - 250) {
+                    playNote(400, 0.1);
+                    const bMark = document.getElementById('mg-car-b-' + mgTaps);
+                    if(bMark) bMark.style.background = '#4CAF50';
+                    mgTaps++;
+                } else {
+                    playNote(100, 0.1); // wrong
+                    document.getElementById('v3-mg-bubble').innerText = currentLanguage==='zh'?'哎呀！找准节奏点击哦！':'Oops! Not on the beat!';
+                }
+            };
+
+            let tracksX = 0;
+            const checkCarResult = () => {
+                if(mgTaps === mgTimeSig) {
+                    SoundService.playSuccess();
+                    document.getElementById('v3-mg-bubble').innerText = currentLanguage==='zh'?'太准了！火车前进！':'Perfect! Train moving!';
+                    
+                    const pKeys = document.getElementById('v3-mg-car');
+                    pKeys.style.boxShadow = '0 0 20px #4CAF50';
+                    
+                    document.getElementById('v3-mg-smoke').style.opacity = '1';
+                    document.getElementById('v3-mg-smoke').style.transform = 'translateY(-20px) scale(1.5)';
+                    
+                    tracksX -= 100;
+                    document.getElementById('v3-mg-tracks').style.transform = `translateX(${tracksX}px)`;
+                    
+                    window._sightTimeouts.push(setTimeout(() => {
+                        document.getElementById('v3-mg-smoke').style.opacity = '0';
+                        document.getElementById('v3-mg-smoke').style.transform = 'translateY(0) scale(1)';
+                        pKeys.style.boxShadow = '0 3px 0 #F57F17';
+                        carIdx++;
+                        resetTrainCar();
+                        if(carIdx < trainCars.length) {
+                            window._sightTimeouts.push(setTimeout(startCarSequence, 1000));
+                        }
+                    }, 1000));
+                    
+                } else {
+                    document.getElementById('v3-mg-bubble').innerText = currentLanguage==='zh'?`车厢需要 ${mgTimeSig} 拍！再试一次！`:`This car needs ${mgTimeSig} beats! Try again!`;
+                    SoundService.playWrong();
+                    mgBarBeat = 0;
+                    mgTaps = 0;
+                    for(let i=0; i<mgTimeSig; i++) {
+                        const bMark = document.getElementById('mg-car-b-' + i);
+                        if(bMark) bMark.style.background = '#ccc';
+                    }
+                    window._sightTimeouts.push(setTimeout(startCarSequence, 1000));
                 }
             };
         }
 
         if (level == 4) {
-            
             const btnStartTut = document.getElementById('v4-btn-start-tut');
+            const btnSkipTut = document.getElementById('v4-btn-skip');
             const btnPracticeBtn = document.getElementById('v4-btn-practice');
+            const btnGame = document.getElementById('v4-btn-game');
+            const btnResetGame = document.getElementById('v4-mg-reset');
+            
             const tutArea = document.getElementById('v4-tutorial');
             const pracArea = document.getElementById('v4-practice');
+            const miniArea = document.getElementById('v4-minigame');
+            
             const tutStage = document.getElementById('v4-tut-stage');
             const tutImg = document.getElementById('v4-tut-img');
             const tutText = document.getElementById('v4-tut-text');
+            const tutPulses = document.getElementById('v4-tut-pulses');
 
+            btnSkipTut.style.display = 'inline-block';
+
+            let isTutActive = false;
+            let tutTimeout = null;
+            
+            const cleanupTut = () => {
+                isTutActive = false;
+                if(tutTimeout) clearTimeout(tutTimeout);
+                window._sightTimeouts.forEach(clearTimeout);
+                tutPulses.innerHTML = '';
+            };
+
+            btnSkipTut.onclick = () => {
+                cleanupTut();
+                tutArea.style.display = 'none';
+                pracArea.style.display = 'flex';
+            };
+
+            btnPracticeBtn.onclick = () => {
+                cleanupTut();
+                tutArea.style.display = 'none';
+                pracArea.style.display = 'flex';
+            };
+            
+            const NoteIconRenderer = {
+                draw(type) {
+                    const s = `<svg viewBox="0 0 100 100" width="40" height="40" style="overflow:visible; vertical-align:middle;">`;
+                    const drawHead = (fill, stroke) => `<ellipse cx="30" cy="80" rx="20" ry="14" transform="rotate(-20 30 80)" fill="${fill}" stroke="${stroke}" stroke-width="6"/>`;
+                    const drawStem = () => `<line x1="48" y1="80" x2="48" y2="10" stroke="#333" stroke-width="5"/>`;
+                    
+                    if(type === 'whole') {
+                         return s + `<ellipse cx="50" cy="50" rx="30" ry="22" transform="rotate(-20 50 50)" fill="none" stroke="#333" stroke-width="6"/>` + `</svg>`;
+                    }
+                    if(type === 'half') {
+                         return s + drawHead('none', '#333') + drawStem() + `</svg>`;
+                    }
+                    if(type === 'quarter') {
+                         return s + drawHead('#333', '#333') + drawStem() + `</svg>`;
+                    }
+                    if(type === 'eighth') {
+                         return s + drawHead('#333', '#333') + drawStem() + `<path d="M48,10 Q80,20 60,60 Q70,35 48,25 Z" fill="#333"/>` + `</svg>`;
+                    }
+                    if(type === 'eighth2') {
+                         const s2 = `<svg viewBox="0 0 120 100" width="50" height="40" style="overflow:visible; vertical-align:middle;">`;
+                         const h1 = `<ellipse cx="30" cy="80" rx="20" ry="14" transform="rotate(-20 30 80)" fill="#333" />`;
+                         const h2 = `<ellipse cx="80" cy="80" rx="20" ry="14" transform="rotate(-20 80 80)" fill="#333" />`;
+                         const st1 = `<line x1="48" y1="80" x2="48" y2="10" stroke="#333" stroke-width="5"/>`;
+                         const st2 = `<line x1="98" y1="80" x2="98" y2="10" stroke="#333" stroke-width="5"/>`;
+                         const beam = `<line x1="46" y1="12" x2="100" y2="12" stroke="#333" stroke-width="10"/>`;
+                         return s2 + h1 + h2 + st1 + st2 + beam + `</svg>`;
+                    }
+                    return '';
+                }
+            };
+            
             const tutSteps = [
-                { emoji: '🎶', action: 'none', text: currentLanguage === 'zh' ? '音符有时候长，有时候短。长短组合就变成了多变的节奏！' : 'Notes can be long or short. Mixing them makes a varied rhythm!' },
-                { emoji: '➖ ➖', action: 'long', text: currentLanguage === 'zh' ? '长的线条表示声音长，你要慢慢地敲。' : 'Long lines mean a long sound, you tap slowly.' },
-                { emoji: '⬝ ⬝', action: 'short', text: currentLanguage === 'zh' ? '小圆点表示声音短，你要快快地敲。' : 'Small dots mean a short sound, you tap quickly.' }
+                { id: 'intro', emoji: '👣', text: currentLanguage === 'zh' ? '音符就像小小足迹，告诉你什么时候敲、敲几次！' : 'Notes are like little footprints. They tell you when to tap and how many times to tap.' },
+                { id: 'whole', icon: NoteIconRenderer.draw('whole'), text: currentLanguage === 'zh' ? '全音符有4拍。唱一次，敲4下。' : 'Whole note has 4 beats. Sing once, tap 4 times.' },
+                { id: 'half', icon: NoteIconRenderer.draw('half'), text: currentLanguage === 'zh' ? '二分音符有2拍。唱一次，敲2下。' : 'Half note has 2 beats. Sing once, tap 2 times.' },
+                { id: 'quarter', icon: NoteIconRenderer.draw('quarter'), text: currentLanguage === 'zh' ? '四分音符有1拍。唱一次，敲1下。' : 'Quarter note has 1 beat. Sing once, tap 1 time.' },
+                { id: 'eighth', icon: NoteIconRenderer.draw('eighth2'), text: currentLanguage === 'zh' ? '两个八分音符也是1拍。敲2下，要快！' : 'Two eighth notes are 1 beat. Tap 2 times, fast!' }
             ];
 
             btnStartTut.onclick = () => {
                 btnStartTut.style.display = 'none';
                 tutStage.style.display = 'block';
-
+                isTutActive = true;
                 let step = 0;
+
                 const runStep = () => {
+                    if (!isTutActive) return;
+                    tutPulses.innerHTML = '';
                     if (step < tutSteps.length) {
                         const ts = tutSteps[step];
-                        tutImg.innerHTML = ts.emoji;
+                        if (ts.icon) {
+                            tutImg.innerHTML = ts.icon;
+                            const svg = tutImg.querySelector('svg');
+                            if(svg) { svg.style.width = '100px'; svg.style.height = '100px'; }
+                        } else {
+                            tutImg.innerHTML = ts.emoji;
+                        }
                         tutText.innerText = ts.text;
                         
-                        if (ts.action === 'long') {
-                            playNote(350, 0.6);
-                            setTimeout(() => playNote(350, 0.6), 1000);
-                        } else if (ts.action === 'short') {
-                            playNote(350, 0.2);
-                            setTimeout(() => playNote(350, 0.2), 400);
-                        } else {
-                            SoundService.playSuccess();
-                        }
+                        tutImg.style.animation = 'popIn 0.5s ease';
+                        setTimeout(()=> { if(tutImg) tutImg.style.animation = 'none'; }, 500);
 
-                        SpeechService.speak(ts.text, currentLanguage, () => {
-                            step++;
-                            setTimeout(runStep, 800);
-                        });
+                        let playBeats = () => {
+                            SpeechService.speak(ts.text, currentLanguage, () => {
+                                step++;
+                                tutTimeout = setTimeout(runStep, 1000);
+                                window._sightTimeouts.push(tutTimeout);
+                            });
+                        };
+
+                        if (ts.id === 'intro') {
+                            SoundService.playSuccess();
+                            playBeats();
+                        } else {
+                            let pulses = [];
+                            let num = 0;
+                            let dur = 0;
+                            let voice = 'Da';
+                            let speed = 800;
+                            if (ts.id === 'whole') { num = 4; dur = 3; voice = 'Da~~~'; speed = 800; }
+                            if (ts.id === 'half') { num = 2; dur = 1.5; voice = 'Da~'; speed = 800; }
+                            if (ts.id === 'quarter') { num = 1; dur = 0.5; voice = 'Da'; speed = 800; }
+                            if (ts.id === 'eighth') { num = 2; dur = 0.1; voice = 'Da Da'; speed = 300; }
+
+                            for(let i=0; i<num; i++){
+                                const p = document.createElement('div');
+                                p.style.width = '30px'; p.style.height = '30px';
+                                p.style.borderRadius = '50%'; p.style.background = '#ccc';
+                                tutPulses.appendChild(p);
+                                pulses.push(p);
+                            }
+
+                            let pulseState = 0;
+                            let bp = () => {
+                                if (!isTutActive) return;
+                                if (pulseState < num) {
+                                    if(pulses[pulseState]) {
+                                        pulses[pulseState].style.background = '#ff9800';
+                                        pulses[pulseState].style.transform = 'scale(1.2)';
+                                        pulses[pulseState].style.boxShadow = '0 0 15px #ff9800';
+                                    }
+                                    playNote(261.63, 0.1); 
+                                    playNote(330, dur); 
+                                    setTimeout(()=>{
+                                        if (pulses[pulseState]) {
+                                            pulses[pulseState].style.transform = 'scale(1)';
+                                        }
+                                    }, 200);
+                                    pulseState++;
+                                    let t = setTimeout(bp, speed);
+                                    window._sightTimeouts.push(t);
+                                } else {
+                                    playBeats();
+                                }
+                            };
+                            bp();
+                        }
 
                     } else {
                         btnPracticeBtn.style.display = 'inline-block';
-                        SpeechService.speak(currentLanguage==='zh'?'准备好了吗？试试看！':'Ready? Try it out!');
+                        btnSkipTut.style.display = 'none';
+                        tutImg.innerHTML = '🎉';
+                        tutText.innerText = currentLanguage==='zh'?'准备好了吗？去练习吧！':'Ready? Try it out!';
                     }
                 };
                 runStep();
             };
 
-            btnPracticeBtn.onclick = () => {
-                tutArea.style.display = 'none';
-                pracArea.style.display = 'flex';
-            };
+            const btnPracListen = document.getElementById('v4-prac-btn-listen');
+            const btnPracPlay = document.getElementById('v4-prac-btn-play');
+            const pad = document.getElementById('v4-rhythm-tap-pad');
+            const pracPattern = document.getElementById('v4-rhythm-pattern');
+            const pracPrints = document.getElementById('v4-prac-prints');
+            const pracFeedback = document.getElementById('v4-prac-feedback');
 
-            const generateRhythm = () => {
-                const patterns = [
-                    [2, 1, 1], // long short short
-                    [1, 1, 2], // short short long
-                    [2, 2, 1, 1], // long long short short
-                    [1, 2, 1] // short long short
-                ];
-                return patterns[Math.floor(Math.random() * patterns.length)];
-            };
+            const pracExamples = [
+                { pattern: ['quarter', 'quarter', 'quarter', 'quarter'], beats: [1,1,1,1] },
+                { pattern: ['half', 'eighth2', 'quarter'], beats: [2, 0.5, 0.5, 1] },
+                { pattern: ['whole'], beats: [4] }
+            ];
 
-            let pattern = generateRhythm();
-            let isRecordingPlayer = false;
+            let currPracEx = 0;
+            let isPracPlaying = false;
+            let expectedTaps = 0;
             let playerTaps = [];
-            let isPlaying = false;
+            let isPracRecording = false;
+            let recordTimeout = null;
 
-            const renderRhythm = () => {
-                const display = document.getElementById('rhythm-pattern');
-                if (display) display.innerHTML = pattern.map((p, i) => `<div class="rhythm-marker ${p === 2 ? 'long' : 'short'}" data-index="${i}"></div>`).join('');
-            };
-            renderRhythm();
-            
-            const btnListen = document.getElementById('rhythm-lesson-play');
-            const btnPlay = document.getElementById('rhythm-start-btn');
-            const pad = document.getElementById('rhythm-tap-pad');
-            
-            btnListen.onclick = async () => {
-                if (isPlaying) return;
-                isPlaying = true;
-                isRecordingPlayer = false;
-                const markers = document.querySelectorAll('.rhythm-marker');
-                markers.forEach(m => m.className = m.className.replace(' active', '').replace(' correct', '').replace(' wrong', ''));
-
-                for(let i=0; i<pattern.length; i++) {
-                    if (markers[i]) markers[i].classList.add('active');
-                    const dur = pattern[i] === 2 ? 0.6 : 0.2;
-                    playNote(350, dur);
-                    await new Promise(r => setTimeout(r, pattern[i] * 500));
-                    if (markers[i]) markers[i].classList.remove('active');
-                }
-                isPlaying = false;
+            const renderPrac = () => {
+                 pracPattern.innerHTML = '';
+                 pracPrints.innerHTML = '';
+                 expectedTaps = 0;
+                 const ex = pracExamples[currPracEx];
+                 ex.pattern.forEach(p => {
+                     const el = document.createElement('div');
+                     el.className = 'symbol-icon-large';
+                     el.style.margin = '0 5px';
+                     el.innerHTML = NoteIconRenderer.draw(p);
+                     const svg = el.querySelector('svg');
+                     if(svg) { svg.style.width = '60px'; svg.style.height = '60px'; }
+                     
+                     if (p==='whole') { expectedTaps+=4; }
+                     if (p==='half') { expectedTaps+=2; }
+                     if (p==='quarter') { expectedTaps+=1; }
+                     if (p==='eighth2') { expectedTaps+=2; }
+                     pracPattern.appendChild(el);
+                 });
             };
 
-            btnPlay.onclick = () => {
-                if (isPlaying) return;
-                isRecordingPlayer = true;
+            renderPrac();
+
+            btnPracListen.onclick = () => {
+                if(isPracPlaying) return;
+                isPracPlaying = true;
+                pracFeedback.innerText = '';
+                pracPrints.innerHTML = '';
+                const ex = pracExamples[currPracEx];
+                
+                let bIdx = 0;
+                let pb = () => {
+                    if (!isPracPlaying) return;
+                    if(bIdx < ex.beats.length) {
+                        const b = ex.beats[bIdx];
+                        const f = document.createElement('div');
+                        f.innerText = '👣';
+                        f.style.fontSize = '30px';
+                        f.style.animation = 'popIn 0.3s ease';
+                        pracPrints.appendChild(f);
+                        
+                        playNote(261.63, 0.1);
+                        if (b===4) playNote(330, 2);
+                        if (b===2) playNote(330, 1);
+                        if (b===1) playNote(330, 0.5);
+                        if (b===0.5) playNote(330, 0.2);
+
+                        bIdx++;
+                        let wait = b * 600;
+                        if (b===0.5) wait = 300;
+                        if (b===4) wait = 600; 
+                        if (b===2) wait = 600;
+
+                        window._sightTimeouts.push(setTimeout(pb, wait));
+                    } else {
+                        isPracPlaying = false;
+                    }
+                };
+                pb();
+            };
+
+            btnPracPlay.onclick = () => {
+                if(isPracPlaying) return;
                 playerTaps = [];
-                const markers = document.querySelectorAll('.rhythm-marker');
-                markers.forEach(m => m.className = m.className.replace(' active', '').replace(' correct', '').replace(' wrong', ''));
-                showFeedback('rhythm-feedback', currentLanguage === 'zh' ? '该你了！' : 'Your turn!', 'var(--accent-blue)');
+                isPracRecording = true;
+                pracPrints.innerHTML = '';
+                pracFeedback.innerText = currentLanguage==='zh'?'该你了！敲击面板！':'Your turn! Tap the pad!';
+                pracFeedback.style.color = 'var(--accent-blue)';
+                
+                if(recordTimeout) clearTimeout(recordTimeout);
+                recordTimeout = setTimeout(checkPracResult, 5000);
             };
 
             pad.onclick = () => {
+                if (!isPracRecording) {
+                    playNote(150, 0.1);
+                    return;
+                }
                 playNote(150, 0.1);
-                pad.classList.add('active');
-                setTimeout(() => pad.classList.remove('active'), 100);
+                playerTaps.push(Date.now());
+                
+                const f = document.createElement('div');
+                f.innerText = '👣';
+                f.style.fontSize = '30px';
+                f.style.color = '#ffb300';
+                f.style.animation = 'popIn 0.3s ease';
+                pracPrints.appendChild(f);
 
-                if (!isRecordingPlayer) return;
+                pad.style.transform = 'scale(0.9)';
+                setTimeout(()=>pad.style.transform='none', 100);
 
-                const tapIndex = playerTaps.length;
-                if (tapIndex < pattern.length) {
-                    const now = Date.now();
-                    playerTaps.push(now);
-                    const marker = document.querySelector(`.rhythm-marker[data-index="${tapIndex}"]`);
-                    if (marker) marker.classList.add('active');
+                if(recordTimeout) clearTimeout(recordTimeout);
+                recordTimeout = setTimeout(checkPracResult, 2000);
+            };
 
-                    if (playerTaps.length === pattern.length) {
-                        isRecordingPlayer = false;
-                        // For simplicity in a kids app, we check if they tapped the right number of times
-                        // and roughly compare the "feel" (long gaps vs short gaps)
-                        let isCorrect = true;
-                        if (pattern.length > 1) {
-                            for(let i = 1; i < pattern.length; i++) {
-                                const actualGap = playerTaps[i] - playerTaps[i-1];
-                                const expectedRel = pattern[i-1]; // 1 or 2
-                                // This is a loose check: if expected is long (2), gap should be > 600ms. If short (1), gap < 600ms.
-                                if (expectedRel === 2 && actualGap < 550) isCorrect = false;
-                                if (expectedRel === 1 && actualGap > 750) isCorrect = false;
-                            }
-                        }
-
+            const checkPracResult = () => {
+                isPracRecording = false;
+                if(playerTaps.length === expectedTaps || playerTaps.length > 0) {
+                    if (playerTaps.length === expectedTaps) {
+                        pracFeedback.innerText = currentLanguage==='zh'?'太准啦！节奏完美！':'Perfect! Great rhythm!';
+                        pracFeedback.style.color = 'var(--accent-green)';
+                        SoundService.playSuccess();
+                        createConfetti();
+                        
                         setTimeout(() => {
-                            const markers = document.querySelectorAll('.rhythm-marker');
-                            if (isCorrect) {
-                                markers.forEach(m => m.classList.add('correct'));
-                                showFeedback('rhythm-feedback', currentLanguage === 'zh' ? '🌟 太棒了！节奏完全正确！' : '🌟 Awesome! Perfect rhythm!', 'var(--accent-green)');
-                                createConfetti();
-                                setTimeout(() => {
-                                    pattern = generateRhythm();
-                                    renderRhythm();
-                                }, 2000);
+                            currPracEx++;
+                            if(currPracEx >= pracExamples.length) {
+                                pracFeedback.innerText = currentLanguage==='zh'?'练习完成！':'Practice completed!';
+                                btnGame.style.display = 'inline-block';
                             } else {
-                                markers.forEach(m => m.classList.add('wrong'));
-                                showFeedback('rhythm-feedback', currentLanguage === 'zh' ? '❌ 节奏不对哦，再听一次？' : '❌ Wrong rhythm, listen again?', 'var(--accent-red)');
+                                renderPrac();
                             }
-                        }, 300);
+                        }, 2000);
+                    } else {
+                        pracFeedback.innerText = currentLanguage==='zh'?'哎呀不对，再听一次？':'Oops, try again?';
+                        pracFeedback.style.color = 'var(--accent-red)';
+                        SoundService.playWrong();
                     }
                 }
             };
+
+            btnGame.onclick = () => {
+                pracArea.style.display = 'none';
+                miniArea.style.display = 'flex';
+                initFishingGame();
+            };
+
+            const pond = document.getElementById('v4-mg-pond');
+            const hooksContainer = document.getElementById('v4-mg-hooks');
+            
+            const fishes = [
+                { id: 'f1', beats: '1 Beat', target: 'quarter' },
+                { id: 'f2', beats: '2 Beats', target: 'half' },
+                { id: 'f3', beats: '4 Beats', target: 'whole' },
+                { id: 'f4', beats: 'Half Beat', target: 'eighth' }
+            ];
+
+            const drawMiniNote = (type) => {
+                const s = `<svg viewBox="0 0 100 100" width="40" height="40" style="overflow:visible; vertical-align:middle;">`;
+                const drawHead = (fill, stroke) => `<ellipse cx="30" cy="80" rx="20" ry="14" transform="rotate(-20 30 80)" fill="${fill}" stroke="${stroke}" stroke-width="6"/>`;
+                const drawStem = () => `<line x1="48" y1="80" x2="48" y2="10" stroke="#333" stroke-width="5"/>`;
+                
+                if(type === 'whole') {
+                     return s + `<ellipse cx="50" cy="50" rx="30" ry="22" transform="rotate(-20 50 50)" fill="none" stroke="#333" stroke-width="6"/>` + `</svg>`;
+                }
+                if(type === 'half') {
+                     return s + drawHead('none', '#333') + drawStem() + `</svg>`;
+                }
+                if(type === 'quarter') {
+                     return s + drawHead('#333', '#333') + drawStem() + `</svg>`;
+                }
+                if(type === 'eighth') {
+                     return s + drawHead('#333', '#333') + drawStem() + `<path d="M48,10 Q80,20 60,60 Q70,35 48,25 Z" fill="#333"/>` + `</svg>`;
+                }
+            };
+
+            const hooks = [
+                { id: 'quarter', icon: drawMiniNote('quarter') },
+                { id: 'half', icon: drawMiniNote('half') },
+                { id: 'whole', icon: drawMiniNote('whole') },
+                { id: 'eighth', icon: drawMiniNote('eighth') }
+            ];
+
+            let matchedCount = 0;
+            let dragNote = null;
+
+            const initFishingGame = () => {
+                pond.innerHTML = '';
+                pond.style.background = 'linear-gradient(to bottom, #80DEEA, #00ACC1)';
+                pond.style.boxShadow = 'inset 0 10px 20px rgba(0,0,0,0.1)';
+                pond.style.overflow = 'hidden';
+                
+                // Add ambient bubbles
+                for(let b=0; b<5; b++) {
+                    const bub = document.createElement('div');
+                    bub.style.position = 'absolute';
+                    bub.style.bottom = '-20px';
+                    bub.style.left = Math.random() * 80 + 10 + '%';
+                    bub.style.width = bub.style.height = (Math.random() * 20 + 10) + 'px';
+                    bub.style.background = 'rgba(255,255,255,0.4)';
+                    bub.style.borderRadius = '50%';
+                    bub.style.animation = `floatUp ${Math.random()*3+3}s infinite linear`;
+                    pond.appendChild(bub);
+                }
+
+                hooksContainer.innerHTML = '';
+                matchedCount = 0;
+                
+                const fishColors = ['#FF9800', '#FF4081', '#4CAF50', '#9C27B0'];
+
+                fishes.forEach((f, i) => {
+                    const el = document.createElement('div');
+                    el.className = 'mg-fish';
+                    el.id = 'mg-fish-' + f.id;
+                    el.dataset.target = f.target;
+                    el.style.width = '100px';
+                    el.style.height = '80px';
+                    el.style.background = fishColors[i];
+                    el.style.borderRadius = '50% 50% 50% 50% / 60% 60% 40% 40%';
+                    el.style.display = 'flex';
+                    el.style.flexDirection = 'column';
+                    el.style.justifyContent = 'center';
+                    el.style.alignItems = 'center';
+                    el.style.color = '#fff';
+                    el.style.fontWeight = 'bold';
+                    el.style.position = 'absolute';
+                    // Spread fish around the pond randomly
+                    el.style.top = (10 + Math.random()*40) + '%';
+                    el.style.left = (10 + i * 20) + '%';
+                    el.style.animation = `fishSwim ${4 + i}s infinite ease-in-out alternate`;
+                    el.style.boxShadow = '0 5px 15px rgba(0,0,0,0.2)';
+                    el.style.cursor = 'pointer';
+                    el.style.border = '3px solid rgba(255,255,255,0.5)';
+                    el.style.transition = 'all 0.3s ease';
+                    
+                    const tail = document.createElement('div');
+                    tail.style.position='absolute'; tail.style.right='-20px'; tail.style.top='25px';
+                    tail.style.borderLeft=`25px solid ${fishColors[i]}`; tail.style.borderTop='15px solid transparent'; tail.style.borderBottom='15px solid transparent';
+                    el.appendChild(tail);
+                    
+                    const eye = document.createElement('div');
+                    eye.style.position='absolute'; eye.style.left='15px'; eye.style.top='20px';
+                    eye.style.width='10px'; eye.style.height='10px'; eye.style.background='#fff'; eye.style.borderRadius='50%';
+                    const pupil = document.createElement('div');
+                    pupil.style.width='4px'; pupil.style.height='4px'; pupil.style.background='#000'; pupil.style.borderRadius='50%'; pupil.style.margin='3px';
+                    eye.appendChild(pupil);
+                    el.appendChild(eye);
+
+                    const lbl = document.createElement('div');
+                    lbl.innerText = f.beats;
+                    lbl.style.fontSize='14px';
+                    lbl.style.marginTop='5px';
+                    lbl.style.textShadow = '1px 1px 2px rgba(0,0,0,0.5)';
+                    el.appendChild(lbl);
+
+                    pond.appendChild(el);
+
+                    el.addEventListener('dragover', (e) => {
+                        e.preventDefault();
+                        el.style.transform = 'scale(1.1) translateY(-10px)';
+                        el.style.boxShadow = '0 10px 25px rgba(255,255,255,0.6)';
+                    });
+                    el.addEventListener('dragleave', () => {
+                        el.style.transform = '';
+                        el.style.boxShadow = '0 5px 15px rgba(0,0,0,0.2)';
+                    });
+                    el.addEventListener('drop', (e) => {
+                        e.preventDefault();
+                        el.style.transform = '';
+                        el.style.boxShadow = '0 5px 15px rgba(0,0,0,0.2)';
+                        if (dragNote) handleDrop(el, dragNote);
+                    });
+                     el.onclick = () => { 
+                         if(dragNote) handleDrop(el, dragNote);
+                     };
+                });
+
+                hooks.forEach(h => {
+                    const el = document.createElement('div');
+                    el.className = 'mg-hook';
+                    el.id = 'mg-hook-' + h.id;
+                    el.dataset.id = h.id;
+                    el.style.position = 'relative';
+                    el.style.cursor = 'grab';
+                    el.draggable = true;
+                    el.style.transition = 'transform 0.2s';
+                    
+                    const line = document.createElement('div');
+                    line.style.width = '2px'; line.style.height = '30px'; line.style.background = '#999';
+                    line.style.margin = '0 auto';
+                    el.appendChild(line);
+
+                    const hookBody = document.createElement('div');
+                    hookBody.innerHTML = h.icon;
+                    hookBody.style.fontSize = '45px';
+                    hookBody.style.width = '70px'; hookBody.style.height = '70px';
+                    hookBody.style.background = '#fff'; hookBody.style.border = '3px solid #ccc';
+                    hookBody.style.borderRadius = '50%';
+                    hookBody.style.display = 'flex'; hookBody.style.justifyContent = 'center'; hookBody.style.alignItems = 'center';
+                    hookBody.style.boxShadow = '0 5px 10px rgba(0,0,0,0.1)';
+                    el.appendChild(hookBody);
+
+                    el.ondragstart = (e) => { 
+                        dragNote = el; 
+                        hookBody.style.borderColor = 'var(--accent-orange)';
+                        el.style.transform = 'scale(1.1) rotate(5deg)';
+                        SoundService.playNote(500, 0.1);
+                    };
+                    el.ondragend = () => {
+                        if (dragNote === el) {
+                            hookBody.style.borderColor = '#ccc';
+                            el.style.transform = '';
+                        }
+                    };
+                    el.onclick = () => {  
+                         if (dragNote && dragNote !== el) {
+                             dragNote.lastChild.style.border = '3px solid #ccc';
+                             dragNote.style.transform = '';
+                         }
+                         dragNote = el; 
+                         hookBody.style.border = '3px solid var(--accent-orange)';
+                         el.style.transform = 'scale(1.1) translateY(-10px)';
+                         SoundService.playNote(500, 0.1);
+                    };
+
+                    hooksContainer.appendChild(el);
+                });
+                
+                document.getElementById('v4-mg-bubble').innerText = currentLanguage === 'zh' ? '🎣 帮鸟儿把音符拖到对应拍数的鱼身上！' : '🎣 Drag the notes to the fish with the matching beats!';
+            };
+
+            const handleDrop = (fishEl, hookEl) => {
+                const target = fishEl.dataset.target;
+                const id = hookEl.dataset.id;
+                
+                if (target === id) {
+                    SoundService.playSuccess();
+                    fishEl.style.background = '#81C784';
+                    fishEl.innerHTML = '<div style="font-size:40px;">✨</div>';
+                    fishEl.style.animation = 'popIn 0.5s ease';
+                    hookEl.style.opacity = '0';
+                    hookEl.style.pointerEvents = 'none';
+                    dragNote = null;
+                    matchedCount++;
+                    document.getElementById('v4-mg-bubble').innerText = currentLanguage==='zh'?`答对啦！这是一个${id}音符。`:`Got it! That is a ${id} note.`;
+                    
+                    if (matchedCount === 4) {
+                        createConfetti();
+                        createConfetti();
+                        document.getElementById('v4-mg-bubble').innerText = currentLanguage==='zh'?'太棒了！你认识所有的音符！':'Amazing! You know all the notes!';
+                        setTimeout(() => {
+                             ProgressService.updateStars('sight', 4, 3);
+                             navigateTo('sight-hub');
+                        }, 3000);
+                    }
+                } else {
+                    SoundService.playWrong();
+                    hookEl.style.animation = 'shake 0.5s ease';
+                    setTimeout(()=>hookEl.style.animation='', 500);
+                    fishEl.style.transform = 'scale(1.1)';
+                    setTimeout(()=>fishEl.style.transform='scale(1)', 200);
+                    document.getElementById('v4-mg-bubble').innerText = currentLanguage==='zh'?'不对哦，再试一次！':'Not right, try again.';
+                    if(dragNote) dragNote.style.border = '2px solid #ccc';
+                    dragNote = null;
+                }
+            };
+            
+            btnResetGame.onclick = initFishingGame;
         }
 
         if (level == 5) {
