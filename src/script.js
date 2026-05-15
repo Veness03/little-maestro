@@ -2591,9 +2591,9 @@ function renderInteractiveLesson(type, level) {
                                     <div id="v5-tut-text" style="color: #fff; font-size: 1.5rem; font-weight: bold; text-align: center; max-width: 80%; z-index: 10; min-height: 60px;"></div>
                                     
                                     <div id="v5-tut-cards" style="display:none; flex-wrap:wrap; justify-content:center; gap: 10px; z-index: 10;">
-                                        <div class="v5-song-card" data-song="twinkle">🌟 Twinkle Twinkle<br>Little Star</div>
-                                        <div class="v5-song-card" data-song="boat">🚣 Row Row Row<br>Your Boat</div>
-                                        <div class="v5-song-card" data-song="happy">😊 If You're Happy<br>And You Know It</div>
+                                        <div class="v5-song-card" data-song="twinkle" style="background: rgba(255,255,255,0.1); color: #fff; padding: 10px 20px; border-radius: 12px; border: 2px solid rgba(255,255,255,0.2); text-align: center; font-weight: bold; font-size: 1.1rem;">🌟 Twinkle Twinkle<br>Little Star</div>
+                                        <div class="v5-song-card" data-song="boat" style="background: rgba(255,255,255,0.1); color: #fff; padding: 10px 20px; border-radius: 12px; border: 2px solid rgba(255,255,255,0.2); text-align: center; font-weight: bold; font-size: 1.1rem;">🚣 Row Row Row<br>Your Boat</div>
+                                        <div class="v5-song-card" data-song="happy" style="background: rgba(255,255,255,0.1); color: #fff; padding: 10px 20px; border-radius: 12px; border: 2px solid rgba(255,255,255,0.2); text-align: center; font-weight: bold; font-size: 1.1rem;">😊 If You're Happy<br>And You Know It</div>
                                     </div>
                                     
                                     <div id="v5-tut-visuals" style="display:none; width:100%; height:150px; position:absolute; bottom:0; align-items:center; justify-content:center;">
@@ -5625,7 +5625,7 @@ function attachLessonListeners(type, level) {
                         dragNote = el; 
                         hookBody.style.borderColor = 'var(--accent-orange)';
                         el.style.transform = 'scale(1.1) rotate(5deg)';
-                        SoundService.playNote(500, 0.1);
+                        playNote(500, 0.1);
                     };
                     el.ondragend = () => {
                         if (dragNote === el) {
@@ -5641,7 +5641,7 @@ function attachLessonListeners(type, level) {
                          dragNote = el; 
                          hookBody.style.border = '3px solid var(--accent-orange)';
                          el.style.transform = 'scale(1.1) translateY(-10px)';
-                         SoundService.playNote(500, 0.1);
+                         playNote(500, 0.1);
                     };
 
                     hooksContainer.appendChild(el);
@@ -5951,7 +5951,7 @@ function attachLessonListeners(type, level) {
             let pracScore = 0;
 
             const handlePracClap = () => {
-                SoundService.playNote(400, 0.1); 
+                playNote(400, 0.1); 
                 const pracPad = document.getElementById('v5-prac-tap-pad');
                 pracPad.style.transform = 'scale(0.9)';
                 setTimeout(()=>pracPad.style.transform='', 100);
@@ -6040,7 +6040,7 @@ function attachLessonListeners(type, level) {
 
             let mgScore = 0;
             const handleMgClap = () => {
-                SoundService.playNote(500, 0.1); 
+                playNote(500, 0.1); 
                 const pad = document.getElementById('v5-mg-tap-pad');
                 pad.style.transform = 'scale(0.9)'; setTimeout(()=>pad.style.transform='', 100);
 
