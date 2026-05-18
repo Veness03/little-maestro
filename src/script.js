@@ -5622,6 +5622,7 @@ function attachLessonListeners(type, level) {
                     el.appendChild(hookBody);
 
                     el.ondragstart = (e) => { 
+                        e.dataTransfer.setData('text/plain', h.id);
                         dragNote = el; 
                         hookBody.style.borderColor = 'var(--accent-orange)';
                         el.style.transform = 'scale(1.1) rotate(5deg)';
