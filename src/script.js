@@ -475,6 +475,15 @@ function navigateTo(pageId) {
     
     // Check for running intervals
     if (window.balloonInterval) clearInterval(window.balloonInterval);
+    if (window._sightInterval) clearInterval(window._sightInterval);
+    if (window._sightTimeouts) window._sightTimeouts.forEach(t => clearTimeout(t));
+    if (window.stopLevel5Music) window.stopLevel5Music();
+    if (window.stopLevel5Mic) window.stopLevel5Mic();
+    if (audioCtx && audioCtx.state === 'running') audioCtx.suspend();
+    if (metronomeInterval) {
+        clearInterval(metronomeInterval);
+        isMetronomePlaying = false;
+    }
     
     // Close any open mini-games
     closeMiniGame();
@@ -2713,7 +2722,7 @@ function attachLessonListeners(type, level) {
                         if (document.getElementById('top-tutorial-text')) document.getElementById('top-tutorial-text').innerText = word;
                         SpeechService.speak(word, currentLanguage, () => {
                             i++;
-                            setTimeout(speakNext, 300);
+                            window._sightTimeouts.push(setTimeout(speakNext, 300));
                         });
                     } else {
                         // Transition to Spaces
@@ -2730,7 +2739,7 @@ function attachLessonListeners(type, level) {
                                     if (document.getElementById('top-tutorial-text')) document.getElementById('top-tutorial-text').innerText = word;
                                     SpeechService.speak(word, currentLanguage, () => {
                                         j++;
-                                        setTimeout(speakNextSpace, 300);
+                                        window._sightTimeouts.push(setTimeout(speakNextSpace, 300));
                                     });
                                 } else {
                                     // Transition to hand
@@ -3255,7 +3264,7 @@ function attachLessonListeners(type, level) {
                         tutText.innerText = ts.text;
                         SpeechService.speak(ts.text, currentLanguage, () => {
                             step++;
-                            setTimeout(runStep, 800);
+                            window._sightTimeouts.push(setTimeout(runStep, 800));
                         });
                     } else {
                         tutImg.innerHTML = ts.symbol;
@@ -3283,7 +3292,7 @@ function attachLessonListeners(type, level) {
 
                         SpeechService.speak(ts.name, currentLanguage, () => {
                             step++;
-                            setTimeout(runStep, 800);
+                            window._sightTimeouts.push(setTimeout(runStep, 800));
                         });
                     }
                 } else {
@@ -3556,7 +3565,7 @@ function attachLessonListeners(type, level) {
 
                     SpeechService.speak(ts.text, currentLanguage, () => {
                         step++;
-                        setTimeout(runStep, 1000);
+                        window._sightTimeouts.push(setTimeout(runStep, 1000));
                     });
                 } else {
                     btnPracticeBtn.style.display = 'inline-block';
@@ -3918,7 +3927,7 @@ function attachLessonListeners(type, level) {
                     setTimeout(() => playNote(frequencies['B'], 0.5), 1800);
                     
                     SpeechService.speak("Do Re Mi Fa Sol La Ti", currentLanguage, () => {
-                        setTimeout(startMemorySong, 1500);
+                        window._sightTimeouts.push(setTimeout(startMemorySong, 1500));
                     });
                 };
 
@@ -3968,7 +3977,7 @@ function attachLessonListeners(type, level) {
 
                         SpeechService.speak(l.text, currentLanguage, () => {
                             s++;
-                            setTimeout(singNext, 500);
+                            window._sightTimeouts.push(setTimeout(singNext, 500));
                         });
                     };
                     singNext();
@@ -4421,10 +4430,10 @@ function attachLessonListeners(type, level) {
                     playNote(nd.f, 0.8);
                     
                     tutIndex++;
-                    setTimeout(playMelody, 800);
+                    window._sightTimeouts.push(setTimeout(playMelody, 800));
                 };
                 
-                setTimeout(playMelody, 1000);
+                window._sightTimeouts.push(setTimeout(playMelody, 1000));
             };
 
             document.getElementById('v2-tut-skip-btn').onclick = () => {
@@ -4531,7 +4540,7 @@ function attachLessonListeners(type, level) {
                                 key.style.boxShadow = 'none';
                             }
                             i++;
-                            setTimeout(demo, 600);
+                            window._sightTimeouts.push(setTimeout(demo, 600));
                         }, 400);
                     } else {
                         pracStatus.innerText = currentLanguage==='zh'?'现在换你弹刚才的旋律！':'Now you play the melody!';
@@ -5553,6 +5562,13 @@ function attachLessonListeners(type, level) {
                     el.style.cursor = 'pointer';
                     el.style.border = '3px solid rgba(255,255,255,0.5)';
                     el.style.transition = 'all 0.3s ease';
+                    el.draggable = true;
+                    el.ondragstart = (e) => {
+                         e.dataTransfer.setData('text/plain', 'fish:' + f.target);
+                         dragNote = el; // Store fish element
+                         el.style.transform = 'scale(1.1)';
+                    };
+                    el.ondragend = () => { el.style.transform = ''; };
                     
                     const tail = document.createElement('div');
                     tail.style.position='absolute'; tail.style.right='-20px'; tail.style.top='25px';
@@ -5589,10 +5605,18 @@ function attachLessonListeners(type, level) {
                         e.preventDefault();
                         el.style.transform = '';
                         el.style.boxShadow = '0 5px 15px rgba(0,0,0,0.2)';
-                        if (dragNote) handleDrop(el, dragNote);
+                        if (dragNote && dragNote.classList.contains('mg-hook')) {
+                            handleDrop(el, dragNote);
+                        }
                     });
                      el.onclick = () => { 
-                         if(dragNote) handleDrop(el, dragNote);
+                         if(dragNote && dragNote.classList.contains('mg-hook')) {
+                             handleDrop(el, dragNote);
+                         } else {
+                             dragNote = el;
+                             el.style.transform = 'scale(1.1)';
+                             setTimeout(() => el.style.transform='', 200);
+                         }
                      };
                 });
 
@@ -5634,12 +5658,31 @@ function attachLessonListeners(type, level) {
                             el.style.transform = '';
                         }
                     };
+                    
+                    el.addEventListener('dragover', (e) => {
+                        e.preventDefault();
+                        el.style.transform = 'scale(1.1)';
+                    });
+                    el.addEventListener('dragleave', () => { el.style.transform = ''; });
+                    el.addEventListener('drop', (e) => {
+                        e.preventDefault();
+                        el.style.transform = '';
+                        if (dragNote) {
+                            if (dragNote.classList.contains('mg-fish')) handleDrop(dragNote, el);
+                            else if (dragNote.classList.contains('mg-hook')) handleDrop(el, dragNote);
+                        }
+                    });
+
                     el.onclick = () => {  
-                         if (dragNote && dragNote !== el) {
+                         if (dragNote && dragNote.classList.contains('mg-fish')) {
+                             handleDrop(dragNote, el);
+                         } else if (dragNote && dragNote !== el) {
                              dragNote.lastChild.style.border = '3px solid #ccc';
                              dragNote.style.transform = '';
+                             dragNote = el; 
+                         } else {
+                             dragNote = el; 
                          }
-                         dragNote = el; 
                          hookBody.style.border = '3px solid var(--accent-orange)';
                          el.style.transform = 'scale(1.1) translateY(-10px)';
                          playNote(500, 0.1);
@@ -5764,6 +5807,7 @@ function attachLessonListeners(type, level) {
                 });
                 currentOscillators = [];
             };
+            window.stopLevel5Music = stopAllMusic;
 
             const noteFreqs = {
                 "C4": 261.63, "C#4": 277.18, "D4": 293.66, "D#4": 311.13, "E4": 329.63, "F4": 349.23, "F#4": 369.99, "G4": 392.00, "G#4": 415.30, "A4": 440.00, "A#4": 466.16, "B4": 493.88,
@@ -5835,6 +5879,7 @@ function attachLessonListeners(type, level) {
                 if(window._clapDetectorFrame) cancelAnimationFrame(window._clapDetectorFrame);
                 if(micStream) micStream.getTracks().forEach(t=>t.stop());
             };
+            window.stopLevel5Mic = stopMic;
 
             // TUTORIAL
             const tutSteps = [
@@ -5860,7 +5905,7 @@ function attachLessonListeners(type, level) {
                         setTimeout(() => birdie.style.transform = '', 300);
                         SpeechService.speak(ts.text, currentLanguage, () => {
                             step++;
-                            setTimeout(runStep, 800);
+                            window._sightTimeouts.push(setTimeout(runStep, 800));
                         });
                     } else {
                         btnPracticeBtn.style.display = 'inline-block';
